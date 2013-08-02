@@ -1,5 +1,5 @@
 <wire>
-  <datasources>
+  <datasources> 
     <httpheader name="header" Accept="application/json" Content-type="application/json" />
     <datasource name="userAuth" httpheader="header" source="" query="//" providertype="json" httpmethod="post"/>
     <datasource name="userGet" httpheader="header" source="" query="/" providertype="json" />
