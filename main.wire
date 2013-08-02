@@ -1,0 +1,940 @@
+<wire>
+  <datasources>
+    <httpheader name="header" Accept="application/json" Content-type="application/json" />
+    <datasource name="userAuth" httpheader="header" source="" query="//" providertype="json" httpmethod="post"/>
+    <datasource name="userGet" httpheader="header" source="" query="/" providertype="json" />
+    <datasource name="userUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
+    <datasource name="body" source="" query="/" providertype="json" /> 
+  </datasources>
+
+  <texttemplate name="postBody"><![CDATA[[var:postContent]]]></texttemplate>
+  <texttemplate name="crudUser"><![CDATA[ { "id": "51d31a168ae0d6cb305aa983", "created": "2013-07-03T13:48:10-0500", "updated": "2013-07-04T13:48:10-0500",
+                                            "name": { "first": "[var:userFirstName]", "middle": "Q.", "last": "[var:userLastName]", "display": "Johnny Q." },
+                                            "facebook": { "user": "johnnyq555","token": "abc123def456g789fed0bca", "authenticated": "2013-07-04T13:48:10-0500" },
+                                            "birth": "1950-12-24",
+                                            "email": "johnnyq555@gmail.com",
+                                            "phone": "816-555-1234",
+                                            "prefer": "text|email",
+                                            "home": { "street": ["4950 College Blvd"],"city": "Overland Park","state": "KS", "zip": "66211", 
+                                            "loc": { "lat": 38.92761, "lng": -94.642759 } },
+                                            "plan": "51d49fb730048aefbf66ce4e",
+                                            "team": "51d49fb730048aefbf66ce4e",
+                                            "inspiration": "51d49fb730048aefbf66ce4e",
+                                            "genPrefs": { "appBackgroundImage": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e", "arbitraryPrefAttributeName": "arbitraryPrefAttributeValue", "anotherArbitraryPref": "anotherPrefValue" },
+                                            "devices":[{ "name": "johnnyS3", "model": "Galaxy S3", "carrier": "ATT", "pushId": "1234abcd", 
+                                            "prefs": { "arbitraryDeviceSpecificPrefName": "prefValue", "anotherDevicePrefName": "anotherPrefValue" }}]
+                                            } ]]></texttemplate>
+  <styles>
+    <style name="textfield" font="helvetica" size="15" color="#000000" alignment="left" valignment="center" border="line" margin-top="10" background="#ffffff" leftinset="5" onreturnkeypressed="dismiss-keyboard"  />
+    <style name="headline" font="HelveticaNeue-Bold" color="#8fbf6b" size="15" /> <!-- green text -->
+    <style name="step-label" font="HelveticaNeue" color="#ffffff" size="13" alignment="center" />
+    <style name="step-question" font="HelveticaNeue" color="#666666" size="15" alignment="center" />
+  </styles>
+
+  <classes>
+    <class name="toc"> 
+      <panel name="[param:section]" width="100%" height="50" onclickup="reveal-section">
+          <panel name="wrapper" width="100%" height="100%" padding="10">
+            <image name="icon" source="graphics/[param:icon]" width="44" height="44" valign="center" />
+            <text name="label" height="100%" width="100%" rightof="icon" text="[param:label]" font="HelveticaNeue" color="#92c05d" size="15" alignment="left" leftinset="20"/>
+          </panel>
+          <panel name="rule" width="100%" height="1" valign="bottom" background="#126f93"></panel>
+      </panel>
+    </class>
+    <class name="toolbar">
+      <panel name="toolbar" alias="TOOLBAR" height="44" width="100%" background="#126f93" padding-left="10" padding-right="10">
+        <text name="label" height="100%" width="100%" font="HelveticaNeue" text="[param:label]" color="#efefef" size="15" alignment="center"/>
+        <image name="btn-left" source="graphics/icon-top-menu.png" valign="center" onclickup="toggle-toc" />
+        <image name="btn-right" source="graphics/icon-top-attach.png" valign="center"  align="right" alpha="1" onclickup="lost" />
+      </panel>
+    </class>
+    <class name="button">
+      <panel name="button" width="80%" height="44" background="#6d97a9" alpha="1" align="center" valign="center" borderwidth="1" bordercolor="#000000" cornerradius="5" onclickup="[param:onclickup]">
+        <text name="label" height="100%" width="100%" text="[param:text]" font="HelveticaNeue-Bold" color="#ffffff" size="15" alignment="center"/>
+      </panel>
+    </class>
+    <class name="buttonWithIcon">
+      <panel name="button" width="80%" height="44" background="#6d97a9" alpha="1" align="center" valign="center" borderwidth="1" bordercolor="#000000" cornerradius="5" onclickup="[param:onclickup]" padding-left="10">
+        <text name="label" height="100%" width="100%" text="[param:text]" font="HelveticaNeue" color="#ffffff" size="15" alignment="left" leftinset="30">
+          <image name="icon" source="graphics/[param:icon]" valign="center"></image>
+        </text>
+      </panel>
+    </class>
+    <class name="helpcenter-row">
+      <panel name="row-[param:index]" width="100%" height="20%" padding-left="10" padding-right="10">
+         <panel name="icon" width="44" height="44" valign="center" background="#ff0000"></panel>
+        <text name="label" width="100%" height="100%" rightof="icon" text="[param:label]" font="HelveticaNeue" size="15" alignment="left" leftinset="20"/>
+      </panel>
+    </class>
+    <class name="careteam-row">
+      <panel name="row-[param:index]" width="100%" height="20%" padding-left="10" padding-right="10">
+        <panel name="icon" width="44" height="44" valign="center" background="#ff0000"></panel>
+        <text name="name" width="100%" height="fit" ypos="20" rightof="icon" text="[param:name]" font="HelveticaNeue" size="15" alignment="left" leftinset="20" />
+        <text name="relationship" width="100%" height="fit" bottomof="name" margin-top="3" rightof="icon" text="[param:relationship]" font="HelveticaNeue" size="12" alignment="left" leftinset="20" />
+      </panel>
+    </class>
+    <class name="history-row">
+      <panel name="row-[param:index]" width="100%" height="20%">
+        <panel name="date" width="15%" height="100%">
+          <panel name="stamp" width="100%" height="50" align="center" valign="center">
+            <text name="day" width="100%" height="20" text="THU" color="8fbf6b" font="HelveticaNeue" size="15" alignment="center" />
+            <text name="date" width="100%" height="30" text="18" color="8fbf6b" font="HelveticaNeue-Bold" size="25" alignment="center" bottomof="day"/>
+          </panel>
+          <panel name="v-rule" width="1" height="100%" background="#c5d8e0" align="right"></panel>
+        </panel>
+        <panel name="entry" width="85%" height="100%" padding="10" align="right">
+          <text name="title" width="100%" height="fit" text="[param:title]" font="HelveticaNeue" size="17" alignment="left" />
+          <text name="date" width="100%" height="fit" bottomof="title" margin-top="3" text="[param:date]" font="HelveticaNeue" size="13" alignment="left" />
+        </panel>
+        <panel name="h-rule" width="100%" height="1" background="#c5d8e0" valign="bottom"></panel>
+      </panel>
+    </class>
+    <class name="feeling-row">
+      <panel name="col-1" width="50%" height="100%">
+        <text name="option-[param:col-1-label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:col-1-label]" >
+          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+        </text>
+      </panel>
+      <panel name="col-2" width="50%" height="100%" align="right">
+        <text name="option-[param:col-2-label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:col-2-label]" >
+          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+        </text>
+      </panel>
+    </class>
+    <class name="remove-item">
+    	<panel name="remove-class" width="100%" height="15%" >
+			 <!-- <image name="arrow-expand" source="graphics/icon-content-arrow.png" padding-left="10" align="left" onclickup="expand-item"></image> -->
+			 <text name="[param:textfield]" alias="[param:textfield]" width="81%" height="65%" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" background="#ccd9e5" text="[param:removetext]"></text>
+			 <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item"></image>			
+		  </panel>
+    </class>
+    <class name="add-item">
+    	<panel name="add-item" width="100%" height="55%" >
+      <panel name="warningEntryTitle-wrapper" width="100%" height="100">
+        <textfield name="[param:textfield]" alias="[param:textfield]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What makes you feel bad?"></textfield>
+			  <image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry"></image>
+        <text name="type" alias="TYPE" width="81%" height="44" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" align="left" borderwidth="1" bordercolor="000000" text="Type" bottomof="[param:textfield]" topmargin="10" onclickup="launch-dropdown"></text>
+			</panel>
+			<panel name="warningEntryBody-wrapper" width="100%" height="132" bottomof="warningEntryTitle-wrapper" margin-top="10">
+		      <textfield name="[param:add-notes]" width="81%" height="98%" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" />
+		      <image name="attach" source="graphics/icon-content-attach.png" align="right" topmargin="10" valign="top" onclickup="add-attach"></image>
+		      <image name="share" source="graphics/icon-content-share.png" bottomof="attach" align="right" onclickup="add-share"></image>
+      </panel>
+		</panel>  
+    </class>
+    <class name="add-environment">
+    	<panel name="add-environment" width="100%" height="55%" >
+  			<panel name="enviroEntryTitle-wrapper" width="100%" height="64">
+          <textfield name="[param:textfield]" alias="[param:textfield]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What makes you feel bad?"></textfield>
+          <image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry"></image>
+        </panel>
+		  </panel>  
+    </class>
+    <class name="remove-environment">
+      <panel name="remove-class" width="100%" height="15%" >
+       <!-- <image name="arrow-expand" source="graphics/icon-content-arrow.png" padding-left="10" align="left" onclickup="expand-item"></image> -->
+       <text name="[param:textfield]" alias="[param:textfield]" width="81%" height="65%" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" background="#ccd9e5" text="[param:removetext]"></text>
+       <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item"></image>     
+      </panel>
+    </class>
+    <class name="contact-item">
+    	<panel name="[param:contact-item]" width="100%" height="15%">
+			<image name="contact-image" source="[param:contact-image]" xpos="5" valign="center"></image>
+			<panel name="text-block" width="80%" height="100%" rightof="contact-image" >
+				<text name="contact-name" width="100%" height="50%" color="#000000" font="Helvetica" size="16" alignment="left" leftinset="3" text="[param:name]" ></text>
+				<text name="contact-description" width="100%" height="20%" color="#000000" font="Helvetica" size="12" alignment="left" leftinset="5" text="[param:description]" bottomof="contact-name"></text>
+			</panel>
+			<panel name="break" width="100%" height="1" background="666666" topmargin="3" bottomof="contact-image"></panel>
+		</panel>
+    </class>
+    <class name="coping-row">
+    	<panel name="col-1" width="90%" height="15%" align="center">
+        <text name="option-[param:label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:label]" >
+          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+        </text>
+      </panel>
+    </class>
+    <class name="add-coping-row">
+    	<panel name="row" width="90%" height="15%" align="center" >
+			<panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1" ></panel>
+			<textfield name="[param:textfield]" alias="[param:textfield]" width="60%" height="30" leftinset="3" size="13" alignment="left" valign="center" valignment="center" border="line" margin-top="10" background="#ffffff" onreturnkeypressed="dismiss-keyboard" xpos="15%" placeholder="Other"></textfield>
+		</panel>
+    </class>
+    <class name="sleep-item">
+    	<panel name="option-[param:item]" alias="OPTION-[param:item]" width="100%" height="15%" background="ffffff" align="center">
+             <text name="option-text1" width="100%" height="99%" color="666666" font="helvetica" size="16" alignment="center" text="[param:sleeptext]" _active="[param:item]" onclickup="active-sleep-item"></text>
+             <panel name="break" width="100%" height="1" background="333333" valign="bottom"></panel>
+        </panel>
+    </class>
+  </classes>
+
+  <main>
+      <!-- remove panel before submitting to store -->
+      <panel name="phone" width="320" height="568" align="center" valign="center" clip="yes"> 
+      <!-- remove panel before submitting to store -->
+      <panel name="navigation" alias="NAVIGATION" width="100%" height="100%" background="#001925" >
+          <panel name="calltoaction" height="88" width="80%" valign="bottom" onclickup="call-hotline">
+            <panel name="button" width="80%" height="44" background="#658e37" alpha="1" borderwidth="1" bordercolor="#000000" cornerradius="5"  align="center" valign="center">
+              <text name="label" height="100%" width="100%" text="HOTLINE" font="HelveticaNeue-Bold" color="#ffffff" size="15" alignment="center"/>
+            </panel>
+          </panel>
+          <pager name="toc" height="[eval: [object:NAVIGATION.height] - [object:NAVIGATION/calltoaction.height] ]" width="100%" orientation="vertical" paginate="no">
+            <object class="toc" section="Home" label="Home" icon="icon-menu-home.png"/>
+            <object class="toc" section="Safety Plan" label="Safety Plan" icon="icon-menu-safety.png"/>
+            <object class="toc" section="Journal" label="Journal" icon="icon-menu-journal.png"/>
+            <object class="toc" section="Inspiration" label="Inspiration" icon="icon-menu-inspiration.png"/>
+            <object class="toc" section="Coping Techniques" label="Coping Techniques" icon="icon-menu-strategy.png"/>
+            <object class="toc" section="Care Team" label="Care Team" icon="icon-menu-team.png"/>
+            <object class="toc" section="Treatment Locator" label="Treatment Locator" icon="icon-menu-location.png"/>
+            <object class="toc" section="Settings" label="Profile" icon="icon-menu-profile.png"/>
+          </pager>      
+      </panel>
+      <panel name="wrapper" alias="WRAPPER" width="100%" height="100%" clip="yes">
+          <object class="toolbar" label="Hello" />
+          <panel name="Home" alias="HOME" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar">
+            <panel name="feelingMeter" height="88" width="100%" background="#c5dcaa">
+              <panel name="a" width="20%" height="100%" onclick="reveal-journal">
+                <image name="face" source="graphics/icon-mood-1.png" align="center" valign="center" />
+              </panel>
+              <panel name="b" width="20%" xpos="20%" height="100%" onclick="reveal-journal">
+                <image name="face" source="graphics/icon-mood-2.png" align="center" valign="center" />
+              </panel>
+              <panel name="c" width="20%" xpos="40%" height="100%" onclick="reveal-journal">
+                <image name="face" source="graphics/icon-mood-3.png" align="center" valign="center" />
+              </panel>
+              <panel name="d" width="20%" xpos="60%" height="100%" onclick="reveal-journal">
+                <image name="face" source="graphics/icon-mood-4.png" align="center" valign="center" />
+              </panel>
+              <panel name="e" width="20%" xpos="80%" height="100%" onclick="reveal-journal">
+                <image name="face" source="graphics/icon-mood-5.png" align="center" valign="center" />
+              </panel>
+              <panel name="rule" width="100%" height="1" valign="bottom" background="#126f93"></panel>
+            </panel>
+            <pager name="main" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no" lazy="yes">
+              <panel name="trigger" width="100%" height="1" onscrollaway="toggle-filter" onscrollto="toggle-filter" />
+              <panel name="wrapper" width="100%" height="1050" padding-right="5" padding-left="5" padding-top="10">
+                <panel name="col-1" width="50%" height="100%" padding-right="5" padding-left="5">
+                  <panel name="item-1" width="100%" height="250" align="center" background="#000000" alpha=".2"></panel>
+                  <panel name="item-2" width="100%" height="150" align="center" background="#000000" alpha=".3" bottomof="item-1" margin-top="10"></panel>
+                  <panel name="item-3" width="100%" height="250" align="center" background="#000000" alpha=".4" bottomof="item-2" margin-top="10"></panel>
+                  <panel name="item-4" width="100%" height="150" align="center" background="#000000" alpha=".2" bottomof="item-3" margin-top="10"></panel>
+                  <panel name="item-5" width="100%" height="250" align="center" background="#000000" alpha=".3" bottomof="item-4" margin-top="10"></panel>
+                </panel>
+                <panel name="col-2" width="50%" height="100%" align="right" padding-right="5" padding-left="5">
+                  <panel name="item-1" width="100%" height="150" align="center" background="#000000" alpha=".4"></panel>
+                  <panel name="item-2" width="100%" height="150" align="center" background="#000000" alpha=".2" bottomof="item-1" margin-top="10"></panel>
+                  <panel name="item-3" width="100%" height="250" align="center" background="#000000" alpha=".3" bottomof="item-2" margin-top="10"></panel>
+                  <panel name="item-4" width="100%" height="250" align="center" background="#000000" alpha=".2" bottomof="item-3" margin-top="10"></panel>
+                  <panel name="item-5" width="100%" height="250" align="center" background="#000000" alpha=".3" bottomof="item-4" margin-top="10"></panel>
+                </panel>
+              </panel>
+            </pager>
+            <panel name="filter" width="100%" height="44" ypos="100%">
+              <panel name="main" height="100%" width="100%" background="#bbbbbb">
+                 <text name="label" height="100%" width="100%" text="Filter Info" font="HelveticaNeue" color="#000000" size="13" alignment="center" />
+              </panel>
+            </panel>
+            <!-- 
+            journal entry screen 
+            -->
+            <panel name="journal" width="100%" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" ypos="100%" background="#ffffff">
+              <pager name="main" height="85%" width="100%" padding-top="5" padding-left="10" padding-right="10" orientation="vertical" paginate="no">
+                <text name="headline" height="44" width="100%" style="headline" text="How do I feel right now?" alignment="left" />
+                <panel name="feeling-checkbox" width="100%" height="120">
+                  <panel name="row-1" width="100%" height="33.3%" >
+                    <object class="feeling-row"  col-1-label="Amused"  col-2-label="Hopeful" />
+                  </panel>
+                  <panel name="row-2" width="100%" height="33.3%" bottomof="row-1">
+                    <object class="feeling-row"  col-1-label="Calm"  col-2-label="Satisfied" />
+                  </panel>
+                  <panel name="row-3" width="100%" height="33.3%" bottomof="row-2">
+                    <object class="feeling-row"  col-1-label="Hopeful"  col-2-label="Other" />
+                  </panel>
+                </panel>
+                <panel name="journalEntryTitle-wrapper" width="100%" height="64" >
+                  <textfield name="journalEntryTitle" width="100%" height="44" style="textfield" valign="center" placeholder="Journal Entry Title" />
+                </panel>
+                <panel name="journalEntryBody-wrapper" width="100%" height="130">
+                  <textfield name="journalEntryBody" width="80%" height="120" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" />
+                  <image name="attach" source="graphics/icon-content-attach.png" align="right" valign="top" onclickup="journal-attach"></image>
+                  <image name="share" source="graphics/icon-content-share.png" bottomof="attach" align="right" onclickup="journal-share"></image>
+                </panel>
+                <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
+              </pager>
+              <panel name="call-to-action" ypos="85%" height="15%" width="100%">
+                <panel name="col1" width="60%" height="100%">
+                  <text name="assesment" height="100%" width="100%" text="Take Assessment" font="HelveticaNeue" color="#89b0bf" size="15" alignment="left" valign="bottom" leftinset="20" onclickup="toggle-assessment"/>
+                </panel>
+                <panel name="col2" width="40%" height="100%" align="right">
+                  <object class="button" text="Save" onclickup="null" />
+                </panel>
+              </panel>
+            </panel>
+            <!-- 
+            assessment view / triggered off the assesment link located in call-to-action of journal/main/call-to-action 
+            -->
+            <panel name="assessment" width="100%" height="[object:HOME.height]" ypos="100%" background="#ffffff">
+              <panel name="steps" height="44" width="100%" background="#819bad" padding-left="10" padding-right="10" valign="bottom">
+                <image name="btn-prev" source="graphics/btn-previous.png" alpha="0" valign="center" onclickup="step-assess" _pager="HOME/assessment/main">
+                  <text name="label" height="100%" width="85%" align="right" text="previous" style="step-label" />
+                </image>
+                <text name="label" alias="ASSESSSTEPS" height="100%" width="33.3%" text="1 of 3" align="center" size="12" alignment="center" color="#ffffff"/>
+                <image name="btn-next" source="graphics/btn-next.png" alpha="1" align="right" valign="center" onclickup="step-assess" _pager="HOME/assessment/main">
+                  <text name="label" height="100%" width="85%" text="next" style="step-label" />
+                </image>
+              </panel>
+              <pager name="main" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height]]" width="100%" orientation="horizontal" paginate="yes">
+                <panel name="1" height="100%" width="90%" align="center" valign="center" onscrollto="step-buttons-assessment" _aliasTarget="HOME/assessment">
+                  <text name="question" height="88" width="100%" style="headline" text="In the past week have you had little interest or pleasure in doing things?" alignment="center" align="center" valignment="top" padding-top="10"/>
+                  <pager name="answers" width="100%" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height] - [object:HOME/assessment/main/1/question.height]]" orientation="vertical" paginate="no" valign="bottom">
+                    <panel name="row-1" width="100%" height="20%">
+                      <object class="button" text="Not at all" onclickup="null" />
+                    </panel>
+                    <panel name="row-2" width="100%" height="20%">
+                      <object class="button" text="Several days" onclickup="null" />
+                    </panel>
+                    <panel name="row-3" width="100%" height="20%">
+                      <object class="button" text="More than half the days" onclickup="null" />
+                    </panel>
+                    <panel name="row-4" width="100%" height="20%">
+                      <object class="button" text="Nearly every day" onclickup="null" />
+                    </panel>
+                  </pager>
+                </panel>
+                <panel name="2" height="100%" width="90%" align="center" valign="center" onscrollto="step-buttons-assessment" _aliasTarget="HOME/assessment">
+                	<text name="question" height="88" width="100%" style="headline" text="In the past week have you felt down, depressed or hopeless?" alignment="center" align="center" valignment="top" padding-top="10"/>
+                  <pager name="answers" width="100%" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height] - [object:HOME/assessment/main/1/question.height]]" orientation="vertical" paginate="no" valign="bottom">
+                    <panel name="row-1" width="100%" height="20%">
+                      <object class="button" text="Not at all" onclickup="null" />
+                    </panel>
+                    <panel name="row-2" width="100%" height="20%">
+                      <object class="button" text="Several days" onclickup="null" />
+                    </panel>
+                    <panel name="row-3" width="100%" height="20%">
+                      <object class="button" text="More than half the days" onclickup="null" />
+                    </panel>
+                    <panel name="row-4" width="100%" height="20%">
+                      <object class="button" text="Nearly every day" onclickup="null" />
+                    </panel>
+                  </pager>
+                </panel>
+                <panel name="3" height="100%" width="100%" align="center" valign="center" onscrollto="step-buttons-assessment" _aliasTarget="HOME/assessment">
+                   <text name="apply" height="44" width="100%" style="headline" text="Tap statements below that apply" alignment="center" align="center" valignment="top" padding-top="10"/>
+                   <panel name="break" width="100%" height="2" background="666666" bottomof="apply"></panel>
+				           <pager name="sleep-pager" alias="SLEEP-PAGER"  width="90%" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height] - [object:HOME/assessment/main/3/apply.height] - [object:HOME/assessment/main/3/break.height] ]" orientation="vertical" align="center" paginate="no" topof="HOME/assessment/steps">                 
+                      <object class="sleep-item" item="1" sleeptext="I feel sleepy during the day, even when I get a good night’s sleep" />
+                      <object class="sleep-item" item="2" sleeptext="I get very irritable when I can’t sleep" />
+                      <object class="sleep-item" item="3" sleeptext="I often wake up at night and have trouble falling back to sleep" />
+                      <object class="sleep-item" item="4" sleeptext="It usually takes me a long time to fall asleep" />
+                      <object class="sleep-item" item="5" sleeptext="I often wake up very early and can’t fall back to sleep" />
+                      <object class="sleep-item" item="6" sleeptext="I usually feel achy and stiff when I wake up in the morning" />
+                      <object class="sleep-item" item="7" sleeptext="I often seem to wake up because of dreams" />
+                      <object class="sleep-item" item="8" sleeptext="I sometimes wake up gasping for breath" />
+                      <object class="sleep-item" item="9" sleeptext="My bed partner says my snoring keeps her/him from sleeping" />
+                      <object class="sleep-item" item="10" sleeptext="I’ve fallen asleep driving" />
+                  </pager> 
+                </panel>
+              </pager>
+            </panel>
+           <!-- 
+           history view / triggered off the toolbar button in upper right 
+           -->
+            <panel name="history" width="100%" height="[object:HOME.height]" ypos="100%" background="#ffffff">
+              <panel name="datebar" height="44" width="100%" background="#819bad">
+                <text name="label" height="100%" width="100%" font="HelveticaNeue" text=" " color="#efefef" size="15" alignment="center"/>
+              </panel>
+              <pager name="main" height="[eval:[object:HOME.height] - [object:HOME/history/datebar.height] ]" valign="bottom" width="100%" orientation="vertical" paginate="no">
+                <object class="history-row" index="1" title="Title" date="March 10th 2013" />
+                <object class="history-row" index="2" title="Title" date="March 10th 2013" />
+                <object class="history-row" index="3" title="Title" date="March 10th 2013" />
+                <object class="history-row" index="4" title="Title" date="March 10th 2013" />
+              </pager>
+            </panel>
+          </panel>
+          <!-- 
+          Inspiration Screen
+          -->
+          <panel name="Inspiration" alias="INSPIRATION" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
+            <panel name="controls" height="44" width="100%" background="#c1c1c1">
+              <panel name="icon1" height="30" width="30" align="right" background="#1e1e1e" valign="center" onclickup="lost" />
+              <panel name="icon2" height="30" width="30" leftof="icon1" margin-right="10" valign="center" background="#1e1e1e" onclickup="lost" />
+              <panel name="icon3" height="30" width="30" leftof="icon2" margin-right="10" valign="center" background="#1e1e1e" onclickup="lost" />
+            </panel>
+            <panel name="calltoaction" height="88" width="100%" valign="bottom" background="#bab8b8">
+              <object class="button" text="What I Live For" onclickup="null" />
+            </panel>
+            <panel name="main" ypos="[object:INSPIRATION/controls.height]" height="[eval: [object:INSPIRATION.height] - [object:INSPIRATION/controls.height] - [object:INSPIRATION/calltoaction.height]]" width="100%" background="#e1e1e1">
+              <panel name="quad-UL" height="50%" width="50%" background="#ededed" onclickup="add-feature">
+                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Photos" size="15" alignment="center"/>
+                <panel name="icon" ypos="0%" height="75%" width="100%" background="#111111" />
+              </panel>
+              <panel name="quad-UR" xpos="50%" height="50%" width="50%" background="#ededed" onclickup="lost">
+                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Locations" size="15" alignment="center"/>
+                <panel name="icon" ypos="0%" height="75%" width="100%" background="#222222" />
+              </panel>
+              <panel name="quad-LL" ypos="50%" height="50%" width="50%" background="#ededed" onclickup="lost">
+                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Quotes" size="15" alignment="center"/>
+                <panel name="icon" ypos="0%" height="75%" width="100%" background="#222222" />
+              </panel>
+              <panel name="quad-LR" xpos="50%" ypos="50%" height="50%" width="50%" background="#ededed" onclickup="lost">
+                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Articles" size="15" alignment="center"/>
+                <panel name="icon" ypos="0%" height="75%" width="100%" background="#111111" />
+              </panel>
+            </panel>
+          </panel>
+          <!-- 
+          care team entry screen 
+          -->
+          <panel name="Care Team" alias="CARETEAM" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
+            <panel name="controls" height="44" width="100%" background="#c1c1c1">
+              <text name="support" height="100%" width="33.33%" text="Support Team" font="helvetica" size="12" alignment="center" state="active" background="#a6a6a6" onclickup="toggle-view"/>
+              <text name="clinical" height="100%" width="33.33%" text="Clinical Team" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
+              <text name="urgent" height="100%" width="33.33%" text="Urgent Team" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
+            </panel>
+            <pager name="main" ypos="[object:CARETEAM/controls.height]" height="[eval: [object:CARETEAM.height] - [object:CARETEAM/controls.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no">
+              <object class="careteam-row" index="1" name="Jane Jones" relationship="Sister" />
+              <object class="careteam-row" index="2" name="Bob Jones" relationship="Brother" />
+              <object class="careteam-row" index="3" name="Rex Jones" relationship="Brother" />
+            </pager>
+          </panel>
+          <!-- 
+          COPING TECHNIQUES Screen
+          -->
+          <panel name="Coping Techniques" alias="COPINGTECHNIQUES" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%" background="#ffffff">
+            <panel name="calltoaction" height="120" width="100%" valign="bottom">
+              <text name="addtoInspiration" height="44" width="70%" font="HelveticaNeue" color="#000000" size="15" alignment="center" align="center" leftinset="40" text="Add to inspiration feed" >
+                <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+              </text>
+              <panel name="button-container" width="100%" height="66" valign="bottom">
+                <object class="button" text="Makes Me Feel Better" onclickup="null" />
+              </panel>
+            </panel>
+            <panel name="controls" height="44" width="100%" background="#819bad">
+              <text name="physical" height="100%" width="33.33%" text="Physical" color="#ffffff" font="helvetica" size="13" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
+              <text name="mental" height="100%" width="33.33%" text="Mental" color="#ffffff" font="helvetica" size="13" alignment="center" align="center" onclickup="toggle-view" />
+              <text name="spiritual" height="100%" width="33.33%" text="Spiritual" color="#ffffff" font="helvetica" size="13" alignment="center" align="right" onclickup="toggle-view"/>
+            </panel>
+            <panel name="main" height="[eval: [object:COPINGTECHNIQUES.height] - [object:COPINGTECHNIQUES/calltoaction.height] - [object:COPINGTECHNIQUES/controls.height]]" ypos="[object:COPINGTECHNIQUES/controls.height]" width="100%" background="#ffffff">
+              <!-- classify these items beloew -->
+                <pager name="list" height="[eval:[object:COPINGTECHNIQUES/main.height]- 44]" width="100%" orientation="horiztonal" paginate="yes">
+                  <panel name="pg1" width="100%" height="100%" onscrollto="paginate">
+                    <text name="activity" height="44" width="100%" style="headline" text="Go for a Run" alignment="center" align="center"/>
+                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
+                  </panel>
+                  <panel name="pg2" width="100%" height="100%" onscrollto="paginate">
+                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
+                  </panel>
+                  <panel name="pg3" width="100%" height="100%" onscrollto="paginate">
+                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
+                  </panel>
+                  <panel name="pg4" width="100%" height="100%" onscrollto="paginate">
+                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
+                  </panel>
+                </pager>
+                <panel name="dots" height="44" width="60" bottomof="list" align="center">
+                  <panel name="pg1" width="20" height="10" state="active">
+                    <panel name="dot" width="10" height="10" background="#8fbf6b" state="active" cornerradius="5" align="center" borderwidth="1" bordercolor="#b4b4b6" />
+                  </panel>
+                  <panel name="pg2" width="20" height="10" rightof="pg1" >
+                    <panel name="dot" width="10" height="10" background="#ffffff" cornerradius="5" align="center" borderwidth="1" bordercolor="#b4b4b6" />
+                  </panel>
+                  <panel name="pg3" width="20" height="10" rightof="pg2" >
+                    <panel name="dot" width="10" height="10" background="#ffffff" cornerradius="5" align="center" borderwidth="1" bordercolor="#b4b4b6" />
+                  </panel>
+                  <panel name="pg4" width="20" height="10" rightof="pg3" >
+                    <panel name="dot" width="10" height="10" background="#ffffff" cornerradius="5" align="center" borderwidth="1" bordercolor="#b4b4b6" />
+                  </panel>
+                </panel>
+            </panel>
+          </panel>
+          
+          <!-- 
+          Safety Plan Screen
+          -->
+          <panel name="Safety Plan" alias="SAFETYPLAN" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
+            <panel name="top" height="44" width="100%" background="#819bad" padding-left="10" padding-right="10">
+              <text name="label" height="100%" width="80%" text="1 of 5: Warning Signs" align="center" size="12" alignment="center" color="#ffffff"/>
+            </panel>
+            <panel name="steps" height="44" valign="bottom" width="100%" background="#126f93">
+            	<image name="btn-prev" source="graphics/btn-previous.png" alpha="0" valign="center" onclickup="step" _pager="SAFETYPLAN/main">
+                <text name="label" height="100%" width="85%" align="right" text="previous" style="step-label" />
+              </image>
+              <image name="btn-next" source="graphics/btn-next.png" alpha="1" align="right" valign="center" onclickup="step" _pager="SAFETYPLAN/main">
+                <text name="label" height="100%" width="85%" text="next" style="step-label" />
+              </image>
+            </panel>
+            <pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
+              <panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
+              	<pager name="warning-pager" alias="WARNINGPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
+                  <text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question"></text>
+                  <object class="remove-item" textfield="1" removetext="What makes you feel bad?" />
+                  <object class="add-item" textfield="warn-entry1" add-notes="warn-note1" />
+                  <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
+                </pager>
+              </panel>
+              <panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
+                <pager name="inspiration-pager" alias="INSPIRATIONPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
+                  <text name="query" height="54" width="100%" align="left" text="What helps you take your mind of your problems?" style="step-question"></text>
+                  <object class="remove-item" textfield="1" removetext="What makes you feel good?" />
+                  <object class="add-item" textfield="inspire-entry1" add-notes="inspire-note1" />
+                  <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
+                </pager> 
+              </panel>
+              <panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
+              	<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question"></text>
+                <panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
+                  <object class="button" text="Add Contact" onclickup="add-contact" />
+                  <panel name="break" width="100%" height="2" background="666666" topmargin="5" bottomof="button"></panel>
+                </panel>
+                <pager name="contact-list" width="100%" height="[eval: [object:CONTACT.height] - 100]" topmargin="5" orientation="vertical" paginate="no" bottomof="add-contact">
+                 <object class="contact-item" contact-item="1" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+                 <object class="contact-item" contact-item="2" contact-image="graphics/img-contact-female.png" name="Sample Female" description="mother" />
+                 <object class="contact-item" contact-item="3" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+                 <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+               </pager> 
+             </panel>
+             <panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
+               <panel name="coping-controls" height="44" width="100%" background="#819bad">
+                <text name="support" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
+                <text name="clinical" height="100%" width="33.33%" text="Mental" _type="Mental" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
+                <text name="urgent" height="100%" width="33.33%" text="Spiritual" _type="Spiritual" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
+              </panel>
+              <text name="cope-text" height="44" width="87%" align="center" text="Techniques and activities that help you cope with difficult situations or emotions." bottomof="coping-controls" style="step-question"></text>
+              <pager name="coping-options-physical" alias="PHYSICAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no">
+                <object class="coping-row" label="Go for a walk/run/swim" />
+                <object class="coping-row" label="Play a game" />
+                <object class="coping-row" label="Call a support person" />
+                <object class="coping-row" label="Lift weights" />
+                <object class="coping-row" label="Clean Your Room" />
+                <object class="add-coping-row" textfield="cope-entry1"/>
+              </pager>
+              <pager name="coping-options-mental" alias="MENTAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
+                <object class="coping-row" label="Read a book" />
+                <object class="coping-row" label="Perform deep breathing exercises" />
+                <object class="coping-row" label="Spend time with family or friends" />
+                <object class="coping-row" label="Listen to music" />
+                <object class="coping-row" label="Make time for doing artwork,puzzles or games" />
+                <object class="add-coping-row" textfield="cope-entry1"/>
+              </pager>
+              <pager name="coping-options-spiritual" alias="SPIRITUAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
+                <object class="coping-row" label="Engage with others in spiritual expression" />
+                <object class="coping-row" label="Release anger for things you can't control" />
+                <object class="coping-row" label="Participate in activity to help others" />
+                <object class="coping-row" label="Attend a meeting with like-minded people" />
+                <object class="coping-row" label="Do yoga or meditate" />
+                <object class="add-coping-row" textfield="cope-entry1"/>
+              </pager>
+            </panel>
+            <panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
+             <pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
+               <text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question"></text>
+               <object class="remove-environment" textfield="1" removetext="Safe Place 1" />
+               <object class="add-environment" textfield="inspire-entry1"/>
+             </pager> 
+            </panel>
+          </pager>
+         </panel>
+          <!-- 
+          Treatment Locator Screen
+          -->
+          <panel name="Treatment Locator" alias="TREATMENTLOCATOR" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
+            <panel name="search" height="44" width="100%" background="#819bad">
+              <textfield name="searchField" width="90%" height="34" font="HelveticaNeue" size="15" color="#111111" alignment="left" leftinset="50" onreturnkeypressed="dismiss-keyboard" padding-left="10" padding-right="10" valign="center" align="center" valignment="center" border="none" background="#ffffff" cornerradius="17" placeholder="search">
+              <image name="search" source="graphics/icon.find.png" valign="center"></image>
+              <image name="clear" source="graphics/icon.delete.png" valign="center" align="right"></image>
+              </textfield>
+            </panel>
+            <map name="main" alias="MAP" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom"/>
+          </panel>
+          <!-- 
+          Settings/Profile Screen
+          -->
+          <panel name="Settings" alias="SETTINGS" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
+            <pager name="main" height="100%" width="100%" background="#e1e1e1" orientation="vertical" paginate="no">
+              <panel name="row-1" width="100%" height="22">
+                <text name="label" height="100%" width="100%" text="" font="HelveticaNeue" color="#000000" size="13" alignment="center" />
+              </panel>
+              <panel name="row-2" width="100%" height="64">
+                <textfield name="firstName" height="44" width="80%" placeholder="first name" style="textfield" align="center" margin-top="0" />
+              </panel>
+              <panel name="row-3" width="100%" height="64">
+                <textfield name="lastName" height="44" width="80%" placeholder="last name" style="textfield" align="center" margin-top="0"/>
+              </panel>
+              <panel name="row-4" width="100%" height="64">
+                <textfield name="email" height="44" width="80%" placeholder="email" style="textfield" align="center" margin-top="0"/>
+              </panel>
+              <panel name="row-5" width="100%" height="64">
+                <textfield name="password" height="44" width="80%" placeholder="password" password="yes" style="textfield" align="center" margin-top="0"/>
+              </panel>
+              <panel name="row-6" width="100%" height="64">
+                <textfield name="repeatpassword" height="44" width="80%" placeholder="password" password="yes" style="textfield" align="center" margin-top="0"/>
+              </panel>
+              <panel name="row-7" width="100%" height="64">
+                <object class="button" text="Save" onclickup="null" />
+              </panel>
+              <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
+            </pager>
+          </panel>
+
+          <panel name="curtain" alias="CURTAIN" width="100%" height="100%" background="#222222" alpha="0" onclickup="toggle-toc"></panel>
+        </panel>
+        <!-- 
+          Welcome Screen
+          -->
+        <panel name="welcome" alias="WELCOME" width="100%" height="100%" background="#e1e1e1">
+          <text name="intro" height="44" width="100%" text="Welcome" font="HelveticaNeue-Bold" size="15" alignment="center" margin-top="10" />
+          <panel name="signIn" width="100%" height="100%" bottomof="intro" background="#e1e1e1">
+            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="j@z.com" />
+            <textfield name="password" alias="PASSWORD" height="44" width="80%" placeholder="password" bottomof="email" align="center" password="yes" style="textfield" text="1234" />
+            <text name="button" height="44" width="80%" text="Sign In" font="HelveticaNeue"  size="15" alignment="center" bottomof="password" margin-top="10" background="#ff0000" onclickup="signIn" align="center"/>
+            <text name="label" height="44" width="100%" text="Need an Account?" font="HelveticaNeue" color="#000000" size="13" alignment="center" bottomof="button" margin-top="10" onclickup="toggle-signUp" />
+          </panel>
+          <panel name="signUp" width="100%" height="100%" ottomof="intro" xpos="100%" bottomof="intro" background="#e1e1e1">
+            <textfield name="email" alias="NEWEMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" style="textfield" align="center" />
+            <textfield name="password" alias="NEWPASSWORD" height="44" width="80%" placeholder="password" bottomof="email" password="yes" style="textfield" align="center" />
+            <textfield name="firstName" alias="FIRSTNAME" height="44" width="80%" placeholder="first name" bottomof="password" style="textfield" align="center" />
+            <textfield name="lastName" alias="LASTNAME" height="44" width="80%" placeholder="last name" bottomof="firstName" style="textfield" align="center" />
+            <text name="button" height="44" width="80%" text="Sign Up" font="HelveticaNeue"  size="15" alignment="center" bottomof="lastName" margin-top="10" background="#ff0000" onclickup="signUp" align="center"/>
+            <text name="label" height="44" width="100%" text="Have an Account?" font="HelveticaNeue" color="#000000" size="13" alignment="center" bottomof="button" margin-top="10" onclickup="toggle-signUp" />
+          </panel>
+        </panel>
+        <!-- 
+          Today Screen
+          -->
+        <panel name="todayModal" alias="TODAYMODAL" width="100%" height="100%" alpha="0">
+          <panel name="curtain" width="100%" height="100%" background="#000000" alpha=".8"></panel>
+          <text name="headline" height="33%" width="100%" font="HelveticaNeue-Bold" size="30" alignment="center" color="#8fbf6b" text="How are you today?" />
+          <panel name="button-container" width="100%" height="33.3%" valign="center">
+            <panel name="1" width="100%" height="33.3%">
+              <object class="buttonWithIcon" text="Call the Hotline" icon="icon-entry-hotline.png" onclickup="null" />
+            </panel>
+            <panel name="2" width="100%" height="33.3%" valign="center">
+              <object class="buttonWithIcon" text="Find a Treatment Location" icon="icon-entry-locator.png" onclickup="null" />
+            </panel>
+            <panel name="3" width="100%" height="33.3%" valign="bottom">
+              <object class="buttonWithIcon" text="Continue" icon="icon-entry-continue.png" onclickup="dismiss-today-modal" />
+            </panel>
+          </panel>
+        </panel>
+    </panel>
+    <web name="web" alias="WEB" width="1" height="1" url="about:blank" alpha="0"></web>
+  </main>
+  <actions>
+    <action name="boot" oninit="yes">
+      <assign property="object:WRAPPER/toolbar/label.text" value="Hello" />
+      <assign property="var:currentSection" value="Home" />
+    </action>
+    <action name="toggle-signUp">
+      <assign property="var:signUp-status" value="[eval: '[var:signUp-status]' != '1' ? '1' : '0']" />
+      <translate xpos="[eval: '[var:signUp-status]' == '1' ? '0' : '100%']" time=".2" target="WELCOME/signUp" />
+      <translate xpos="[eval: '[var:signUp-status]' == '1' ? '-100%' : '0%']" time=".2" target="WELCOME/signIn" />
+    </action>  
+    <action name="signIn">   
+      <sync>
+        <assign property="datasource:body.removeIndex" value="1" />
+        <assign property="datasource:body.add" value="{ 
+          &quot;username&quot;: &quot;[object:WELCOME/signIn/email.text]&quot;, 
+          &quot;password&quot;: &quot;[object:WELCOME/signIn/password.text]&quot; 
+          }"/>
+        <assign property="datasource:body.event" value="querycomplete"/>
+        <assign property="var:postContent" value="[datasource:body.1.content]" />
+        <assign property="datasource:userAuth.postContent" value="[template:postBody.content]" />
+        <assign property="datasource:userAuth.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/user/auth/[object:EMAIL.text]" />
+      </sync>
+    </action>
+    <action name="signUp">   
+      <sync>
+        <assign property="datasource:body.removeIndex" value="1" />
+        <assign property="datasource:body.add" value="{ 
+          &quot;username&quot;: &quot;[object:WELCOME/signUp/email.text]&quot;,
+          &quot;email&quot;: &quot;[object:WELCOME/signUp/password.text]&quot;
+          }"/>
+        <assign property="datasource:body.event" value="querycomplete"/>
+        <assign property="var:postContent" value="[datasource:body.1.content]" />
+        <assign property="datasource:userAuth.postContent" value="[template:postBody.content]" />
+        <assign property="datasource:userAuth.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/user/create" />
+        <assign property="var:newUserSetup" value="1" />
+      </sync>
+    </action> 
+    <action name="userAuthResponse" datasource="userAuth" datasourceevent="querycomplete"> 
+      <if lhs="[eval: JSON.parse('[datasource:userAuth.0.content]')['status']]" operator="!=" rhs="404">
+        <sync>
+         <!-- <alert message="[datasource:userAuth.0.content]" title="userID" />-->
+          <assign property="var:userID" value="[datasource:userAuth.0.content]" />
+          <if lhs="[var:newUserSetup]" operator="!=" rhs="1">
+            <assign property="datasource:userGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+          </if>
+          <if lhs="[var:newUserSetup]" operator="==" rhs="1">
+            <play action="userSetup" />
+          </if>
+        </sync>
+      </if>
+      <!-- if error -->
+      <if lhs="[eval: JSON.parse('[datasource:userAuth.0.content]')['status']]" operator="==" rhs="404">
+        <alert title="Error" message="The username and password you entered does not exist" />
+      </if>
+    </action>
+    <action name="userSetup">
+      <sync>
+        <assign property="var:userFirstName" value="[object:WELCOME/signUp/firstName.text]" />
+        <assign property="var:userLastName" value="[object:WELCOME/signUp/lastName.text]" />
+        <assign property="var:postContent" value="[template:crudUser.content]" />
+        <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
+        <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+        <alert message="[template:postBody.content] [var:userFirstName] [var:userLastName]" title="New User" />
+      </sync>
+    </action>
+    <action name="userGetResponse" datasource="userGet">
+      <assign property="var:username" value="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" />
+      <play action="dismiss-setup" />
+    </action>
+    <action name="userCreateResponse" datasource="userUpdate">
+      <assign property="var:username" value="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" />
+      <play action="dismiss-setup" />
+    </action>
+    <action name="dismiss-setup">
+      <sync>
+        <assign property="object:WRAPPER/toolbar/label.text" value="Hello [var:username]" />
+        <keyboard visible="no" target="WELCOME/signIn/password"/>
+        <keyboard visible="no" target="WELCOME/signIn/email"/>
+        <keyboard visible="no" target="WELCOME/signUp/password"/>
+        <keyboard visible="no" target="WELCOME/signUp/lastName"/>
+        <alpha value="0" time=".2" target="WELCOME" />
+        <alpha value="1" time="0" target="TODAYMODAL" />
+       <!-- <alert message="[var:username]" title="The User" />-->
+      </sync>
+    </action>
+    <action name="dismiss-today-modal">
+      <alpha value="0" time=".2" target="TODAYMODAL" />
+    </action>
+    <!-- 
+      Navigation 
+    -->
+    <action name="toggle-toc">
+      <sync>
+        <assign property="var:navStatus" value="[eval: '[var:navStatus]' == '1' ? '0' : '1']" />
+        <translate xpos="[eval: '[var:navStatus]' == '1' ? '80%' : '0%']" time=".3" target="WRAPPER" />
+        <alpha value="[eval: '[var:navStatus]' == '1' ? '.3' : '0']" time=".2" target="CURTAIN" />
+      </sync>
+    </action>
+    <action name="reveal-section">
+      <assign property="var:navStatus" value="0" />
+        <sync>
+          <translate xpos="100%" time=".3" target="WRAPPER" />
+          <translate xpos="100%" target="WRAPPER/[var:currentSection]" />
+          <play action="section-reset" _section="[var:currentSection]" />          
+          <assign property="var:currentSection" value="[object:name]" />
+          <play action="toolbar-prep" />
+          <alpha value="0" target="CURTAIN" />
+          <if lhs="[object:name]" operator="!=" rhs="Journal">
+            <translate xpos="0" target="WRAPPER/[var:currentSection]" />
+          </if>
+          <if lhs="[object:name]" operator="=" rhs="Journal">
+            <translate xpos="0" target="WRAPPER/Home" />
+            <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
+          </if>
+          <translate xpos="0" time=".3" target="WRAPPER" />
+        </sync>
+    </action>
+    <action name="toolbar-prep">
+      <assign property="object:WRAPPER/toolbar/label.text" value="[var:currentSection]" />
+      <if lhs="[var:currentSection]" operator="=" rhs="Home">
+        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+        <load source="graphics/icon-top-attach.png" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="lost" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Safety Plan">
+        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Care Team">
+        <alpha value="1" target="WRAPPER/toolbar/btn-right" />
+        <load source="graphics/" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="add-feature" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Journal">
+        <alpha value="1" target="WRAPPER/toolbar/btn-right" />
+        <load source="graphics/icon-top-journal.png" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="toggle-history" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Treatment Locator">
+        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Settings">
+        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Coping Techniques">
+        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Inspiration">
+        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="Assessment">
+        <alpha value="1" target="WRAPPER/toolbar/btn-right" />
+        <load source="graphics/" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
+      </if>
+      <if lhs="[var:currentSection]" operator="=" rhs="History">
+        <alpha value="1" target="WRAPPER/toolbar/btn-right" />
+        <load source="graphics/icon-top-compose.png" target="WRAPPER/toolbar/btn-right" />
+        <assign property="object:HOME/history/datebar/label.text" value="[eval: dateConverter('[eval:new Date().toUTCString();]','mmmm dS') ]" />
+        <set onclickup="toggle-history" target="WRAPPER/toolbar/btn-right" />
+      </if>
+    </action>
+    <action name="section-reset">
+      <translate ypos="100%" target="WRAPPER/Home/history" />
+      <translate ypos="100%" target="WRAPPER/Home/assessment" />
+      <translate ypos="100%" target="WRAPPER/Home/journal" />
+      <alpha value="1" target="HOME/feelingMeter/a" />
+      <alpha value="1" target="HOME/feelingMeter/b" />
+      <alpha value="1" target="HOME/feelingMeter/c" />
+      <alpha value="1" target="HOME/feelingMeter/d" />
+      <alpha value="1" target="HOME/feelingMeter/e" />
+    </action>
+    <action name="call-hotline">
+    	<load url="tel://816-555-5555" target="WEB"/>
+    </action>
+    <!-- toggle control -->
+    <action name="toggle-view">
+      <sync>
+        <assign property="object:background" value="#6d8693" />
+        <assign property="object:../@active.background" value="#819bad" />
+        <set onclickup="toggle-view" target="../@active" />
+        <set tostate="active" />
+        <set onclickup="null" />
+      </sync>
+      <if lhs="[var:currentSection]" operator="=" rhs="settings">
+        <alpha value="[eval: '_type' == 'account' ? '1' : '0']" target="SETTINGS-CONTAINER" />
+        <alpha value="[eval: '_type' == 'safety' ? '1' : '0']" target="SAFETY-CONTAINER" />
+      </if>
+      <if lhs="_type" operator="ne" rhs="">
+      	<alpha value="[eval: '_type' == 'Physical' ? '1' : '0']" target="PHYSICAL" />
+      	<alpha value="[eval: '_type' == 'Mental' ? '1' : '0']" target="MENTAL" />
+      	<alpha value="[eval: '_type' == 'Spiritual' ? '1' : '0']" target="SPIRITUAL" />
+      </if>
+    </action>
+    <!-- Journal -->
+    <action name="reveal-journal">
+      <sync>
+        <assign property="var:mood" value="[object:name]" />
+        <play action="set-mood" />
+        <if lhs="[var:currentSection]" operator="==" rhs="Home">
+          <sync>
+           <assign property="var:currentSection" value="Journal" />
+           <play action="toolbar-prep" />
+          </sync>
+          <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
+        </if>
+      </sync>
+    </action>
+    <action name="set-mood">
+      <sync>
+        <alpha value="[eval: '[var:mood]' != 'a' ? '.3' : '1']" target="HOME/feelingMeter/a" />
+        <alpha value="[eval: '[var:mood]' != 'b' ? '.3' : '1']" target="HOME/feelingMeter/b" />
+        <alpha value="[eval: '[var:mood]' != 'c' ? '.3' : '1']" target="HOME/feelingMeter/c" />
+        <alpha value="[eval: '[var:mood]' != 'd' ? '.3' : '1']" target="HOME/feelingMeter/d" />
+        <alpha value="[eval: '[var:mood]' != 'e' ? '.3' : '1']" target="HOME/feelingMeter/e" />
+      </sync>
+    </action>
+    <action name="toggle-assessment">
+      <sync>
+        <assign property="var:currentSection" value="[eval: '[var:currentSection]' != 'Journal' ? 'Journal' : 'Assessment']" />
+        <play action="toolbar-prep" />
+        <translate ypos="[eval: '[var:currentSection]' != 'Journal' ? '0' : '100%']" time=".2" target="WRAPPER/Home/assessment" />
+      </sync>
+    </action>
+    <action name="toggle-history">
+      <sync>
+        <assign property="var:currentSection" value="[eval: '[var:currentSection]' != 'Journal' ? 'Journal' : 'History']" />
+        <play action="toolbar-prep" />
+        <translate ypos="[eval: '[var:currentSection]' != 'Journal' ? '0' : '100%']" time=".2" target="WRAPPER/Home/history" />
+      </sync>
+    </action>
+    <!--assessment actions -->
+    <action name="active-sleep-item">
+    	<alert message="_active"/>
+    	<if lhs="_active" operator="ne" rhs="">
+    		<assign property="[object:OPTION-1.background]" value="ff0000" />
+    	</if>
+    </action>
+    <!-- paginate dots : activities -->
+    <action name="paginate">
+      <sync>
+        <assign property="object:COPINGTECHNIQUES/main/dots/@active/dot.background" value="#ffffff" />
+        <assign property="object:COPINGTECHNIQUES/main/dots/[object:name]/dot.background" value="#8fbf6b" />
+        <assign property="var:activities-pg" value="[object:name]" />
+        <set tostate="active" target="COPINGTECHNIQUES/main/dots/[var:activities-pg]" />
+      </sync>
+    </action>
+    <!-- next/previous in pager : generic -->
+    <action name="step">
+      <assign property="var:step" value="[object:name]" />
+      <scroll page="[eval: '[var:step]' == 'btn-prev' ? 'prev' : 'next']" target="_pager" />
+      <play action="step-buttons" />
+    </action>
+    <action name="step-buttons">
+      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/main.page] of 5_colon" />
+      <assign property="object:ASSESSSTEPS.text" value="[object:_aliasTarget/main.page] of 3" />
+      <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="1">
+        <alpha value="0" target="_aliasTarget/steps/btn-prev" />
+        <else>
+          <alpha value="1" target="_aliasTarget/steps/btn-prev" />
+        </else>
+      </if>
+      <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="5">
+        <alpha value="0" target="_aliasTarget/steps/btn-next" />
+        <else>
+          <alpha value="1" target="_aliasTarget/steps/btn-next" />
+        </else>
+      </if>
+
+    </action>
+    <action name="step-assess">
+      <assign property="var:step" value="[object:name]" />
+      <scroll page="[eval: '[var:step]' == 'btn-prev' ? 'prev' : 'next']" target="_pager" />
+      <play action="step-buttons-assessment" />
+    </action>
+    <action name="step-buttons-assessment">
+      <assign property="object:ASSESSSTEPS.text" value="[object:_aliasTarget/main.page] of 3" />
+      <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="1">
+        <alpha value="0" target="_aliasTarget/steps/btn-prev" />
+        <else>
+          <alpha value="1" target="_aliasTarget/steps/btn-prev" />
+        </else>
+      </if>
+      <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="3">
+        <alpha value="0" target="_aliasTarget/steps/btn-next" />
+        <else>
+          <alpha value="1" target="_aliasTarget/steps/btn-next" />
+        </else>
+      </if>
+
+    </action>
+    <!-- Home Filter when scrolling down -->
+    <action name="toggle-filter">
+      <sync>
+        <assign property="var:filterStatus" value="[eval: '[var:filterStatus]' != 'active' ? 'active' : 'inactive']" />
+        <translate ypos="[eval: '[var:filterStatus]' != 'active' ? '100%' : '[eval:[object:WRAPPER/Home.height] - [object:WRAPPER/Home/filter.height] ]']" time=".2" target="WRAPPER/Home/filter" />
+      </sync>
+    </action>
+
+
+
+    <action name="dismiss-keyboard">
+      <keyboard visible="no" />
+    </action>
+    <action name="null">
+    </action>
+    <action name="lost">
+      <alert title="Need" message="unclear of what action trigger here" />
+    </action>
+    <action name="add-feature">
+      <alert title="feature" message="will launch feature" />
+    </action>
+    
+    
+  </actions>
+</wire>
