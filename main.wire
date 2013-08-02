@@ -1,10 +1,12 @@
 <wire>
-  <datasources> 
+  <datasources>
     <httpheader name="header" Accept="application/json" Content-type="application/json" />
     <datasource name="userAuth" httpheader="header" source="" query="//" providertype="json" httpmethod="post"/>
     <datasource name="userGet" httpheader="header" source="" query="/" providertype="json" />
     <datasource name="userUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
-    <datasource name="body" source="" query="/" providertype="json" /> 
+    <datasource name="body" source="" query="/" providertype="json" />
+    <datasource name="geo" source="" query="/" providertype="json"/>
+ 
   </datasources>
 
   <texttemplate name="postBody"><![CDATA[[var:postContent]]]></texttemplate>
@@ -32,6 +34,10 @@
   </styles>
 
   <classes>
+    <class name="annotations">
+           <annotation name="location" _datasourceindex="[param:dataSourceIndex]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="[param:color]" animatedrop="yes">
+           </annotation>
+    </class>
     <class name="toc"> 
       <panel name="[param:section]" width="100%" height="50" onclickup="reveal-section">
           <panel name="wrapper" width="100%" height="100%" padding="10">
@@ -166,6 +172,22 @@
              <panel name="break" width="100%" height="1" background="333333" valign="bottom"></panel>
         </panel>
     </class>
+    <class name="create-mood-check">
+    	<panel name="moodcheck" alias="MOODCHECK" width="100%" height="164">
+	    	<text name="headline" height="44" width="100%" style="headline" text="How do I feel right now?" alignment="left" />
+	        <panel name="feeling-checkbox" width="100%" height="120" bottomof="headline">
+	          <panel name="row-1" alias="ROW1" width="100%" height="33.3%" >
+	          
+	          </panel>
+	          <panel name="row-2" alias="ROW2" width="100%" height="33.3%" bottomof="row-1">
+	          
+	          </panel>
+	          <panel name="row-3" alias="ROW3" width="100%" height="33.3%" bottomof="row-2">
+	            
+	          </panel>
+	        </panel>
+		</panel>
+    </class>
   </classes>
 
   <main>
@@ -239,21 +261,12 @@
             -->
             <panel name="journal" width="100%" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" ypos="100%" background="#ffffff">
               <pager name="main" height="85%" width="100%" padding-top="5" padding-left="10" padding-right="10" orientation="vertical" paginate="no">
-                <text name="headline" height="44" width="100%" style="headline" text="How do I feel right now?" alignment="left" />
-                <panel name="feeling-checkbox" width="100%" height="120">
-                  <panel name="row-1" width="100%" height="33.3%" >
-                    <object class="feeling-row"  col-1-label="Amused"  col-2-label="Hopeful" />
-                  </panel>
-                  <panel name="row-2" width="100%" height="33.3%" bottomof="row-1">
-                    <object class="feeling-row"  col-1-label="Calm"  col-2-label="Satisfied" />
-                  </panel>
-                  <panel name="row-3" width="100%" height="33.3%" bottomof="row-2">
-                    <object class="feeling-row"  col-1-label="Hopeful"  col-2-label="Other" />
-                  </panel>
+                <panel name="checkbox-block" alias="CHECKBLOCK" width="100%" height="164"> 
+	               
                 </panel>
-                <panel name="journalEntryTitle-wrapper" width="100%" height="64" >
+                <!--<panel name="journalEntryTitle-wrapper" width="100%" height="64" >
                   <textfield name="journalEntryTitle" width="100%" height="44" style="textfield" valign="center" placeholder="Journal Entry Title" />
-                </panel>
+                </panel>-->
                 <panel name="journalEntryBody-wrapper" width="100%" height="130">
                   <textfield name="journalEntryBody" width="80%" height="120" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" />
                   <image name="attach" source="graphics/icon-content-attach.png" align="right" valign="top" onclickup="journal-attach"></image>
@@ -262,9 +275,9 @@
                 <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
               </pager>
               <panel name="call-to-action" ypos="85%" height="15%" width="100%">
-                <panel name="col1" width="60%" height="100%">
+                <!--<panel name="col1" width="60%" height="100%">
                   <text name="assesment" height="100%" width="100%" text="Take Assessment" font="HelveticaNeue" color="#89b0bf" size="15" alignment="left" valign="bottom" leftinset="20" onclickup="toggle-assessment"/>
-                </panel>
+                </panel>-->
                 <panel name="col2" width="40%" height="100%" align="right">
                   <object class="button" text="Save" onclickup="null" />
                 </panel>
@@ -463,7 +476,9 @@
                 <text name="label" height="100%" width="85%" text="next" style="step-label" />
               </image>
             </panel>
-            <pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
+            <pager name="safetypager" alias="SAFETYPAGER" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
+              
+              <!--warning sign plan-->
               <panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
               	<pager name="warning-pager" alias="WARNINGPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
                   <text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question"></text>
@@ -472,6 +487,8 @@
                   <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
                 </pager>
               </panel>
+              
+              <!--inspiration plan-->
               <panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
                 <pager name="inspiration-pager" alias="INSPIRATIONPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
                   <text name="query" height="54" width="100%" align="left" text="What helps you take your mind of your problems?" style="step-question"></text>
@@ -480,6 +497,8 @@
                   <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
                 </pager> 
               </panel>
+              
+              <!--care team plan-->
               <panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
               	<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question"></text>
                 <panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
@@ -493,9 +512,11 @@
                  <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
                </pager> 
              </panel>
+             
+             <!--coping techniques plan-->
              <panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
                <panel name="coping-controls" height="44" width="100%" background="#819bad">
-                <text name="support" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
+                <text name="support" alias="P" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
                 <text name="clinical" height="100%" width="33.33%" text="Mental" _type="Mental" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
                 <text name="urgent" height="100%" width="33.33%" text="Spiritual" _type="Spiritual" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
               </panel>
@@ -525,6 +546,8 @@
                 <object class="add-coping-row" textfield="cope-entry1"/>
               </pager>
             </panel>
+            
+            <!--safe environments plan-->
             <panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
              <pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
                <text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question"></text>
@@ -544,7 +567,9 @@
               <image name="clear" source="graphics/icon.delete.png" valign="center" align="right"></image>
               </textfield>
             </panel>
-            <map name="main" alias="MAP" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom"/>
+            <map name="main" alias="MAP"  datasource="geo" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
+            	 <object name="local" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT][param:LOC_LONG]" title="[param:ORG_NAME]" subtitle="[param:SITE_NAME]" color="green"/>
+            </map>
           </panel>
           <!-- 
           Settings/Profile Screen
@@ -584,7 +609,7 @@
         <panel name="welcome" alias="WELCOME" width="100%" height="100%" background="#e1e1e1">
           <text name="intro" height="44" width="100%" text="Welcome" font="HelveticaNeue-Bold" size="15" alignment="center" margin-top="10" />
           <panel name="signIn" width="100%" height="100%" bottomof="intro" background="#e1e1e1">
-            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="j@z.com" />
+            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="icahill@rarewire.com" />
             <textfield name="password" alias="PASSWORD" height="44" width="80%" placeholder="password" bottomof="email" align="center" password="yes" style="textfield" text="1234" />
             <text name="button" height="44" width="80%" text="Sign In" font="HelveticaNeue"  size="15" alignment="center" bottomof="password" margin-top="10" background="#ff0000" onclickup="signIn" align="center"/>
             <text name="label" height="44" width="100%" text="Need an Account?" font="HelveticaNeue" color="#000000" size="13" alignment="center" bottomof="button" margin-top="10" onclickup="toggle-signUp" />
@@ -647,7 +672,7 @@
         <assign property="datasource:body.removeIndex" value="1" />
         <assign property="datasource:body.add" value="{ 
           &quot;username&quot;: &quot;[object:WELCOME/signUp/email.text]&quot;,
-          &quot;email&quot;: &quot;[object:WELCOME/signUp/password.text]&quot;
+          &quot;password&quot;: &quot;[object:WELCOME/signUp/password.text]&quot;
           }"/>
         <assign property="datasource:body.event" value="querycomplete"/>
         <assign property="var:postContent" value="[datasource:body.1.content]" />
@@ -684,12 +709,14 @@
         <alert message="[template:postBody.content] [var:userFirstName] [var:userLastName]" title="New User" />
       </sync>
     </action>
-    <action name="userGetResponse" datasource="userGet">
+    <action name="userGetResponse" datasource="userGet"> <!-- retreiving a current user info -->
       <assign property="var:username" value="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" />
+      <alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />
       <play action="dismiss-setup" />
     </action>
-    <action name="userCreateResponse" datasource="userUpdate">
+    <action name="userCreateResponse" datasource="userUpdate"> <!-- used to get a new users info -->
       <assign property="var:username" value="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" />
+      <alert title="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" message="[datasource:userUpdate.0.content] " />
       <play action="dismiss-setup" />
     </action>
     <action name="dismiss-setup">
@@ -732,6 +759,15 @@
           <if lhs="[object:name]" operator="=" rhs="Journal">
             <translate xpos="0" target="WRAPPER/Home" />
             <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
+          </if>
+          <if lhs="[object:name]" operator="e" rhs="Safety Plan">
+          	<scroll page="1" target="SAFETYPAGER"/>
+          </if>
+          <if lhs="[object:name]" operator="e" rhs="Treatment Locator">
+          	 <sync >
+          	 <assign property="datasource:geo.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
+          	 <alert message="[datasource:geo.0.content]"/>
+          	 </sync>
           </if>
           <translate xpos="0" time=".3" target="WRAPPER" />
         </sync>
@@ -828,7 +864,7 @@
           </sync>
           <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
         </if>
-      </sync>
+              </sync>
     </action>
     <action name="set-mood">
       <sync>
@@ -838,6 +874,51 @@
         <alpha value="[eval: '[var:mood]' != 'd' ? '.3' : '1']" target="HOME/feelingMeter/d" />
         <alpha value="[eval: '[var:mood]' != 'e' ? '.3' : '1']" target="HOME/feelingMeter/e" />
       </sync>
+      <if lhs="[var:mood]" operator="e" rhs="a">
+        	<sync loop="no" startdelay="0">
+	        	<delete target="MOODCHECK"/>
+	        	<create class="create-mood-check" target="CHECKBLOCK"/>
+	        	<create class="feeling-row"  col-1-label="Angry"  col-2-label="Fearful" target="ROW1"/>
+	        	<create class="feeling-row"  col-1-label="Frustrated"  col-2-label="Hostile" target="ROW2"/>
+	        	<create class="feeling-row"  col-1-label="Hyper"  col-2-label="Other" target="ROW3"/>
+	        </sync>
+        </if>
+        <if lhs="[var:mood]" operator="e" rhs="b">
+        	<sync loop="no" startdelay="0">
+	        	<delete target="MOODCHECK"/>
+	        	<create class="create-mood-check" target="CHECKBLOCK"/>
+	        	<create class="feeling-row"  col-1-label="Anxious"  col-2-label="Ashamed" target="ROW1"/>
+	        	<create class="feeling-row"  col-1-label="Cranky"  col-2-label="Lonely" target="ROW2"/>
+	        	<create class="feeling-row"  col-1-label="Sleepy"  col-2-label="Other" target="ROW3"/>
+	        </sync>
+        </if>
+        <if lhs="[var:mood]" operator="e" rhs="c">
+        	<sync loop="no" startdelay="0">
+	        	<delete target="MOODCHECK"/>
+	        	<create class="create-mood-check" target="CHECKBLOCK"/>
+	        	<create class="feeling-row"  col-1-label="Blah"  col-2-label="Bored" target="ROW1"/>
+	        	<create class="feeling-row"  col-1-label="Calm"  col-2-label="Lazy" target="ROW2"/>
+	        	<create class="feeling-row"  col-1-label="Numb"  col-2-label="Other" target="ROW3"/>
+	        </sync>
+        </if>
+        <if lhs="[var:mood]" operator="e" rhs="d">
+        	<sync loop="no" startdelay="0">
+	        	<delete target="MOODCHECK"/>
+	        	<create class="create-mood-check" target="CHECKBLOCK"/>
+	        	<create class="feeling-row"  col-1-label="Alert"  col-2-label="Attentive" target="ROW1"/>
+	        	<create class="feeling-row"  col-1-label="Determined"  col-2-label="Pleased" target="ROW2"/>
+	        	<create class="feeling-row"  col-1-label="Upbeat"  col-2-label="Other" target="ROW3"/>
+	        </sync>
+        </if>
+        <if lhs="[var:mood]" operator="e" rhs="e">
+        	<sync loop="no" startdelay="0">
+	        	<delete target="MOODCHECK"/>
+	        	<create class="create-mood-check" target="CHECKBLOCK"/>
+	        	<create class="feeling-row"  col-1-label="Alert"  col-2-label="Confident" target="ROW1"/>
+	        	<create class="feeling-row"  col-1-label="Enthusiastic"  col-2-label="Happy" target="ROW2"/>
+	        	<create class="feeling-row"  col-1-label="Rested"  col-2-label="Other" target="ROW3"/>
+	        </sync>
+      	</if>
     </action>
     <action name="toggle-assessment">
       <sync>
@@ -876,7 +957,7 @@
       <play action="step-buttons" />
     </action>
     <action name="step-buttons">
-      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/main.page] of 5_colon" />
+      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/safetypager.page] of 5_colon" />
       <assign property="object:ASSESSSTEPS.text" value="[object:_aliasTarget/main.page] of 3" />
       <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="1">
         <alpha value="0" target="_aliasTarget/steps/btn-prev" />
