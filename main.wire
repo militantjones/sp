@@ -631,10 +631,10 @@
           <text name="headline" height="33%" width="100%" font="HelveticaNeue-Bold" size="30" alignment="center" color="#8fbf6b" text="How are you today?" />
           <panel name="button-container" width="100%" height="33.3%" valign="center">
             <panel name="1" width="100%" height="33.3%">
-              <object class="buttonWithIcon" text="Call the Hotline" icon="icon-entry-hotline.png" onclickup="null" />
+              <object class="buttonWithIcon" text="Call the Hotline" icon="icon-entry-hotline.png" onclickup="call-hotline" />
             </panel>
             <panel name="2" width="100%" height="33.3%" valign="center">
-              <object class="buttonWithIcon" text="Find a Treatment Location" icon="icon-entry-locator.png" onclickup="null" />
+              <object class="buttonWithIcon" text="Find a Treatment Location" icon="icon-entry-locator.png" onclickup="reveal-location" />
             </panel>
             <panel name="3" width="100%" height="33.3%" valign="bottom">
               <object class="buttonWithIcon" text="Continue" icon="icon-entry-continue.png" onclickup="dismiss-today-modal" />
@@ -833,6 +833,25 @@
     <action name="call-hotline">
     	<load url="tel://816-555-5555" target="WEB"/>
     </action>
+    <action name="reveal-location">
+    	<assign property="var:navStatus" value="0" />
+        <sync>
+          <translate xpos="100%" time=".3" target="WRAPPER" />
+          <translate xpos="100%" target="WRAPPER/Treatment Locator" />
+          <play action="section-reset" _section="Treatment Locator" />          
+          <assign property="var:currentSection" value="Treatment Locator" />
+          <play action="toolbar-prep" />
+          <alpha value="0" target="CURTAIN" />
+          <translate xpos="0" target="WRAPPER/Treatment Locator" />
+          <sync>
+          	 <assign property="datasource:geo.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
+          	 <alert message="[datasource:geo.0.content]"/>
+          </sync>
+          <translate xpos="0" time=".3" target="WRAPPER" />
+        </sync>
+        <play action="dismiss-today-modal" />
+    	
+    </action>
     <!-- toggle control -->
     <action name="toggle-view">
       <sync>
@@ -864,7 +883,7 @@
           </sync>
           <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
         </if>
-              </sync>
+      </sync>
     </action>
     <action name="set-mood">
       <sync>
