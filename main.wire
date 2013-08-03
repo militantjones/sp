@@ -41,6 +41,10 @@
   </styles>
 
   <classes>
+    <class name="annotations">
+           <annotation name="location" _datasourceindex="[param:dataSourceIndex]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="[param:color]" animatedrop="yes">
+           </annotation>
+    </class>
     <class name="toc"> 
       <panel name="[param:section]" width="100%" height="50" onclickup="reveal-section">
           <panel name="wrapper" width="100%" height="100%" padding="10">
@@ -482,7 +486,9 @@
                 <text name="label" height="100%" width="85%" text="next" style="step-label" />
               </image>
             </panel>
-            <pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
+            <pager name="safetypager" alias="SAFETYPAGER" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
+              
+              <!--warning sign plan-->
               <panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
               	<pager name="warning-pager" alias="WARNINGPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
                   <text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question"></text>
@@ -491,6 +497,8 @@
                   <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
                 </pager>
               </panel>
+              
+              <!--inspiration plan-->
               <panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
                 <pager name="inspiration-pager" alias="INSPIRATIONPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
                   <text name="query" height="54" width="100%" align="left" text="What helps you take your mind of your problems?" style="step-question"></text>
@@ -499,6 +507,8 @@
                   <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
                 </pager> 
               </panel>
+              
+              <!--care team plan-->
               <panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
               	<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question"></text>
                 <panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
@@ -512,9 +522,11 @@
                  <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
                </pager> 
              </panel>
+             
+             <!--coping techniques plan-->
              <panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
                <panel name="coping-controls" height="44" width="100%" background="#819bad">
-                <text name="support" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
+                <text name="support" alias="P" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
                 <text name="clinical" height="100%" width="33.33%" text="Mental" _type="Mental" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
                 <text name="urgent" height="100%" width="33.33%" text="Spiritual" _type="Spiritual" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
               </panel>
@@ -544,6 +556,8 @@
                 <object class="add-coping-row" textfield="cope-entry1"/>
               </pager>
             </panel>
+            
+            <!--safe environments plan-->
             <panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
              <pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
                <text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question"></text>
@@ -564,7 +578,7 @@
               </textfield>
             </panel>
             <map name="main" alias="MAP" datasource="locator" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
-              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" subtitle="[param:LOC_STREET_1]" />
+              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" 
             </map>
           </panel>
           <!-- 
@@ -627,10 +641,10 @@
           <text name="headline" height="33%" width="100%" font="HelveticaNeue-Bold" size="30" alignment="center" color="#8fbf6b" text="How are you today?" />
           <panel name="button-container" width="100%" height="33.3%" valign="center">
             <panel name="1" width="100%" height="33.3%">
-              <object class="buttonWithIcon" text="Call the Hotline" icon="icon-entry-hotline.png" onclickup="null" />
+              <object class="buttonWithIcon" text="Call the Hotline" icon="icon-entry-hotline.png" onclickup="call-hotline" />
             </panel>
             <panel name="2" width="100%" height="33.3%" valign="center">
-              <object class="buttonWithIcon" text="Find a Treatment Location" icon="icon-entry-locator.png" onclickup="null" />
+              <object class="buttonWithIcon" text="Find a Treatment Location" icon="icon-entry-locator.png" onclickup="reveal-location" />
             </panel>
             <panel name="3" width="100%" height="33.3%" valign="bottom">
               <object class="buttonWithIcon" text="Continue" icon="icon-entry-continue.png" onclickup="dismiss-today-modal" />
@@ -758,8 +772,14 @@
             <translate xpos="0" target="WRAPPER/Home" />
             <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
           </if>
-          <if lhs="[object:name]" operator="=" rhs="Treatment Locator">
-            <assign property="datasource:locator.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
+          <if lhs="[object:name]" operator="e" rhs="Safety Plan">
+          	<scroll page="1" target="SAFETYPAGER"/>
+          </if>
+          <if lhs="[object:name]" operator="e" rhs="Treatment Locator">
+          	 <sync >
+          	 <assign property="datasource:geo.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
+          	 <alert message="[datasource:geo.0.content]"/>
+          	 </sync>
           </if>
           <translate xpos="0" time=".3" target="WRAPPER" />
         </sync>
@@ -827,7 +847,24 @@
     </action>
     <action name="map-check" datasource="locator">
       <alert title="[object:MAP.gpslatitude],[object:MAP.gpslongitude]" message="[datasource:locator.0.content]" />
-
+    </action
+    <action name="reveal-location">
+    	<assign property="var:navStatus" value="0" />
+        <sync>
+          <translate xpos="100%" time=".3" target="WRAPPER" />
+          <translate xpos="100%" target="WRAPPER/Treatment Locator" />
+          <play action="section-reset" _section="Treatment Locator" />          
+          <assign property="var:currentSection" value="Treatment Locator" />
+          <play action="toolbar-prep" />
+          <alpha value="0" target="CURTAIN" />
+          <translate xpos="0" target="WRAPPER/Treatment Locator" />
+          <sync>
+          	 <assign property="datasource:geo.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
+          	 <alert message="[datasource:geo.0.content]"/>
+          </sync>
+          <translate xpos="0" time=".3" target="WRAPPER" />
+        </sync>
+        <play action="dismiss-today-modal" />
     </action>
     <!-- toggle control -->
     <action name="toggle-view">
@@ -953,7 +990,7 @@
       <play action="step-buttons" />
     </action>
     <action name="step-buttons">
-      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/main.page] of 5_colon" />
+      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/safetypager.page] of 5_colon" />
       <assign property="object:ASSESSSTEPS.text" value="[object:_aliasTarget/main.page] of 3" />
       <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="1">
         <alpha value="0" target="_aliasTarget/steps/btn-prev" />
