@@ -1,5 +1,5 @@
 <wire>
-<!-- Marty's version -->
+<!-- Marty's version 2 -->
 <!--IAN's Version-->
   <datasources>
     <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
