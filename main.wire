@@ -1,4 +1,8 @@
 <wire>
+<<<<<<< HEAD
+=======
+<!-- Marty's version -->
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
 <!--IAN's Version-->
   <datasources>
     <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
@@ -20,6 +24,9 @@
     <datasource name="userGet" httpheader="header" source="" query="/" providertype="json" />
     <datasource name="userUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
     
     <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
@@ -29,6 +36,7 @@
     
     <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
+<<<<<<< HEAD
 =======
     <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
     <datasource name="locator" source="" query="/" providertype="json" />
@@ -42,6 +50,15 @@
     <datasource name="locator" source="" query="/" providertype="json" />
     <datasource name="body" source="" query="//" providertype="json" /> 
   </datasources>
+=======
+
+    <datasource name="postInspire" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
+    <datasource name="InspireGet" httpheader="header" source="" query="/" providertype="json" />
+    
+    <datasource name="locator" source="" query="/" providertype="json" />
+    <datasource name="body" source="" query="//" providertype="json" /> 
+  </datasources>
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
  
   <texttemplate name="postBody"><![CDATA[[var:postContent]]]></texttemplate>
   
@@ -60,6 +77,7 @@
                                             "devices":[{ "name": "johnnyS3", "model": "Galaxy S3", "carrier": "ATT", "pushId": "[system:pushtoken]", 
                                             "prefs": { "arbitraryDeviceSpecificPrefName": "prefValue", "anotherDevicePrefName": "anotherPrefValue" }}]
                                             } ]]></texttemplate>
+<<<<<<< HEAD
 <<<<<<< HEAD
   <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
                                                 "mood": {
@@ -196,13 +214,147 @@
   
 =======
   <texttemplate name="crudActivity"><![CDATA[ { "profile": "51d31a168ae0d6cb305aa983",
+=======
+  <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
                                                 "mood": {
-                                                        "level": 5,
-                                                        "description": "happy"
+                                                        "level": "[var:mood]",
+                                                        "description": "[var:feeling]"
                                                      },
+<<<<<<< HEAD
                                                 "content": "[var:currentActivityBody]",
                                               } ]]></texttemplate>                                      
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+                                                "content": "[var:currentActivityBody]"
+                                              } ]]></texttemplate>   
+  <texttemplate name="crudInspire"><![CDATA[   {
+					    "profile": "[var:userID]",
+					    "photos":
+					        [
+					            {
+					                "label": "test",
+					                "notes": "test notes",
+					                "media": "https://samhsa.carewave.net/edm-mobile/rs/crud/blob/[var:photoID]"                
+					            }
+					                    ],
+					    "locations":
+					        [
+					            {
+					                "label": "",
+					                "notes": "",
+					                "media": "",                
+					                "loc":
+					                    {
+					                        "lat": 0,
+					                        "lng": 0
+					                    }
+					            }
+					        ],
+					    "quotes":
+					        [
+					            {
+					                "text": "[var:inspire-quote]",
+					                "link": "",
+					                "media": ""
+					            }
+					        ],
+					    "articles":
+					        [
+					            {
+					                "title": "",
+					                "summary": "",
+					                "link": "",
+					                "notes": ""
+					            },
+					            {
+					                "title": "",
+					                "summary": "",
+					                "link": "",
+					                "notes": ""
+					            }
+					        ],
+					    "driver":
+					        {
+					            "label": "",
+					            "notes": "",
+					            "media": ""                
+					        }
+					} 
+  												
+ 												]]></texttemplate>  
+ 		<texttemplate name="crudPlan"><![CDATA[ 
+ 											    {
+						       "id": "51d321e28ae0d6cb305aa984",
+						       "profile": "51d31a168ae0d6cb305aa983",
+						       "created": "2013-07-03T13:48:10-0500",
+						       "updated": "2013-07-04T13:48:10-0500",
+       
+						       "warnings":
+								[
+									{
+									"label": "drug cravings",
+									"type": "Other",
+									"notes": "Free-form user-entered notes about cravings.",
+									"loc":
+									    {
+									        "lat": 38.92761,
+									        "lng": -94.642759
+									    },						   
+									"media": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e"
+									               },
+									               {
+				                   "label": "feeling anxious",
+				                   "type": "Mood",
+				                   "notes": "Free-form user-entered notes about anxiety."
+								} ],
+							 
+							  "inspiration":
+						           [
+						               {
+						                   "label": "my grandfather",
+						                   "type": "Person",
+						                   "notes": "Free-form user-entered notes about grandfather.",
+						                   "loc":
+						                       {
+						                           "lat": 38.92761,
+						                           "lng": -94.642759
+						                       },
+						                   "media": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e"
+						               },
+												                {
+						                   "label": "being outdoors",
+						                   "type": "Activity",
+						                   "notes": "Free-form user-entered notes about the outdoors.",
+						                   "loc":
+												{
+												    "lat": 38.92761,
+												    "lng": -94.642759
+												}
+																						
+										} ],
+										
+										"techniques":
+										    {
+										    "physical":
+										        [
+										            "Remove yourself from the situation",
+										            "Call positivie influencer"
+										        ],
+										"mental":
+										        [
+										            "Think happy thoughts"
+										        ],
+										    "spiritual":
+										        [
+										            "Pray for peace"
+										] }
+										}						
+ 											    ]]></texttemplate>                                                                                
+  
+  
+  
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
   <styles>
     <style name="textfield" font="helvetica" size="15" color="#000000" alignment="left" valignment="center" border="line" margin-top="10" background="#ffffff" leftinset="5" onreturnkeypressed="dismiss-keyboard"  />
     <style name="headline" font="HelveticaNeue-Bold" color="#8fbf6b" size="15" /> <!-- green text -->
@@ -374,6 +526,9 @@
       <annotation name="[param:location]" alias="[param:location]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="red" animateddrop="no" ></annotation>
     </class>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
     		<!-- !Camera -->
             <class name="camera">
                   <camera name="camera" alias="CAMERA-OBJECT" height="100%" width="100%" face="[param:face]" type="video" valign="bottom"></camera>
@@ -456,8 +611,11 @@
 		        </panel>
 	        </panel>
         </class>
+<<<<<<< HEAD
 =======
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
   </classes>
 
   <main>
@@ -548,6 +706,9 @@
                   <text name="assesment" height="100%" width="100%" text="Take Assessment" font="HelveticaNeue" color="#89b0bf" size="15" alignment="left" valign="bottom" leftinset="20" onclickup="toggle-assessment"/>
                 </panel>-->
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
                 	<panel name="col2" width="40%" height="100%" align="right">
                   		<object class="button" text="Save" onclickup="post-activity" />
                 	</panel>
@@ -555,12 +716,15 @@
               	<panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
               </pager>
               
+<<<<<<< HEAD
 =======
                 <panel name="col2" width="40%" height="100%" align="right">
                   <object class="button" text="Save" onclickup="post-activity" />
                 </panel>
               </panel>
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
             </panel>
   <!-- 
       assessment view / triggered off the assesment link located in call-to-action of journal/main/call-to-action 
@@ -853,10 +1017,14 @@
             </panel>
             <map name="main" alias="MAP" datasource="locator" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
 <<<<<<< HEAD
+<<<<<<< HEAD
               <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" subtitle="[param:LOC_STREET_1]" />
 =======
               <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" 
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" subtitle="[param:LOC_STREET_1]" />
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
             </map>
           </panel>
           <!-- 
@@ -984,6 +1152,7 @@
       <assign property="var:ActivityID" value="[datasource:postActivity.1.id]" />
 <!--       <alert message="https://go.urbanairship.com/api/device_tokens/[system:pushtoken]"/> -->
       
+<<<<<<< HEAD
     </action>
     <action name="notification" datasource="pushlistener">
        <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/>
@@ -995,6 +1164,19 @@
     <action name="pusherror" datasource="PushRegister" datasourceevent="datasourceerror">
     	<alert message="ERR [datasource:PushRegister.0.content]"/>
     </action>
+=======
+    </action>
+    <action name="notification" datasource="pushlistener">
+       <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/>
+   	</action>
+   <!--
+ <action name="pushreg" datasource="PushRegister" datasourceevent="querycomplete">
+    	<alert message="[datasource:PushRegister.0.content]"/>
+    </action>
+    <action name="pusherror" datasource="PushRegister" datasourceevent="datasourceerror">
+    	<alert message="ERR [datasource:PushRegister.0.content]"/>
+    </action>
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
 -->
     <action name="toggle-signUp">
       <assign property="var:signUp-status" value="[eval: '[var:signUp-status]' != '1' ? '1' : '0']" />
@@ -1182,6 +1364,7 @@
     	<load url="tel://816-555-5555" target="WEB"/>
     </action>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <action name="reveal-location">
 =======
     <action name="map-check" datasource="locator">
@@ -1189,6 +1372,9 @@
     </action
     <action name="reveal-location">
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+        <action name="reveal-location">
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
     	<assign property="var:navStatus" value="0" />
         <sync>
           <translate xpos="100%" time=".3" target="WRAPPER" />
@@ -1205,6 +1391,7 @@
           <translate xpos="0" time=".3" target="WRAPPER" />
         </sync>
         <play action="dismiss-today-modal" />
+    	
     </action>
     <!-- toggle control --> 
     <action name="toggle-view">
@@ -1245,8 +1432,11 @@
     </action>
     <action name="journal-share">
     	<email subject="Share Journal Entry" body="This message is from [datasource:userGet.1.name]\n\n [object:CURRENTACTIVITYBODY.text]" />
+<<<<<<< HEAD
 =======
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
     </action>
     
     <action name="set-mood">
@@ -1434,10 +1624,14 @@
         <assign property="var:postContent" value="[template:crudActivity.content]" />
         <assign property="datasource:postActivity.postContent" value="[template:postBody.content]" />
 <<<<<<< HEAD
+<<<<<<< HEAD
         <assign property="datasource:postActivity.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/" />
 =======
         <assign property="datasource:postActivity.datasource" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/[var:userID]" />
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+        <assign property="datasource:postActivity.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/" />
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
         <alert title="pre-submission" message="[template:postBody.content]" />
       </sync>
     </action>
@@ -1445,9 +1639,13 @@
     <action name="journaltest" datasource="postActivity" datasourceevent="querycomplete">
       <alert title="post" message="[datasource:postActivity.0.content]" />
 <<<<<<< HEAD
+<<<<<<< HEAD
       <assign property="var:ActivityID" value="[datasource:postActivity.1.id]" />
 =======
 >>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
+=======
+      <assign property="var:ActivityID" value="[datasource:postActivity.1.id]" />
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
     </action>
 
 
@@ -1505,6 +1703,7 @@
             </sync>
         </if>
     </action>
+<<<<<<< HEAD
     
     <action name="startBuild">
         <sync>
@@ -1582,6 +1781,85 @@
           <set onclickup="take-photo" target="CAMERA/toolbar/shutter" />
     </action>
     
+=======
+    
+    <action name="startBuild">
+        <sync>
+              <if lhs="[var:photoTotal]" operator="e" rhs="2">
+                    <create class="rollRow3" target="CAMERA-ROLL/roll" index="[var:photoCount]" imagea="[datasource:photos.[var:photoCount].url]" imageb="[datasource:photos.[eval: [var:photoCount] + 1].url]" />
+                      <translate ypos="100%" time=".3" curve="easeout" target="ROLL-WAIT" />
+              </if>
+              <if lhs="[var:photoTotal]" operator="e" rhs="1">
+                    <create class="rollRow3" target="CAMERA-ROLL/roll" index="[var:photoCount]" imagea="[datasource:photos.[var:photoCount].url]" />
+                      <translate ypos="100%" time=".3" curve="easeout" target="ROLL-WAIT" />
+              </if>
+              <if lhs="[var:photoTotal]" operator="gte" rhs="3">
+                    <create class="rollRow3" target="CAMERA-ROLL/roll" index="[var:photoCount]" imagea="[datasource:photos.[var:photoCount].url]" imageb="[datasource:photos.[eval: [var:photoCount] + 1].url]" imagec="[datasource:photos.[eval: [var:photoCount] + 2].url]" />
+                    <assign property="var:photoTotal" value="[eval: [var:photoTotal] - 3]" />
+                    <assign property="var:photoCount" value="[eval: [var:photoCount] + 3]" />
+                    <play action="startBuild" />
+              </if>
+              <if lhs="[var:photoTotal]" operator="e" rhs="0">
+                      <translate ypos="100%" time=".3" curve="easeout" target="ROLL-WAIT" />
+              </if>
+        </sync>
+    </action>
+	<action name="select-rollPhoto">
+		<sync>
+			<if lhs="[var:rollRow]" operator="!=" rhs="">
+			      <alpha value="0" time=".1" target="CAMERA-ROLL/roll/[var:rollRow]/[var:rollCol]/imageCrop/check" />
+			</if>
+			<assign property="var:rollRow" value="_row" />
+			<assign property="var:rollCol" value="_column" />
+			<alpha value="1" time=".1" target="CAMERA-ROLL/roll/[var:rollRow]/[var:rollCol]/imageCrop/check" />
+            <load asset="[datasource:photos._assetIndex.url]" target="CAMERA/lens/photo/box/asset" />
+            <if lhs="[var:cam]" operator="ne" rhs="camera">
+                      <alpha value="1" target="CAMERA/lens/photo/box/asset" />
+                </if>
+                <capture target="CAMERA/lens/photo/box" tofile="photo2.png" />
+                <play action="photo-saved" />
+		</sync>
+	</action>
+	<action name="photo-saved" >
+          <alert message="image saved. [file:photo2.png]"/>
+          <assign property="datasource:uploadPhoto.postFile" value="photo2.png"/>
+          <assign property="datasource:uploadPhoto.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/blob/"/>
+          <if lhs="[var:cam]" operator="ne" rhs="camera">
+                <alpha value="0" target="CAMERA/lens/photo/box/asset" />
+          </if>
+          
+    </action>
+    <action name="photouploaded" datasource="uploadPhoto" datasourceevent="querycomplete">
+    	<assign property="var:photoID" value="[datasource:uploadPhoto.1.id]" />
+    	<alert title="stored variable" message="[var:photoID]"/>
+    	<play action="post-inspire" />
+    </action>
+    <action name="photouploaded" datasource="uploadPhoto" datasourceevent="datasourceerror">
+    	<alert message="ERROR [datasource:uploadPhoto.0.content]"/>
+    </action>
+
+	<action name="camera-flip">
+          <sync>
+                <delete target="CAMERA-OBJECT" />
+                <create class="camera" target="CAMERA/lens/photo/box" face="[eval: '[var:face]' == 'front' ? 'back' : 'front' ]" />
+                <assign property="var:face" value="[eval: '[var:face]' == 'front' ? 'back' : 'front' ]" />
+          </sync>
+	</action>
+	
+    <action name="take-photo" >
+          <event type="pausePreview" target="CAMERA-OBJECT" />
+          <set onclickup="unfreeze" target="CAMERA/toolbar/shutter" />
+    </action>
+    <action name="commit-photo">
+    	 <capture target="CAMERA/lens/photo/box" tofile="photo2.png" />
+          <play action="photo-saved" />
+    </action>
+    <action name="unfreeze" >
+		<event type="resumePreview" target="CAMERA-OBJECT" />
+          <set onclickup="take-photo" target="CAMERA/toolbar/shutter" />
+    </action>
+    
+>>>>>>> 0ed11cdee45aa8ad30090fad50f8af830ff9f16e
 <!-- Inspire Post -->       
     <action name="post-inspire"> 
 	 	 <sync>
