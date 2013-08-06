@@ -1,31 +1,191 @@
 <wire>
+<!--IAN's Version-->
   <datasources>
+    <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
+    <datasource name="saved-coping" source="sql://cope" query="SELECT * FROM COPE ORDER BY ID DESC;" providertype="sql"/>
+
+
+	<httpheader name="uploadHeader" Accept="application/json" Content-Type="image/png"  />
     <httpheader name="header" Accept="application/json" Content-type="application/json" />
+    
+    <httpheader name="pushHeader" Authorization="Basic c3M1TnpNeTNRMmF5eElIRVVOOTZpQTpFVFJSMGxuX1E1LVZFbDF0R1ZLNVpn" ></httpheader>
+    <datasource name="PushRegister" httpheader="pushHeader" source="" query="/" providertype="json" httpmethod="put"/>
+    <datasource name="pushlistener" source="" query="" providertype="push"/>
+    
+    
+	<datasource name="photos" source="" query="Camera Roll" providertype="camera" querycomplete="buildPhotos"/> 
+    <datasource name="uploadPhoto" httpmethod="post" source="" query="/" providertype="json" httpheader="uploadHeader" urlcacheduration="1"/>
+
     <datasource name="userAuth" httpheader="header" source="" query="//" providertype="json" httpmethod="post"/>
     <datasource name="userGet" httpheader="header" source="" query="/" providertype="json" />
     <datasource name="userUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
-    <datasource name="body" source="" query="/" providertype="json" />
-    <datasource name="geo" source="" query="/" providertype="json"/>
- 
-  </datasources>
+    
+    <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
+    <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
+    
+    <datasource name="postWarnings" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
+    <datasource name="WarningGet" httpheader="header" source="" query="/" providertype="json" />
+    
+    <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
+    <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
 
+    <datasource name="postInspire" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
+    <datasource name="InspireGet" httpheader="header" source="" query="/" providertype="json" />
+    
+    <datasource name="locator" source="" query="/" providertype="json" />
+    <datasource name="body" source="" query="//" providertype="json" /> 
+  </datasources>
+ 
   <texttemplate name="postBody"><![CDATA[[var:postContent]]]></texttemplate>
-  <texttemplate name="crudUser"><![CDATA[ { "id": "51d31a168ae0d6cb305aa983", "created": "2013-07-03T13:48:10-0500", "updated": "2013-07-04T13:48:10-0500",
+  
+
+  <texttemplate name="crudUser"><![CDATA[ { "id": "[var:userID]",
                                             "name": { "first": "[var:userFirstName]", "middle": "Q.", "last": "[var:userLastName]", "display": "Johnny Q." },
-                                            "facebook": { "user": "johnnyq555","token": "abc123def456g789fed0bca", "authenticated": "2013-07-04T13:48:10-0500" },
-                                            "birth": "1950-12-24",
-                                            "email": "johnnyq555@gmail.com",
+                                            "email": "[var:userEmail]",
                                             "phone": "816-555-1234",
                                             "prefer": "text|email",
                                             "home": { "street": ["4950 College Blvd"],"city": "Overland Park","state": "KS", "zip": "66211", 
                                             "loc": { "lat": 38.92761, "lng": -94.642759 } },
-                                            "plan": "51d49fb730048aefbf66ce4e",
-                                            "team": "51d49fb730048aefbf66ce4e",
-                                            "inspiration": "51d49fb730048aefbf66ce4e",
+                                            "plan": "[var:userPlan]",
+                                            "team": "[var:userTeam]",
+                                            "inspiration": "[var:userInspiration]",
                                             "genPrefs": { "appBackgroundImage": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e", "arbitraryPrefAttributeName": "arbitraryPrefAttributeValue", "anotherArbitraryPref": "anotherPrefValue" },
-                                            "devices":[{ "name": "johnnyS3", "model": "Galaxy S3", "carrier": "ATT", "pushId": "1234abcd", 
+                                            "devices":[{ "name": "johnnyS3", "model": "Galaxy S3", "carrier": "ATT", "pushId": "[system:pushtoken]", 
                                             "prefs": { "arbitraryDeviceSpecificPrefName": "prefValue", "anotherDevicePrefName": "anotherPrefValue" }}]
                                             } ]]></texttemplate>
+  <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
+                                                "mood": {
+                                                        "level": "[var:mood]",
+                                                        "description": "[var:feeling]"
+                                                     },
+                                                "content": "[var:currentActivityBody]"
+                                              } ]]></texttemplate>   
+  <texttemplate name="crudInspire"><![CDATA[   {
+					    "profile": "[var:userID]",
+					    "photos":
+					        [
+					            {
+					                "label": "test",
+					                "notes": "test notes",
+					                "media": "https://samhsa.carewave.net/edm-mobile/rs/crud/blob/[var:photoID]"                
+					            }
+					                    ],
+					    "locations":
+					        [
+					            {
+					                "label": "",
+					                "notes": "",
+					                "media": "",                
+					                "loc":
+					                    {
+					                        "lat": 0,
+					                        "lng": 0
+					                    }
+					            }
+					        ],
+					    "quotes":
+					        [
+					            {
+					                "text": "[var:inspire-quote]",
+					                "link": "",
+					                "media": ""
+					            }
+					        ],
+					    "articles":
+					        [
+					            {
+					                "title": "",
+					                "summary": "",
+					                "link": "",
+					                "notes": ""
+					            },
+					            {
+					                "title": "",
+					                "summary": "",
+					                "link": "",
+					                "notes": ""
+					            }
+					        ],
+					    "driver":
+					        {
+					            "label": "",
+					            "notes": "",
+					            "media": ""                
+					        }
+					} 
+  												
+ 												]]></texttemplate>  
+ 		<texttemplate name="crudPlan"><![CDATA[ 
+ 											    {
+						       "id": "51d321e28ae0d6cb305aa984",
+						       "profile": "51d31a168ae0d6cb305aa983",
+						       "created": "2013-07-03T13:48:10-0500",
+						       "updated": "2013-07-04T13:48:10-0500",
+       
+						       "warnings":
+								[
+									{
+									"label": "drug cravings",
+									"type": "Other",
+									"notes": "Free-form user-entered notes about cravings.",
+									"loc":
+									    {
+									        "lat": 38.92761,
+									        "lng": -94.642759
+									    },						   
+									"media": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e"
+									               },
+									               {
+				                   "label": "feeling anxious",
+				                   "type": "Mood",
+				                   "notes": "Free-form user-entered notes about anxiety."
+								} ],
+							 
+							  "inspiration":
+						           [
+						               {
+						                   "label": "my grandfather",
+						                   "type": "Person",
+						                   "notes": "Free-form user-entered notes about grandfather.",
+						                   "loc":
+						                       {
+						                           "lat": 38.92761,
+						                           "lng": -94.642759
+						                       },
+						                   "media": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e"
+						               },
+												                {
+						                   "label": "being outdoors",
+						                   "type": "Activity",
+						                   "notes": "Free-form user-entered notes about the outdoors.",
+						                   "loc":
+												{
+												    "lat": 38.92761,
+												    "lng": -94.642759
+												}
+																						
+										} ],
+										
+										"techniques":
+										    {
+										    "physical":
+										        [
+										            "Remove yourself from the situation",
+										            "Call positivie influencer"
+										        ],
+										"mental":
+										        [
+										            "Think happy thoughts"
+										        ],
+										    "spiritual":
+										        [
+										            "Pray for peace"
+										] }
+										}						
+ 											    ]]></texttemplate>                                                                                
+  
+  
+  
   <styles>
     <style name="textfield" font="helvetica" size="15" color="#000000" alignment="left" valignment="center" border="line" margin-top="10" background="#ffffff" leftinset="5" onreturnkeypressed="dismiss-keyboard"  />
     <style name="headline" font="HelveticaNeue-Bold" color="#8fbf6b" size="15" /> <!-- green text -->
@@ -34,10 +194,6 @@
   </styles>
 
   <classes>
-    <class name="annotations">
-           <annotation name="location" _datasourceindex="[param:dataSourceIndex]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="[param:color]" animatedrop="yes">
-           </annotation>
-    </class>
     <class name="toc"> 
       <panel name="[param:section]" width="100%" height="50" onclickup="reveal-section">
           <panel name="wrapper" width="100%" height="100%" padding="10">
@@ -60,7 +216,7 @@
       </panel>
     </class>
     <class name="buttonWithIcon">
-      <panel name="button" width="80%" height="44" background="#6d97a9" alpha="1" align="center" valign="center" borderwidth="1" bordercolor="#000000" cornerradius="5" onclickup="[param:onclickup]" padding-left="10">
+      <panel name="button" _cam="[param:cam]" width="80%" height="44" background="#6d97a9" alpha="1" align="center" valign="center" borderwidth="1" bordercolor="#000000" cornerradius="5" onclickup="[param:onclickup]" padding-left="10">
         <text name="label" height="100%" width="100%" text="[param:text]" font="HelveticaNeue" color="#ffffff" size="15" alignment="left" leftinset="30">
           <image name="icon" source="graphics/[param:icon]" valign="center"></image>
         </text>
@@ -83,8 +239,8 @@
       <panel name="row-[param:index]" width="100%" height="20%">
         <panel name="date" width="15%" height="100%">
           <panel name="stamp" width="100%" height="50" align="center" valign="center">
-            <text name="day" width="100%" height="20" text="THU" color="8fbf6b" font="HelveticaNeue" size="15" alignment="center" />
-            <text name="date" width="100%" height="30" text="18" color="8fbf6b" font="HelveticaNeue-Bold" size="25" alignment="center" bottomof="day"/>
+            <text name="day" width="100%" height="20" text="[param:bigday]" color="8fbf6b" font="HelveticaNeue" size="15" alignment="center" />
+            <text name="date" width="100%" height="30" text="[param:bigdate]" color="8fbf6b" font="HelveticaNeue-Bold" size="25" alignment="center" bottomof="day"/>
           </panel>
           <panel name="v-rule" width="1" height="100%" background="#c5d8e0" align="right"></panel>
         </panel>
@@ -98,12 +254,12 @@
     <class name="feeling-row">
       <panel name="col-1" width="50%" height="100%">
         <text name="option-[param:col-1-label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:col-1-label]" >
-          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1" onclickup="checkmarked" _label="[param:col-1-label]"></panel>
         </text>
       </panel>
       <panel name="col-2" width="50%" height="100%" align="right">
         <text name="option-[param:col-2-label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:col-2-label]" >
-          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1" onclickup="checkmarked" _label="[param:col-2-label]"></panel>
         </text>
       </panel>
     </class>
@@ -131,7 +287,7 @@
     <class name="add-environment">
     	<panel name="add-environment" width="100%" height="55%" >
   			<panel name="enviroEntryTitle-wrapper" width="100%" height="64">
-          <textfield name="[param:textfield]" alias="[param:textfield]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What makes you feel bad?"></textfield>
+          <textfield name="[param:textfield]" alias="[param:textfield]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What are you going to do?"></textfield>
           <image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry"></image>
         </panel>
 		  </panel>  
@@ -156,16 +312,25 @@
     <class name="coping-row">
     	<panel name="col-1" width="90%" height="15%" align="center">
         <text name="option-[param:label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:label]" >
-          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
+          <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1" onclickup="add-coping-item" _text="[param:label]"  _photo="[param:photo]" _nodeID="[param:nodeID]" _type="[param:type]"></panel>
         </text>
       </panel>
     </class>
     <class name="add-coping-row">
     	<panel name="row" width="90%" height="15%" align="center" >
-			<panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1" ></panel>
+			<panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1" onclickup="add-coping-item" _text="[param:label]"  _nodeID="[param:nodeID]" _type="[param:type]"></panel>
 			<textfield name="[param:textfield]" alias="[param:textfield]" width="60%" height="30" leftinset="3" size="13" alignment="left" valign="center" valignment="center" border="line" margin-top="10" background="#ffffff" onreturnkeypressed="dismiss-keyboard" xpos="15%" placeholder="Other"></textfield>
 		</panel>
     </class>
+	<class name="coping-item">
+		<panel name="pg[param:item]" width="100%" height="100%" onscrollto="paginate">
+	    	<text name="activity" height="44" width="100%" style="headline" text="[param:text]" alignment="center" align="center"/>
+	        <image name="coping-image" source="[param:source]" height="70%" width="80%" align="center" valign="center" background="#ff0000"></image>
+	     </panel>
+	</class>
+    
+    
+    
     <class name="sleep-item">
     	<panel name="option-[param:item]" alias="OPTION-[param:item]" width="100%" height="15%" background="ffffff" align="center">
              <text name="option-text1" width="100%" height="99%" color="666666" font="helvetica" size="16" alignment="center" text="[param:sleeptext]" _active="[param:item]" onclickup="active-sleep-item"></text>
@@ -188,6 +353,91 @@
 	        </panel>
 		</panel>
     </class>
+    <class name="annotations">
+      <annotation name="[param:location]" alias="[param:location]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="red" animateddrop="no" ></annotation>
+    </class>
+    		<!-- !Camera -->
+            <class name="camera">
+                  <camera name="camera" alias="CAMERA-OBJECT" height="100%" width="100%" face="[param:face]" type="video" valign="bottom"></camera>
+            </class>
+            
+            <class name="avatar">
+                  <image name="photo" alias="AVATAR-SMALL" source="graphics/img-contact-female.png"  width="100%" align="center" valign="center" ></image>
+            </class>
+
+			<class name="avatarLarge">
+				<image name="photo" alias="AVATAR-LARGE" source="graphics/img-contact-female.png" width="100%" align="center" valign="center" ></image>
+			</class>
+			
+			
+            <class name="rollPager">
+   			<pager name="roll" width="100%" height="100%" orientation="vertical" paginate="no">
+   				<panel name="fill" width="100%" height="60"></panel>
+  			</pager>
+            </class>
+
+		<class name="rollRow3">
+			<panel name="[param:index]" width="100%" height="110" >
+				<panel name="a" width="33.3%" height="100%" _row="[param:index]" _column="a" onclickup="select-rollPhoto" _assetIndex="[param:index]" >
+					<panel name="imageCrop" width="95" height="95" align="center" valign="center" background="000000" clip="yes">
+						<image name="image" url="[param:imagea]" width="100%" align="center" valign="center"></image>
+						<image name="check" source="graphics/camera-check.png" align="center" valign="center" alpha="0"></image>
+					</panel>
+				</panel>
+				<panel name="b" width="33.3%" height="100%" align="center"  _row="[param:index]" _column="b" onclickup="select-rollPhoto" _assetIndex="[eval: [param:index] + 1]" >
+					<panel name="imageCrop" width="95" height="95" align="center" valign="center" background="000000">
+						<image name="image" url="[param:imageb]" width="100%" align="center" valign="center"></image>
+						<image name="check" source="graphics/camera-check.png" align="center" valign="center" alpha="0"></image>
+					</panel>
+				</panel>
+				<panel name="c" width="33.3%" height="100%" align="right"  _row="[param:index]" _column="c" onclickup="select-rollPhoto" _assetIndex="[eval: [param:index] + 2]" >
+					<panel name="imageCrop" width="95" height="95" align="center" valign="center" background="000000">
+						<image name="image" url="[param:imagec]" width="100%" align="center" valign="center"></image>
+						<image name="check" source="graphics/camera-check.png" align="center" valign="center" alpha="0"></image>
+					</panel>
+				</panel>
+			</panel>
+		</class>
+
+		<class name="rollRow2">
+			<panel name="[param:index]" width="100%" height="110" >
+				<panel name="a" width="33.3%" height="100%" _row="[param:index]" _column="a" onclickup="select-rollPhoto" _assetIndex="[param:index]" >
+					<panel name="imageCrop" width="95" height="95" align="center" valign="center" background="000000" clip="yes">
+						<image name="image" source="[param:imagea]" width="100%" align="center" valign="center"></image>
+						<image name="check" source="graphics/camera-check.png" align="center" valign="center" alpha="0"></image>
+					</panel>
+				</panel>
+				<panel name="b" width="33.3%" height="100%" align="center"  _row="[param:index]" _column="b" onclickup="select-rollPhoto" _assetIndex="[eval: [param:index] + 1]" >
+					<panel name="imageCrop" width="95" height="95" align="center" valign="center" background="000000">
+						<image name="image" source="[param:imageb]" width="100%" align="center" valign="center"></image>
+						<image name="check" source="graphics/camera-check.png" align="center" valign="center" alpha="0"></image>
+					</panel>
+				</panel>
+			</panel>
+		</class>
+		
+		<class name="rollRow1">
+			<panel name="[param:index]" width="100%" height="110" >
+				<panel name="a" width="33.3%" height="100%" _row="[param:index]" _column="a" onclickup="select-rollPhoto" _assetIndex="[param:index]" >
+					<panel name="imageCrop" width="95" height="95" align="center" valign="center" background="000000" clip="yes">
+						<image name="image" source="[param:imagea]" width="100%" align="center" valign="center"></image>
+						<image name="check" source="graphics/camera-check.png" align="center" valign="center" alpha="0"></image>
+					</panel>
+				</panel>
+			</panel>
+		</class>
+<!--Home Feed Classes-->		
+		<class name="homefeed-2">
+        	<panel name="row[param:index]" width="100%" height="150">
+        		<panel name="middle" width="1" height="100%" align="center"></panel>
+		        <panel name="col1" width="50%" height="150" leftof="middle"  _photo="[param:photo1]" _id="[param:index]" >
+			        <image name="img" source="images/church.jpg" contain="yes" width="100%" align="center" valign="top" suppress="no" ></image>	
+		        </panel> 
+		        <panel name="col2" width="50%"  height="150" rightof="middle" _photo="[param:photo1]" _id="[param:index]">		 
+		        	<image name="img" source="images/church.jpg" contain="yes" width="100%" align="center" valign="top" suppress="no" ></image>
+		        </panel>
+	        </panel>
+        </class>
   </classes>
 
   <main>
@@ -256,9 +506,9 @@
                  <text name="label" height="100%" width="100%" text="Filter Info" font="HelveticaNeue" color="#000000" size="13" alignment="center" />
               </panel>
             </panel>
-            <!-- 
-            journal entry screen 
-            -->
+    <!-- 
+    journal entry screen 
+    -->
             <panel name="journal" width="100%" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" ypos="100%" background="#ffffff">
               <pager name="main" height="85%" width="100%" padding-top="5" padding-left="10" padding-right="10" orientation="vertical" paginate="no">
                 <panel name="checkbox-block" alias="CHECKBLOCK" width="100%" height="164"> 
@@ -267,25 +517,27 @@
                 <!--<panel name="journalEntryTitle-wrapper" width="100%" height="64" >
                   <textfield name="journalEntryTitle" width="100%" height="44" style="textfield" valign="center" placeholder="Journal Entry Title" />
                 </panel>-->
-                <panel name="journalEntryBody-wrapper" width="100%" height="130">
-                  <textfield name="journalEntryBody" width="80%" height="120" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" />
+                <panel name="currentActivityBody-wrapper" width="100%" height="130">
+                  <textfield name="currentActivityBody" alias="CURRENTACTIVITYBODY" width="80%" height="120" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" />
                   <image name="attach" source="graphics/icon-content-attach.png" align="right" valign="top" onclickup="journal-attach"></image>
                   <image name="share" source="graphics/icon-content-share.png" bottomof="attach" align="right" onclickup="journal-share"></image>
                 </panel>
-                <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
-              </pager>
-              <panel name="call-to-action" ypos="85%" height="15%" width="100%">
+                
+              	<panel name="call-to-action" height="15%" width="100%">
                 <!--<panel name="col1" width="60%" height="100%">
                   <text name="assesment" height="100%" width="100%" text="Take Assessment" font="HelveticaNeue" color="#89b0bf" size="15" alignment="left" valign="bottom" leftinset="20" onclickup="toggle-assessment"/>
                 </panel>-->
-                <panel name="col2" width="40%" height="100%" align="right">
-                  <object class="button" text="Save" onclickup="null" />
-                </panel>
-              </panel>
+                	<panel name="col2" width="40%" height="100%" align="right">
+                  		<object class="button" text="Save" onclickup="post-activity" />
+                	</panel>
+              	</panel>
+              	<panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
+              </pager>
+              
             </panel>
-            <!-- 
-            assessment view / triggered off the assesment link located in call-to-action of journal/main/call-to-action 
-            -->
+  <!-- 
+      assessment view / triggered off the assesment link located in call-to-action of journal/main/call-to-action 
+  -->
             <panel name="assessment" width="100%" height="[object:HOME.height]" ypos="100%" background="#ffffff">
               <panel name="steps" height="44" width="100%" background="#819bad" padding-left="10" padding-right="10" valign="bottom">
                 <image name="btn-prev" source="graphics/btn-previous.png" alpha="0" valign="center" onclickup="step-assess" _pager="HOME/assessment/main">
@@ -356,45 +608,60 @@
               <panel name="datebar" height="44" width="100%" background="#819bad">
                 <text name="label" height="100%" width="100%" font="HelveticaNeue" text=" " color="#efefef" size="15" alignment="center"/>
               </panel>
-              <pager name="main" height="[eval:[object:HOME.height] - [object:HOME/history/datebar.height] ]" valign="bottom" width="100%" orientation="vertical" paginate="no">
-                <object class="history-row" index="1" title="Title" date="March 10th 2013" />
-                <object class="history-row" index="2" title="Title" date="March 10th 2013" />
-                <object class="history-row" index="3" title="Title" date="March 10th 2013" />
-                <object class="history-row" index="4" title="Title" date="March 10th 2013" />
-              </pager>
+              <list name="main" height="[eval:[object:HOME.height] - [object:HOME/history/datebar.height] ]" datasource="ActivityGet" valign="bottom" width="100%" orientation="vertical" paginate="no">
+                <object class="history-row" index="[param:datasourceIndex]" title="[param:content]" bigday="THU" bigdate="18" date="[eval: new Date('[eval: '[param:created]'.replace('+0000','')]').toLocaleDateString()]" lhs="[param:datasourceIndex]" operator="lte" rhs="30"/>
+              </list>
             </panel>
           </panel>
           <!-- 
           Inspiration Screen
           -->
           <panel name="Inspiration" alias="INSPIRATION" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
-            <panel name="controls" height="44" width="100%" background="#c1c1c1">
-              <panel name="icon1" height="30" width="30" align="right" background="#1e1e1e" valign="center" onclickup="lost" />
-              <panel name="icon2" height="30" width="30" leftof="icon1" margin-right="10" valign="center" background="#1e1e1e" onclickup="lost" />
-              <panel name="icon3" height="30" width="30" leftof="icon2" margin-right="10" valign="center" background="#1e1e1e" onclickup="lost" />
+            <!--<panel name="controls" height="44" width="100%" background="#c1c1c1">
+              <image name="clip" source="graphics/icon-top-attach.png" align="right" valign="center" onclickup="choose-inspiration-attachment"></image>
             </panel>
             <panel name="calltoaction" height="88" width="100%" valign="bottom" background="#bab8b8">
               <object class="button" text="What I Live For" onclickup="null" />
-            </panel>
-            <panel name="main" ypos="[object:INSPIRATION/controls.height]" height="[eval: [object:INSPIRATION.height] - [object:INSPIRATION/controls.height] - [object:INSPIRATION/calltoaction.height]]" width="100%" background="#e1e1e1">
-              <panel name="quad-UL" height="50%" width="50%" background="#ededed" onclickup="add-feature">
-                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Photos" size="15" alignment="center"/>
-                <panel name="icon" ypos="0%" height="75%" width="100%" background="#111111" />
+            </panel>-->
+            <panel name="main" height="100%" width="100%" background="#000000">
+              <panel name="quad-UL" height="50%" width="50%" onclickup="add-feature">
+                <panel name="icon" height="50%" width="90%" align="center" valign="center" borderwidth="5" bordercolor="ffffff" background="#111111" />
+                <text name="label" ypos="75%" height="10%" width="100%" font="HelveticaNeue-Bold" color="ffffff" text="Photos" size="15" alignment="center" bottomof="icon"/>
               </panel>
-              <panel name="quad-UR" xpos="50%" height="50%" width="50%" background="#ededed" onclickup="lost">
-                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Locations" size="15" alignment="center"/>
-                <panel name="icon" ypos="0%" height="75%" width="100%" background="#222222" />
+              <panel name="quad-UR" xpos="50%" height="50%" width="50%" onclickup="lost">
+				<panel name="icon" height="50%" width="90%" align="center" valign="center" borderwidth="5" bordercolor="ffffff" background="#111111" />
+                <text name="label" ypos="75%" height="10%" width="100%" font="HelveticaNeue-Bold" color="ffffff" text="Locations" size="15" alignment="center" bottomof="icon"/>
               </panel>
-              <panel name="quad-LL" ypos="50%" height="50%" width="50%" background="#ededed" onclickup="lost">
-                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Quotes" size="15" alignment="center"/>
-                <panel name="icon" ypos="0%" height="75%" width="100%" background="#222222" />
+              <panel name="quad-LL" ypos="40%" height="50%" width="50%"  onclickup="lost">
+		        <panel name="icon" height="50%" width="90%" align="center" valign="center" borderwidth="5" bordercolor="ffffff" background="#111111" />
+        	    <text name="label" ypos="75%" height="10%" width="100%" font="HelveticaNeue-Bold" color="ffffff" text="Quotes" size="15" alignment="center" bottomof="icon"/>
               </panel>
-              <panel name="quad-LR" xpos="50%" ypos="50%" height="50%" width="50%" background="#ededed" onclickup="lost">
-                <text name="label" ypos="75%" height="25%" width="100%" font="HelveticaNeue-Bold" text="Articles" size="15" alignment="center"/>
-                <panel name="icon" ypos="0%" height="75%" width="100%" background="#111111" />
+              <panel name="quad-LR" xpos="50%" ypos="40%" height="50%" width="50%" onclickup="lost">
+				<panel name="icon" height="50%" width="90%" align="center" valign="center" borderwidth="5" bordercolor="ffffff" background="#111111" />
+                <text name="label" ypos="75%" height="10%" width="100%" font="HelveticaNeue-Bold" color="ffffff" text="Other" size="15" alignment="center" bottomof="icon"/>
               </panel>
             </panel>
           </panel>
+          <panel name="addInspire" alias="ADDINSPIRE" width="100%" height="100%" alpha="0">
+          <panel name="curtain" width="100%" height="100%" background="#000000" alpha=".8" onclickup="close-inspiration-attachment"></panel>
+          <panel name="button-container" width="100%" height="100%" valign="center">
+            <panel name="1" width="100%" height="15%" ypos="15%">
+              <object class="buttonWithIcon" text="Add Photo from Camera" cam="camera" icon="icon-btn-camera.png" onclickup="show-camera" />
+            </panel>
+            <panel name="2" width="100%" height="15%" bottomof="1">
+              <object class="buttonWithIcon" text="Add Photo from Gallery" cam="roll" icon="icon-btn-grid.png" onclickup="show-camera" />
+            </panel>
+            <panel name="3" width="100%" height="15%" bottomof="2">
+              <object class="buttonWithIcon" text="Add Location" cam="" icon="icon-entry-locator.png" onclickup="attach-inspire" />
+            </panel>
+            <panel name="4" width="100%" height="15%" bottomof="3">
+              <object class="buttonWithIcon" text="Add Quote" cam="" icon="icon-btn-quote.png" onclickup="attach-inspire" />
+            </panel>
+            <panel name="5" width="100%" height="15%" bottomof="4">
+              <object class="buttonWithIcon" text="Add Other" cam="" icon="icon-btn-internet.png" onclickup="attach-inspire" />
+            </panel>
+          </panel>
+        </panel>	
           <!-- 
           care team entry screen 
           -->
@@ -404,47 +671,47 @@
               <text name="clinical" height="100%" width="33.33%" text="Clinical Team" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
               <text name="urgent" height="100%" width="33.33%" text="Urgent Team" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
             </panel>
-            <pager name="main" ypos="[object:CARETEAM/controls.height]" height="[eval: [object:CARETEAM.height] - [object:CARETEAM/controls.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no">
-              <object class="careteam-row" index="1" name="Jane Jones" relationship="Sister" />
-              <object class="careteam-row" index="2" name="Bob Jones" relationship="Brother" />
-              <object class="careteam-row" index="3" name="Rex Jones" relationship="Brother" />
-            </pager>
+            <pager name="contact-list" width="100%" height="[eval: [object:CARETEAM.height] - 42]" topmargin="5" orientation="vertical" paginate="no" bottomof="controls" background="e1e1e1">
+                 <object class="contact-item" contact-item="1" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+                 <object class="contact-item" contact-item="2" contact-image="graphics/img-contact-female.png" name="Sample Female" description="mother" />
+                 <object class="contact-item" contact-item="3" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+                 <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+            </pager> 
           </panel>
           <!-- 
           COPING TECHNIQUES Screen
           -->
           <panel name="Coping Techniques" alias="COPINGTECHNIQUES" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%" background="#ffffff">
             <panel name="calltoaction" height="120" width="100%" valign="bottom">
-              <text name="addtoInspiration" height="44" width="70%" font="HelveticaNeue" color="#000000" size="15" alignment="center" align="center" leftinset="40" text="Add to inspiration feed" >
+             <!--
+ <text name="addtoInspiration" height="44" width="70%" font="HelveticaNeue" color="#000000" size="15" alignment="center" align="center" leftinset="40" text="Add to inspiration feed" >
                 <panel name="checkbox" width="30" height="30" valign="center" background="#e9e9e9" bordercolor="#222222" borderwidth="1"></panel>
               </text>
               <panel name="button-container" width="100%" height="66" valign="bottom">
                 <object class="button" text="Makes Me Feel Better" onclickup="null" />
               </panel>
+-->
             </panel>
             <panel name="controls" height="44" width="100%" background="#819bad">
-              <text name="physical" height="100%" width="33.33%" text="Physical" color="#ffffff" font="helvetica" size="13" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
-              <text name="mental" height="100%" width="33.33%" text="Mental" color="#ffffff" font="helvetica" size="13" alignment="center" align="center" onclickup="toggle-view" />
-              <text name="spiritual" height="100%" width="33.33%" text="Spiritual" color="#ffffff" font="helvetica" size="13" alignment="center" align="right" onclickup="toggle-view"/>
+              <text name="physical" height="100%" width="33.33%" text="Physical" color="#ffffff" font="helvetica" size="13" alignment="center" state="active" background="#6d8693" onclickup="toggle-view" _type="Physical"/>
+              <text name="mental" height="100%" width="33.33%" text="Mental" color="#ffffff" font="helvetica" size="13" alignment="center" align="center" onclickup="toggle-view" _type="Mental"/>
+              <text name="spiritual" height="100%" width="33.33%" text="Spiritual" color="#ffffff" font="helvetica" size="13" alignment="center" align="right" onclickup="toggle-view" _type="Spiritual"/>
             </panel>
             <panel name="main" height="[eval: [object:COPINGTECHNIQUES.height] - [object:COPINGTECHNIQUES/calltoaction.height] - [object:COPINGTECHNIQUES/controls.height]]" ypos="[object:COPINGTECHNIQUES/controls.height]" width="100%" background="#ffffff">
-              <!-- classify these items beloew -->
-                <pager name="list" height="[eval:[object:COPINGTECHNIQUES/main.height]- 44]" width="100%" orientation="horiztonal" paginate="yes">
-                  <panel name="pg1" width="100%" height="100%" onscrollto="paginate">
-                    <text name="activity" height="44" width="100%" style="headline" text="Go for a Run" alignment="center" align="center"/>
-                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
-                  </panel>
-                  <panel name="pg2" width="100%" height="100%" onscrollto="paginate">
-                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
-                  </panel>
-                  <panel name="pg3" width="100%" height="100%" onscrollto="paginate">
-                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
-                  </panel>
-                  <panel name="pg4" width="100%" height="100%" onscrollto="paginate">
-                    <panel name="imageHere" height="70%" width="80%" align="center" valign="center" background="#ff0000"></panel>
-                  </panel>
-                </pager>
-                <panel name="dots" height="44" width="60" bottomof="list" align="center">
+             
+                <list name="physical-list" alias="PLIST" height="[eval:[object:COPINGTECHNIQUES/main.height]- 44]" datasource="saved-coping" width="100%" orientation="horiztonal" paginate="yes" alpha="0">
+                  <object class="coping-item" source="[param:photo]" text="[param:text]" item="[param:dataSourceIndex]" lhs="[param:type]" operator="e" rhs="physical"/>
+                </list>
+                <list name="mental-list" alias="MLIST" height="[eval:[object:COPINGTECHNIQUES/main.height]- 44]" datasource="saved-coping" width="100%" orientation="horiztonal" paginate="yes" alpha="0">
+                  <object class="coping-item" source="[param:photo]" text="[param:text]" item="[param:dataSourceIndex]" lhs="[param:type]" operator="e" rhs="mental"/>
+                </list>
+                <list name="spiritual-list" alias="SLIST" height="[eval:[object:COPINGTECHNIQUES/main.height]- 44]" datasource="saved-coping" width="100%" orientation="horiztonal" paginate="yes"  alpha="0">
+                  <object class="coping-item" source="[param:photo]" text="[param:text]" item="[param:dataSourceIndex]" lhs="[param:type]" operator="e" rhs="spiritual"/>
+                </list>
+                 <!-- 
+                 classify these items below 
+              -->
+                <panel name="dots" height="44" width="60" bottomof="physical-list" align="center">
                   <panel name="pg1" width="20" height="10" state="active">
                     <panel name="dot" width="10" height="10" background="#8fbf6b" state="active" cornerradius="5" align="center" borderwidth="1" bordercolor="#b4b4b6" />
                   </panel>
@@ -476,9 +743,7 @@
                 <text name="label" height="100%" width="85%" text="next" style="step-label" />
               </image>
             </panel>
-            <pager name="safetypager" alias="SAFETYPAGER" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
-              
-              <!--warning sign plan-->
+            <pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
               <panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
               	<pager name="warning-pager" alias="WARNINGPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
                   <text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question"></text>
@@ -487,8 +752,6 @@
                   <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
                 </pager>
               </panel>
-              
-              <!--inspiration plan-->
               <panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
                 <pager name="inspiration-pager" alias="INSPIRATIONPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
                   <text name="query" height="54" width="100%" align="left" text="What helps you take your mind of your problems?" style="step-question"></text>
@@ -497,8 +760,6 @@
                   <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
                 </pager> 
               </panel>
-              
-              <!--care team plan-->
               <panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
               	<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question"></text>
                 <panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
@@ -512,42 +773,38 @@
                  <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
                </pager> 
              </panel>
-             
-             <!--coping techniques plan-->
              <panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
                <panel name="coping-controls" height="44" width="100%" background="#819bad">
-                <text name="support" alias="P" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
+                <text name="support" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
                 <text name="clinical" height="100%" width="33.33%" text="Mental" _type="Mental" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
                 <text name="urgent" height="100%" width="33.33%" text="Spiritual" _type="Spiritual" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
               </panel>
               <text name="cope-text" height="44" width="87%" align="center" text="Techniques and activities that help you cope with difficult situations or emotions." bottomof="coping-controls" style="step-question"></text>
               <pager name="coping-options-physical" alias="PHYSICAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no">
-                <object class="coping-row" label="Go for a walk/run/swim" />
-                <object class="coping-row" label="Play a game" />
-                <object class="coping-row" label="Call a support person" />
-                <object class="coping-row" label="Lift weights" />
-                <object class="coping-row" label="Clean Your Room" />
-                <object class="add-coping-row" textfield="cope-entry1"/>
+                <object class="coping-row" label="Go for a walk/run/swim" photo="images/walk.jpg" nodeID="1" type="physical" />
+                <object class="coping-row" label="Play a game" photo="images/game2.jpg" nodeID="2" type="physical"/>
+                <object class="coping-row" label="Call a support person" photo="images/call.jpg" nodeID="3" type="physical"/>
+                <object class="coping-row" label="Lift weights" photo="images/weights.jpg" nodeID="4" type="physical"/>
+                <object class="coping-row" label="Clean Your Room" photo="images/clean.jpg" nodeID="5" type="physical"/>
+                <object class="add-coping-row" textfield="cope-entry1" type="physical"/>
               </pager>
               <pager name="coping-options-mental" alias="MENTAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
-                <object class="coping-row" label="Read a book" />
-                <object class="coping-row" label="Perform deep breathing exercises" />
-                <object class="coping-row" label="Spend time with family or friends" />
-                <object class="coping-row" label="Listen to music" />
-                <object class="coping-row" label="Make time for doing artwork,puzzles or games" />
-                <object class="add-coping-row" textfield="cope-entry1"/>
+                <object class="coping-row" label="Read a book" photo="images/book.jpg" nodeID="6" type="mental"/>
+                <object class="coping-row" label="Perform deep breathing exercises" photo="images/breathing.jpg" nodeID="7" type="mental"/>
+                <object class="coping-row" label="Spend time with family or friends" photo="images/friends.jpg" nodeID="8" type="mental"/>
+                <object class="coping-row" label="Listen to music" photo="images/music.jpg" nodeID="9" type="mental"/>
+                <object class="coping-row" label="Make time for doing artwork,puzzles or games" photo="images/game.jpg" nodeID="10" type="mental"/>
+                <object class="add-coping-row" textfield="cope-entry1" type="mental"/>
               </pager>
               <pager name="coping-options-spiritual" alias="SPIRITUAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
-                <object class="coping-row" label="Engage with others in spiritual expression" />
-                <object class="coping-row" label="Release anger for things you can't control" />
-                <object class="coping-row" label="Participate in activity to help others" />
-                <object class="coping-row" label="Attend a meeting with like-minded people" />
-                <object class="coping-row" label="Do yoga or meditate" />
-                <object class="add-coping-row" textfield="cope-entry1"/>
+                <object class="coping-row" label="Engage with others in spiritual expression" photo="images/church.jpg" nodeID="11" type="spiritual"/>
+                <object class="coping-row" label="Release anger for things you can't control" photo="images/control.jpg" nodeID="12" type="spiritual"/>
+                <object class="coping-row" label="Participate in activity to help others" photo="images/charity.jpg" nodeID="13" type="spiritual"/>
+                <object class="coping-row" label="Attend a meeting with like-minded people" photo="images/friends.jpg" nodeID="14" type="spiritual"/>
+                <object class="coping-row" label="Do yoga or meditate" photo="images/yoga.jpg" nodeID="15" type="spiritual"/>
+                <object class="add-coping-row" textfield="cope-entry1" type="spiritual"/>
               </pager>
             </panel>
-            
-            <!--safe environments plan-->
             <panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
              <pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
                <text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question"></text>
@@ -567,8 +824,8 @@
               <image name="clear" source="graphics/icon.delete.png" valign="center" align="right"></image>
               </textfield>
             </panel>
-            <map name="main" alias="MAP"  datasource="geo" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
-            	 <object name="local" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT][param:LOC_LONG]" title="[param:ORG_NAME]" subtitle="[param:SITE_NAME]" color="green"/>
+            <map name="main" alias="MAP" datasource="locator" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
+              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" subtitle="[param:LOC_STREET_1]" />
             </map>
           </panel>
           <!-- 
@@ -603,6 +860,50 @@
 
           <panel name="curtain" alias="CURTAIN" width="100%" height="100%" background="#222222" alpha="0" onclickup="toggle-toc"></panel>
         </panel>
+        
+        
+	<!-- 
+	Camera 
+	-->
+   		<panel name="camera" alias="CAMERA" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" alpha="0" bottomof="TOOLBAR" xpos="100%">
+   			<panel name="lens" width="100%" height="100%" background="000000">
+   				<panel name="photo" width="100%" height="100%">
+                      <panel name="box" width="100%" height="100%" ypos="0" >
+                            <image name="asset" width="135%" url="" alpha="0" align="center" valign="center" ></image>
+                      </panel>
+   				</panel>
+   				<!--<panel name="crop1" width="100%" height="[eval: [object:WRAPPER.height] == 480 ? 35:69]" background="2c3e50" alpha=".5"></panel>
+   				<panel name="crop2" width="100%" height="[eval: [object:WRAPPER] == 480 ? 35:69]" background="2c3e50" valign="bottom" alpha=".5"></panel>-->
+   			</panel>
+   			<panel name="toolbar" width="100%" height="110" valign="bottom">
+   				<panel name="bg" width="100%" height="90" background="333333" valign="bottom"></panel>
+   				<panel name="shutter" width="110" height="110" cornerradius="55" align="center" background="222222" onclickup="take-photo" >
+   					<panel name="dark" width="90" height="90" cornerradius="45" align="center" valign="center" background="666666">
+	   					<panel name="button" width="50" height="50" cornerradius="25" align="center" valign="center" background="000000" shadowradius="2" shadowopacity=".2" shadowyoffset="2" shadowxoffset="0">
+	   						<image name="cam" align="center" valign="center" source="graphics/icon-camera.png"></image>
+	   					</panel>   						
+   					</panel>
+   				</panel>
+   				<image name="flip" source="graphics/icon-camera-flip.png" ypos="44%" xpos="40" onclickup="camera-flip"></image>
+   				<panel name="button-save" width="10%" height="25%" ypos="47%" xpos="70%" background="666666">
+   					<image name="save" source="graphics/icon-accept.png" onclickup="commit-photo" align="center" valign="center"></image>
+   				</panel>
+   				<panel name="button-back" width="10%" height="25%" ypos="47%" xpos="85%" background="666666">
+   					<image name="back" source="graphics/icon-cancel.png" onclickup="hide-camera" align="center" valign="center"></image>
+   				</panel>
+   				
+   			</panel>
+   		</panel>
+   		<panel name="camera" alias="CAMERA-ROLL" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" alpha="0" xpos="100%" bottomof="TOOLBAR" background="000000">
+   		</panel>
+   		<panel name="photoLoad-wait" alias="ROLL-WAIT" width="100%" height="60" ypos="100%" >
+			<panel name="bg" width="100%" height="100%" background="2c3e50" alpha=".8"></panel>
+			<wait name="wait" width="60" height="100%" xpos="18%"></wait>
+			<text name="text" width="60%" height="100%" color="#ffffff" font="Avenir-Medium" size="16" rightof="wait" leftmargin="10" alignment="left" text="Loading Photos..."></text>
+   		</panel>
+    		
+        
+        
         <!-- 
           Welcome Screen
           -->
@@ -641,14 +942,29 @@
             </panel>
           </panel>
         </panel>
-    </panel>
+    </panel> 
     <web name="web" alias="WEB" width="1" height="1" url="about:blank" alpha="0"></web>
   </main>
   <actions>
     <action name="boot" oninit="yes">
       <assign property="object:WRAPPER/toolbar/label.text" value="Hello" />
       <assign property="var:currentSection" value="Home" />
+      <assign property="datasource:PushRegister.source" value="https://go.urbanairship.com/api/device_tokens/[system:pushtoken]"/>
+      <assign property="var:ActivityID" value="[datasource:postActivity.1.id]" />
+<!--       <alert message="https://go.urbanairship.com/api/device_tokens/[system:pushtoken]"/> -->
+      
     </action>
+    <action name="notification" datasource="pushlistener">
+       <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/>
+   	</action>
+   <!--
+ <action name="pushreg" datasource="PushRegister" datasourceevent="querycomplete">
+    	<alert message="[datasource:PushRegister.0.content]"/>
+    </action>
+    <action name="pusherror" datasource="PushRegister" datasourceevent="datasourceerror">
+    	<alert message="ERR [datasource:PushRegister.0.content]"/>
+    </action>
+-->
     <action name="toggle-signUp">
       <assign property="var:signUp-status" value="[eval: '[var:signUp-status]' != '1' ? '1' : '0']" />
       <translate xpos="[eval: '[var:signUp-status]' == '1' ? '0' : '100%']" time=".2" target="WELCOME/signUp" />
@@ -672,7 +988,8 @@
         <assign property="datasource:body.removeIndex" value="1" />
         <assign property="datasource:body.add" value="{ 
           &quot;username&quot;: &quot;[object:WELCOME/signUp/email.text]&quot;,
-          &quot;password&quot;: &quot;[object:WELCOME/signUp/password.text]&quot;
+          &quot;password&quot;: &quot;[object:WELCOME/signUp/password.text]&quot;,
+          &quot;email&quot;: &quot;[object:WELCOME/signUp/email.text]&quot;
           }"/>
         <assign property="datasource:body.event" value="querycomplete"/>
         <assign property="var:postContent" value="[datasource:body.1.content]" />
@@ -703,15 +1020,16 @@
       <sync>
         <assign property="var:userFirstName" value="[object:WELCOME/signUp/firstName.text]" />
         <assign property="var:userLastName" value="[object:WELCOME/signUp/lastName.text]" />
+        <assign property="var:userEmail" value="[object:WELCOME/signUp/email.text]" />
         <assign property="var:postContent" value="[template:crudUser.content]" />
         <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
         <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
-        <alert message="[template:postBody.content] [var:userFirstName] [var:userLastName]" title="New User" />
+        <!--<alert message="[template:postBody.content] [var:userFirstName] [var:userLastName]" title="New User" />-->
       </sync>
     </action>
     <action name="userGetResponse" datasource="userGet"> <!-- retreiving a current user info -->
       <assign property="var:username" value="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" />
-      <alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />
+      <!--<alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />-->
       <play action="dismiss-setup" />
     </action>
     <action name="userCreateResponse" datasource="userUpdate"> <!-- used to get a new users info -->
@@ -739,13 +1057,15 @@
     -->
     <action name="toggle-toc">
       <sync>
+	    <alpha value="0" time="0" target="CAMERA" />
+	    <alpha value="0" time="0" target="CAMERA-ROLL" /> 
         <assign property="var:navStatus" value="[eval: '[var:navStatus]' == '1' ? '0' : '1']" />
         <translate xpos="[eval: '[var:navStatus]' == '1' ? '80%' : '0%']" time=".3" target="WRAPPER" />
         <alpha value="[eval: '[var:navStatus]' == '1' ? '.3' : '0']" time=".2" target="CURTAIN" />
       </sync>
     </action>
     <action name="reveal-section">
-      <assign property="var:navStatus" value="0" />
+      <assign property="var:navStatus" value="0" />  
         <sync>
           <translate xpos="100%" time=".3" target="WRAPPER" />
           <translate xpos="100%" target="WRAPPER/[var:currentSection]" />
@@ -760,14 +1080,10 @@
             <translate xpos="0" target="WRAPPER/Home" />
             <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
           </if>
-          <if lhs="[object:name]" operator="e" rhs="Safety Plan">
-          	<scroll page="1" target="SAFETYPAGER"/>
-          </if>
-          <if lhs="[object:name]" operator="e" rhs="Treatment Locator">
-          	 <sync >
-          	 <assign property="datasource:geo.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
-          	 <alert message="[datasource:geo.0.content]"/>
-          	 </sync>
+          <if lhs="[object:name]" operator="=" rhs="Treatment Locator">
+            <assign property="datasource:locator.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslongitude],[object:MAP.gpslatitude]" />
+            <assign property="object:MAP.region" value="[eval:[object:MAP.gpslatitude] - [eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]] [eval:[object:MAP.gpslongitude] - [eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]]] [eval:[object:MAP.gpslatitude] +[eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]]] [eval:[object:MAP.gpslongitude] + [eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]]"/>
+
           </if>
           <translate xpos="0" time=".3" target="WRAPPER" />
         </sync>
@@ -805,8 +1121,9 @@
         <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
       </if>
       <if lhs="[var:currentSection]" operator="=" rhs="Inspiration">
-        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
-        <set onclickup="null" target="WRAPPER/toolbar/btn-right" />
+        <alpha value="1" target="WRAPPER/toolbar/btn-right" />
+        <load source="graphics/icon-top-attach.png" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="choose-inspiration-attachment" target="WRAPPER/toolbar/btn-right" />
       </if>
       <if lhs="[var:currentSection]" operator="=" rhs="Assessment">
         <alpha value="1" target="WRAPPER/toolbar/btn-right" />
@@ -833,7 +1150,7 @@
     <action name="call-hotline">
     	<load url="tel://816-555-5555" target="WEB"/>
     </action>
-    <action name="reveal-location">
+        <action name="reveal-location">
     	<assign property="var:navStatus" value="0" />
         <sync>
           <translate xpos="100%" time=".3" target="WRAPPER" />
@@ -844,15 +1161,15 @@
           <alpha value="0" target="CURTAIN" />
           <translate xpos="0" target="WRAPPER/Treatment Locator" />
           <sync>
-          	 <assign property="datasource:geo.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslatitude],[object:MAP.gpslongitude]" />
-          	 <alert message="[datasource:geo.0.content]"/>
+          	 <assign property="datasource:locator.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/facilities/nearLoc/[object:MAP.gpslongitude],[object:MAP.gpslatitude]" />
+          	 <assign property="object:MAP.region" value="[eval:[object:MAP.gpslatitude] - [eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]] [eval:[object:MAP.gpslongitude] - [eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]]] [eval:[object:MAP.gpslatitude] +[eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]]] [eval:[object:MAP.gpslongitude] + [eval:deltaForMiles([object:MAP.gpslatitude],[object:MAP.gpslongitude],30)]]"/>
           </sync>
           <translate xpos="0" time=".3" target="WRAPPER" />
         </sync>
         <play action="dismiss-today-modal" />
     	
     </action>
-    <!-- toggle control -->
+    <!-- toggle control --> 
     <action name="toggle-view">
       <sync>
         <assign property="object:background" value="#6d8693" />
@@ -869,6 +1186,9 @@
       	<alpha value="[eval: '_type' == 'Physical' ? '1' : '0']" target="PHYSICAL" />
       	<alpha value="[eval: '_type' == 'Mental' ? '1' : '0']" target="MENTAL" />
       	<alpha value="[eval: '_type' == 'Spiritual' ? '1' : '0']" target="SPIRITUAL" />
+      	<alpha value="[eval: '_type' == 'Physical' ? '1' : '0']" target="PLIST" />
+      	<alpha value="[eval: '_type' == 'Mental' ? '1' : '0']" target="MLIST" />
+      	<alpha value="[eval: '_type' == 'Spiritual' ? '1' : '0']" target="SLIST" />
       </if>
     </action>
     <!-- Journal -->
@@ -883,8 +1203,12 @@
           </sync>
           <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
         </if>
-      </sync>
+              </sync>
     </action>
+    <action name="journal-share">
+    	<email subject="Share Journal Entry" body="This message is from [datasource:userGet.1.name]\n\n [object:CURRENTACTIVITYBODY.text]" />
+    </action>
+    
     <action name="set-mood">
       <sync>
         <alpha value="[eval: '[var:mood]' != 'a' ? '.3' : '1']" target="HOME/feelingMeter/a" />
@@ -939,6 +1263,39 @@
 	        </sync>
       	</if>
     </action>
+    <action name="checkmarked">
+    	<assign property="var:feeling" value="_label" />
+    	<if lhs="[var:checked]" operator="ne" rhs="yes">
+    		<assign property="object:background" value="126f93" />
+    		<assign property="var:checked" value="yes" />
+    	</if>
+    	<set onclickup="uncheckmarked"/>
+    </action>
+    <action name="uncheckmarked">
+    	<assign property="object:background" value="e9e9e9" />
+    	<assign property="var:checked" value="no" />
+    	<set onclickup="checkmarked"/>
+    </action>
+    <!--COPING ACTIONS-->
+	<action name="add-coping-item">
+		<sync>
+	    	<assign property="object:background" value="126f93" />
+	    	<assign property="var:cope-checked" value="yes" />
+	    	<assign property="datasource:write-coping.query" value="INSERT INTO COPE (nid,text,photo,type) values ('_nodeID','_text','_photo','_type')" /> 
+	        <assign property="datasource:saved-coping.query" value="SELECT * FROM COPE"/>
+	        <assign property="preferences:bookmark-_nodeID" value="yes" />
+	        <set onclickup="remove-coping-item"/>
+		</sync>	        
+	</action>
+    <action name="remove-coping-item">
+    	<sync>
+	    	<assign property="object:background" value="e9e9e9" />
+	    	<assign property="var:cope-checked" value="no" />
+	    	<assign property="datasource:write-coping" value="DELETE FROM COPE WHERE nid='_nodeID'"/>
+	        <assign property="datasource:saved-coping.query" value="SELECT * FROM COPE"/>
+	    	<set onclickup="add-coping-item"/>
+    	</sync>
+    </action>
     <action name="toggle-assessment">
       <sync>
         <assign property="var:currentSection" value="[eval: '[var:currentSection]' != 'Journal' ? 'Journal' : 'Assessment']" />
@@ -948,6 +1305,7 @@
     </action>
     <action name="toggle-history">
       <sync>
+        <assign property="datasource:ActivityGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/[var:ActivityID]"/>
         <assign property="var:currentSection" value="[eval: '[var:currentSection]' != 'Journal' ? 'Journal' : 'History']" />
         <play action="toolbar-prep" />
         <translate ypos="[eval: '[var:currentSection]' != 'Journal' ? '0' : '100%']" time=".2" target="WRAPPER/Home/history" />
@@ -959,6 +1317,16 @@
     	<if lhs="_active" operator="ne" rhs="">
     		<assign property="[object:OPTION-1.background]" value="ff0000" />
     	</if>
+    </action>
+    <!--Inspiration Section-->
+    <action name="choose-inspiration-attachment">
+    	<alpha value="1" time="0" target="ADDINSPIRE"/>
+    	<alpha value="0" time="0" target="CAMERA" />
+    	<alpha value="0" time="0" target="CAMERA-ROLL" />
+    </action>
+    <action name="close-inspiration-attachment">
+    	<alpha value="0" time="0" target="ADDINSPIRE"/>
+    	<set onclickup="choose-inspiration-attachment" />
     </action>
     <!-- paginate dots : activities -->
     <action name="paginate">
@@ -976,7 +1344,7 @@
       <play action="step-buttons" />
     </action>
     <action name="step-buttons">
-      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/safetypager.page] of 5_colon" />
+      <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/main.page] of 5_colon" />
       <assign property="object:ASSESSSTEPS.text" value="[object:_aliasTarget/main.page] of 3" />
       <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="1">
         <alpha value="0" target="_aliasTarget/steps/btn-prev" />
@@ -1011,7 +1379,6 @@
           <alpha value="1" target="_aliasTarget/steps/btn-next" />
         </else>
       </if>
-
     </action>
     <!-- Home Filter when scrolling down -->
     <action name="toggle-filter">
@@ -1019,6 +1386,21 @@
         <assign property="var:filterStatus" value="[eval: '[var:filterStatus]' != 'active' ? 'active' : 'inactive']" />
         <translate ypos="[eval: '[var:filterStatus]' != 'active' ? '100%' : '[eval:[object:WRAPPER/Home.height] - [object:WRAPPER/Home/filter.height] ]']" time=".2" target="WRAPPER/Home/filter" />
       </sync>
+    </action>
+
+    <action name="post-activity">
+      <sync>
+        <assign property="var:currentActivityBody" value="[object:CURRENTACTIVITYBODY.text]" />
+        <assign property="var:postContent" value="[template:crudActivity.content]" />
+        <assign property="datasource:postActivity.postContent" value="[template:postBody.content]" />
+        <assign property="datasource:postActivity.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/" />
+        <alert title="pre-submission" message="[template:postBody.content]" />
+      </sync>
+    </action>
+
+    <action name="journaltest" datasource="postActivity" datasourceevent="querycomplete">
+      <alert title="post" message="[datasource:postActivity.0.content]" />
+      <assign property="var:ActivityID" value="[datasource:postActivity.1.id]" />
     </action>
 
 
@@ -1035,6 +1417,136 @@
       <alert title="feature" message="will launch feature" />
     </action>
     
+    		
+	<!-- !Camera -->
+	<action name="show-camera">
+		<alpha value="0" time="0" target="ADDINSPIRE" />
+		<assign property="var:face" value="front" />
+		<assign property="var:cam" value="_cam" />
+		<alpha value="1" time="0" target="[eval: '[var:cam]' == 'camera' ? 'CAMERA' : 'CAMERA-ROLL']" />
+		<translate xpos="0" time=".2" curve="easeout" target="[eval: '[var:cam]' == 'camera' ? 'CAMERA' : 'CAMERA-ROLL']" />
+		
+	    <if lhs="[var:cam]" operator="e" rhs="camera">
+            <create class="camera" target="CAMERA/lens/photo/box" face="[var:face]" />
+            <else>
+				  <translate ypos="[eval: [object:WRAPPER.height] - 60]" time=".3" curve="easeout" target="ROLL-WAIT" />
+                  <create class="rollPager" target="CAMERA-ROLL" />
+                  <assign property="var:rowcount" value="0"/>
+                  <assign property="var:photoCount" value="1"/>
+                  <assign property="datasource:photos.source" value="assets"/>
+            </else>
+	    </if>
+	</action>
+	<action name="hide-camera">
+		
+		<alpha value="0" time="0" delay=".2" target="[eval: '[var:cam]' == 'camera' ? 'CAMERA' : 'CAMERA-ROLL']" />
+		<translate xpos="100%" time=".2" curve="easeout" target="[eval: '[var:cam]' == 'camera' ? 'CAMERA' : 'CAMERA-ROLL']" />
+		
+          <if lhs="[var:cam]" operator="e" rhs="camera">
+                <delete target="CAMERA-OBJECT" />
+                <else>
+                      <delete target="CAMERA-ROLL/roll" />
+                </else>
+          </if>
+	</action>
+	
+    <action name="buildPhotos">
+        <if lhs="[datasource:photos.dataSourceResultCount]" operator="gt" rhs="0">
+            <sync>
+                <assign property="var:photoTotal" value="[datasource:photos.dataSourceResultCount]"/>
+                <play anim="startBuild"/>
+            </sync>
+        </if>
+    </action>
     
+    <action name="startBuild">
+        <sync>
+              <if lhs="[var:photoTotal]" operator="e" rhs="2">
+                    <create class="rollRow3" target="CAMERA-ROLL/roll" index="[var:photoCount]" imagea="[datasource:photos.[var:photoCount].url]" imageb="[datasource:photos.[eval: [var:photoCount] + 1].url]" />
+                      <translate ypos="100%" time=".3" curve="easeout" target="ROLL-WAIT" />
+              </if>
+              <if lhs="[var:photoTotal]" operator="e" rhs="1">
+                    <create class="rollRow3" target="CAMERA-ROLL/roll" index="[var:photoCount]" imagea="[datasource:photos.[var:photoCount].url]" />
+                      <translate ypos="100%" time=".3" curve="easeout" target="ROLL-WAIT" />
+              </if>
+              <if lhs="[var:photoTotal]" operator="gte" rhs="3">
+                    <create class="rollRow3" target="CAMERA-ROLL/roll" index="[var:photoCount]" imagea="[datasource:photos.[var:photoCount].url]" imageb="[datasource:photos.[eval: [var:photoCount] + 1].url]" imagec="[datasource:photos.[eval: [var:photoCount] + 2].url]" />
+                    <assign property="var:photoTotal" value="[eval: [var:photoTotal] - 3]" />
+                    <assign property="var:photoCount" value="[eval: [var:photoCount] + 3]" />
+                    <play action="startBuild" />
+              </if>
+              <if lhs="[var:photoTotal]" operator="e" rhs="0">
+                      <translate ypos="100%" time=".3" curve="easeout" target="ROLL-WAIT" />
+              </if>
+        </sync>
+    </action>
+	<action name="select-rollPhoto">
+		<sync>
+			<if lhs="[var:rollRow]" operator="!=" rhs="">
+			      <alpha value="0" time=".1" target="CAMERA-ROLL/roll/[var:rollRow]/[var:rollCol]/imageCrop/check" />
+			</if>
+			<assign property="var:rollRow" value="_row" />
+			<assign property="var:rollCol" value="_column" />
+			<alpha value="1" time=".1" target="CAMERA-ROLL/roll/[var:rollRow]/[var:rollCol]/imageCrop/check" />
+            <load asset="[datasource:photos._assetIndex.url]" target="CAMERA/lens/photo/box/asset" />
+            <if lhs="[var:cam]" operator="ne" rhs="camera">
+                      <alpha value="1" target="CAMERA/lens/photo/box/asset" />
+                </if>
+                <capture target="CAMERA/lens/photo/box" tofile="photo2.png" />
+                <play action="photo-saved" />
+		</sync>
+	</action>
+	<action name="photo-saved" >
+          <alert message="image saved. [file:photo2.png]"/>
+          <assign property="datasource:uploadPhoto.postFile" value="photo2.png"/>
+          <assign property="datasource:uploadPhoto.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/blob/"/>
+          <if lhs="[var:cam]" operator="ne" rhs="camera">
+                <alpha value="0" target="CAMERA/lens/photo/box/asset" />
+          </if>
+          
+    </action>
+    <action name="photouploaded" datasource="uploadPhoto" datasourceevent="querycomplete">
+    	<assign property="var:photoID" value="[datasource:uploadPhoto.1.id]" />
+    	<alert title="stored variable" message="[var:photoID]"/>
+    	<play action="post-inspire" />
+    </action>
+    <action name="photouploaded" datasource="uploadPhoto" datasourceevent="datasourceerror">
+    	<alert message="ERROR [datasource:uploadPhoto.0.content]"/>
+    </action>
+
+	<action name="camera-flip">
+          <sync>
+                <delete target="CAMERA-OBJECT" />
+                <create class="camera" target="CAMERA/lens/photo/box" face="[eval: '[var:face]' == 'front' ? 'back' : 'front' ]" />
+                <assign property="var:face" value="[eval: '[var:face]' == 'front' ? 'back' : 'front' ]" />
+          </sync>
+	</action>
+	
+    <action name="take-photo" >
+          <event type="pausePreview" target="CAMERA-OBJECT" />
+          <set onclickup="unfreeze" target="CAMERA/toolbar/shutter" />
+    </action>
+    <action name="commit-photo">
+    	 <capture target="CAMERA/lens/photo/box" tofile="photo2.png" />
+          <play action="photo-saved" />
+    </action>
+    <action name="unfreeze" >
+		<event type="resumePreview" target="CAMERA-OBJECT" />
+          <set onclickup="take-photo" target="CAMERA/toolbar/shutter" />
+    </action>
+    
+<!-- Inspire Post -->       
+    <action name="post-inspire"> 
+	 	 <sync>
+	        <assign property="var:postContent" value="[template:crudInspire.content]" />
+	        <assign property="datasource:postInspire.postContent" value="[template:postBody.content]" />
+	        <assign property="datasource:postInspire.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration/" />
+	        <alert title="pre-submission" message="[template:postBody.content]" />
+      </sync>
+	</action>
+    <action name="inspiretest" datasource="postInspire" datasourceevent="querycomplete">
+      <alert title="post" message="[datasource:postInspire.0.content]" />
+      <assign property="var:InspireID" value="[datasource:postInspire.1.id]" />
+    </action>    
   </actions>
 </wire>
