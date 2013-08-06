@@ -19,6 +19,7 @@
     <datasource name="userAuth" httpheader="header" source="" query="//" providertype="json" httpmethod="post"/>
     <datasource name="userGet" httpheader="header" source="" query="/" providertype="json" />
     <datasource name="userUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
+<<<<<<< HEAD
     
     <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
@@ -28,6 +29,12 @@
     
     <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
+=======
+    <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
+    <datasource name="locator" source="" query="/" providertype="json" />
+    <datasource name="body" source="" query="//" providertype="json" /> 
+  </datasources>
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
 
     <datasource name="postInspire" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="InspireGet" httpheader="header" source="" query="/" providertype="json" />
@@ -53,6 +60,7 @@
                                             "devices":[{ "name": "johnnyS3", "model": "Galaxy S3", "carrier": "ATT", "pushId": "[system:pushtoken]", 
                                             "prefs": { "arbitraryDeviceSpecificPrefName": "prefValue", "anotherDevicePrefName": "anotherPrefValue" }}]
                                             } ]]></texttemplate>
+<<<<<<< HEAD
   <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
                                                 "mood": {
                                                         "level": "[var:mood]",
@@ -186,6 +194,15 @@
   
   
   
+=======
+  <texttemplate name="crudActivity"><![CDATA[ { "profile": "51d31a168ae0d6cb305aa983",
+                                                "mood": {
+                                                        "level": 5,
+                                                        "description": "happy"
+                                                     },
+                                                "content": "[var:currentActivityBody]",
+                                              } ]]></texttemplate>                                      
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
   <styles>
     <style name="textfield" font="helvetica" size="15" color="#000000" alignment="left" valignment="center" border="line" margin-top="10" background="#ffffff" leftinset="5" onreturnkeypressed="dismiss-keyboard"  />
     <style name="headline" font="HelveticaNeue-Bold" color="#8fbf6b" size="15" /> <!-- green text -->
@@ -356,6 +373,7 @@
     <class name="annotations">
       <annotation name="[param:location]" alias="[param:location]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="red" animateddrop="no" ></annotation>
     </class>
+<<<<<<< HEAD
     		<!-- !Camera -->
             <class name="camera">
                   <camera name="camera" alias="CAMERA-OBJECT" height="100%" width="100%" face="[param:face]" type="video" valign="bottom"></camera>
@@ -438,6 +456,8 @@
 		        </panel>
 	        </panel>
         </class>
+=======
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
   </classes>
 
   <main>
@@ -527,6 +547,7 @@
                 <!--<panel name="col1" width="60%" height="100%">
                   <text name="assesment" height="100%" width="100%" text="Take Assessment" font="HelveticaNeue" color="#89b0bf" size="15" alignment="left" valign="bottom" leftinset="20" onclickup="toggle-assessment"/>
                 </panel>-->
+<<<<<<< HEAD
                 	<panel name="col2" width="40%" height="100%" align="right">
                   		<object class="button" text="Save" onclickup="post-activity" />
                 	</panel>
@@ -534,6 +555,12 @@
               	<panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
               </pager>
               
+=======
+                <panel name="col2" width="40%" height="100%" align="right">
+                  <object class="button" text="Save" onclickup="post-activity" />
+                </panel>
+              </panel>
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
             </panel>
   <!-- 
       assessment view / triggered off the assesment link located in call-to-action of journal/main/call-to-action 
@@ -825,7 +852,11 @@
               </textfield>
             </panel>
             <map name="main" alias="MAP" datasource="locator" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
+<<<<<<< HEAD
               <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" subtitle="[param:LOC_STREET_1]" />
+=======
+              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" 
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
             </map>
           </panel>
           <!-- 
@@ -1150,7 +1181,14 @@
     <action name="call-hotline">
     	<load url="tel://816-555-5555" target="WEB"/>
     </action>
+<<<<<<< HEAD
         <action name="reveal-location">
+=======
+    <action name="map-check" datasource="locator">
+      <alert title="[object:MAP.gpslatitude],[object:MAP.gpslongitude]" message="[datasource:locator.0.content]" />
+    </action
+    <action name="reveal-location">
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
     	<assign property="var:navStatus" value="0" />
         <sync>
           <translate xpos="100%" time=".3" target="WRAPPER" />
@@ -1167,7 +1205,6 @@
           <translate xpos="0" time=".3" target="WRAPPER" />
         </sync>
         <play action="dismiss-today-modal" />
-    	
     </action>
     <!-- toggle control --> 
     <action name="toggle-view">
@@ -1204,9 +1241,12 @@
           <translate valign="bottom" time=".2" target="WRAPPER/Home/journal" />
         </if>
               </sync>
+<<<<<<< HEAD
     </action>
     <action name="journal-share">
     	<email subject="Share Journal Entry" body="This message is from [datasource:userGet.1.name]\n\n [object:CURRENTACTIVITYBODY.text]" />
+=======
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
     </action>
     
     <action name="set-mood">
@@ -1393,14 +1433,21 @@
         <assign property="var:currentActivityBody" value="[object:CURRENTACTIVITYBODY.text]" />
         <assign property="var:postContent" value="[template:crudActivity.content]" />
         <assign property="datasource:postActivity.postContent" value="[template:postBody.content]" />
+<<<<<<< HEAD
         <assign property="datasource:postActivity.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/" />
+=======
+        <assign property="datasource:postActivity.datasource" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/[var:userID]" />
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
         <alert title="pre-submission" message="[template:postBody.content]" />
       </sync>
     </action>
 
     <action name="journaltest" datasource="postActivity" datasourceevent="querycomplete">
       <alert title="post" message="[datasource:postActivity.0.content]" />
+<<<<<<< HEAD
       <assign property="var:ActivityID" value="[datasource:postActivity.1.id]" />
+=======
+>>>>>>> d651ab57671de2afad05da4c75c4b25e405d20ec
     </action>
 
 
