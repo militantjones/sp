@@ -30,7 +30,16 @@
                 return dateFormat(d, format);
             }
             
-            
+            function deltaForMiles(originLat, originLong, miles) 
+            {
+				var maxLat = originLat + (miles / 69 );
+				// 69 miles per degree of
+				minLat = originLat - (miles / 69 );
+				var maxLong = originLong + (miles / (69.172 * Math.cos(originLat * 0.0174533) ) );
+				var minLong = originLong - (miles / (69.172 * Math.cos(originLat * 0.0174533) ) );
+		
+				return ((maxLong - originLong)/4);
+			}
             
             
             /*
