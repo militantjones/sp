@@ -1180,7 +1180,6 @@
 						</pager>
 					</panel>
 					<panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
-<<<<<<< HEAD
 						<text name="query" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question" />
 						<panel name="add-environment" height="50" width="100%" bottomof="query" background="#ffffff">
 							<object class="button" text="Add Environment" onclickup="add-environment-item" />
@@ -1192,16 +1191,6 @@
 						<panel name="col2" width="40%" height="60" align="right" valign="bottom" bottom-margin="20" >
 							<object class="button" text="Save" onclickup="prep-inspiration-vars" />
 						</panel>
-=======
-						<pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
-							<text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question" />
-							<object class="remove-environment" textfield="1" removetext="Safe Place 1" />
-							<object class="add-environment" textfield="add-environment" />
-							<panel name="col2" width="40%" height="60" align="right">
-								<object class="button" text="Save" onclickup="post-plan" />
-							</panel>
-						</pager>
->>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
 					</panel>
 				</pager>
 			</panel>
@@ -1481,7 +1470,6 @@
       </sync>
     </action>
     <action name="userGetResponse" datasource="userGet"> <!-- retreiving a current user info -->
-<<<<<<< HEAD
 		<if lhs="[datasource:userGet.1.plan]" operator="ne" rhs="">
 			<assign property="var:userPlan" value="[datasource:userGet.1.plan]" />
 			<assign property="datasource:planGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/?query=%7B%22profile%22%3A%22[var:userID]%22%7D" />
@@ -1494,15 +1482,12 @@
       <!--<alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />-->
 <!--       <alert message="var:userPlan is [var:userPlan]" /> -->
       <play action="dismiss-setup" />
-=======
-      <assign property="var:username" value="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" />
       <assign property="var:InspireID" value="[datasource:userGet.1.inspiration]" />
      
       <!--<alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />-->
       <if lhs="[var:todaymodal]" operator="ne" rhs="no">
       	<play action="dismiss-setup" />
       </if>
->>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
     </action>
 	<action name="planGet-complete" datasource="planGet" datasourceevent="querycomplete" >
 		<alert message="planGet-complete count is [datasource:planGet.dataSourceResultCount], json is [datasource:planGet.0.content]" />
@@ -2198,7 +2183,6 @@
 			<assign property="var:messageContact" value="yes" />
 		</action>
 		
-<<<<<<< HEAD
 		<!-- !Environments Actions -->
 		<action name="add-environment-item" >
 			<alpha value="1" time=".3" target="ENVIRONMENT-ITEM" />
@@ -2344,43 +2328,15 @@
 			<assign property="var:postContent" value="[template:crudPlan.content]" />
 			<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
 			<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
-=======
-		<action name="post-plan">
-			<assign property="var:warning1-label" value="Z" />
-			<assign property="var:warning1-type" value="Y" />
-			<assign property="var:warning1-notes" value="X" />
-			<assign property="var:inspiration1-label" value="W" />
-			<assign property="var:inspiration1-type" value="V" />
-			<assign property="var:inspiration1-notes" value="U" />
-			<assign property="var:inspiration1-imageUrl" value="T" />
-			<assign property="var:physical1" value="S" />
-			<assign property="var:mental1" value="R" />
-			<assign property="var:spiritual1" value="Q" />
-			<assign property="var:environment1" value="P" />
-			<assign property="var:postContent" value="[template:crudPlan.content]" />
-			<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
-			<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
-			<alert title="pre-submission" message="[template:postBody.content]" />
-			<!--
-		<assign property="var:warning2-label" value="" />
-		<assign property="var:warning3-label" value="" />
-		<assign property="var:warning4-label" value="" />
-		<assign property="var:warning5-label" value="" />
--->
->>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
 		</action>
 
 		<action name="postPlan-complete" datasource="postPlan" datasourceevent="querycomplete">
-<<<<<<< HEAD
 			<email subject="pre-submission and result" body="[template:postBody.content]\n\n\n\n\n\n\n[datasource:postPlan.0.content]" toaddress="mlong@rarewire.com" />
 			<alert message="postPlan-complete // datasource:postPlan.1.id is [datasource:postPlan.1.id] content is [datasource:postPlan.0.content]" />
 			<assign property="var:userPlan" value="[datasource:postPlan.1.id]" />
 	        <assign property="var:postContent" value="[template:crudUser.content]" />
 	        <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
 	        <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
-=======
-			<alert message="[datasource:postPlan.1.id]" />
->>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
 		</action>
   </actions>
 </wire>
