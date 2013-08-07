@@ -2,9 +2,6 @@
   <datasources>
 		<datasource name="dropdowns" source="" query="//entry" providertype="xml" /> 
 
-		<datasource name="write-environment" source="sql://environment" query="CREATE TABLE IF NOT EXISTS ENVIRONMENT (ID INTEGER PRIMARY KEY AUTOINCREMENT, LABEL TEXT);" providertype="sql" />
-		<datasource name="saved-environment" source="sql://environment" query="SELECT * FROM ENVIRONMENT ORDER BY ID DESC;" providertype="sql" />
-
 		<datasource name="write-warning" source="sql://warning" query="CREATE TABLE IF NOT EXISTS WARNING (ID INTEGER PRIMARY KEY AUTOINCREMENT, LABEL TEXT, TYPE TEXT, NOTES TEXT);" providertype="sql" />
 		<datasource name="saved-warning" source="sql://warning" query="SELECT * FROM WARNING ORDER BY ID DESC;" providertype="sql" />
 
@@ -15,6 +12,8 @@
 		<datasource name="planUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put" />
 		<datasource name="planGet" httpheader="header" source="" query="//warnings" providertype="json" />
 
+		<datasource name="warningInternal" source="" query="/entry" providertype="json" />
+		<datasource name="inspirationInternal" source="" query="/entry" providertype="json" />
 		<datasource name="contacts" providertype="contacts" source="*" query="/contacts" />
 
     <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
@@ -41,10 +40,10 @@
     <datasource name="WarningGet" httpheader="header" source="" query="/" providertype="json" />
     
     <datasource name="postInspire" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
-    <datasource name="InspireUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
+    <datasource name="postInspireUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
     <datasource name="InspireGet" httpheader="header" source="" query="/" providertype="json" />
 
-    <datasource name="HomeGet" httpheader="header" source="" query="/" providertype="json" />
+    <datasource name="HomeGet" httpheader="header" source="" query="/homeViewEntry" providertype="json" />
 
     
     <datasource name="locator" source="" query="/" providertype="json" />
@@ -70,7 +69,7 @@
                                             } ]]></texttemplate>
   <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
                                                 "mood": {
-                                                        "level": "[var:mood]",
+                                                        "level": [var:mood],
                                                         "description": "[var:feeling]"
                                                      },
                                                 "content": "[var:currentActivityBody]"
@@ -101,7 +100,7 @@
 					    "quotes":
 					        [
 					            {
-					                "text": "[var:inspire-quote]",
+					                "text": "",
 					                "link": "",
 					                "media": ""
 					            }
@@ -130,8 +129,8 @@
 					} 
   												
  												]]></texttemplate>  
- 		<texttemplate name="crudInspireUpdate"><![CDATA[   { "id": "[preferences:InspireID]",
-					    "profile": "",
+ 		<texttemplate name="crudInspireUpdate"><![CDATA[   {  "id": "[var:InspireID]",
+					    "profile": "[var:userID]",
 					    "photos":
 					        [
 					            {
@@ -156,7 +155,7 @@
 					    "quotes":
 					        [
 					            {
-					                "text": "[var:inspire-quote]",
+					                "text": "",
 					                "link": "",
 					                "media": ""
 					            }
@@ -354,9 +353,9 @@
 			         "[var:environment10]"
 			      ]
 			}]]></texttemplate>
-	<texttemplate name="crudPlanUpdate"><![CDATA[{
+	<texttemplate name="crudPlan"><![CDATA[{
 			   "profile": "[var:userID]",
-			   "id": "[var:userPlan]",
+			   "id": "[var:planID]",
 			   "warnings":[
 			      {
 			         "label":"[var:warning1-label]",
@@ -588,30 +587,24 @@
       </panel>
     </class>
     <class name="remove-item">
-    	<panel name="remove-class-[param:index]" width="100%" height="15%" >
+    	<panel name="remove-class" width="100%" height="15%" >
 			 <!-- <image name="arrow-expand" source="graphics/icon-content-arrow.png" padding-left="10" align="left" onclickup="expand-item"></image> -->
-			 <text name="[param:textfield]" alias="[param:textfield]" width="81%" height="65%" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" background="#ccd9e5" text="[param:removetext]" onclickup="edit-item" _index="[param:index]" _id="[param:id]" ></text>
-			 <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item" _id="[param:id]" ></image>			
+			 <text name="[param:textfield]" alias="[param:textfield]" width="81%" height="65%" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" background="#ccd9e5" text="[param:removetext]"></text>
+			 <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item"></image>			
 		  </panel>
     </class>
 		<!-- !Add-item Class -->
 		<class name="add-item">
-			<panel name="add-item[param:index]" width="100%" height="90%" align="center" valign="center" background="#ff0000" >
+			<panel name="add-item[param:index]" width="100%" height="60%">
 				<panel name="warningEntryTitle-wrapper" width="100%" height="100">
 					<textfield name="[param:textfield]" alias="[param:item-alias]-LABEL-[param:index]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What makes you feel bad?" text="[param:label]" />
-<!-- 					<image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry" clickuptarget="WRAPPER" /> -->
-					<text name="type" alias="[param:item-alias]-TYPE-[param:index]" width="81%" height="44" background="#ffffff" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" align="left" borderwidth="1" bordercolor="000000" text="[param:type]" bottomof="[param:textfield]" topmargin="10" onclickup="launch-dropdown" _dropdown="[param:dropdown]" _index="[param:index]" />
+					<image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry" clickuptarget="WRAPPER" />
+					<text name="type" alias="[param:item-alias]-TYPE-[param:index]" width="81%" height="44" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" align="left" borderwidth="1" bordercolor="000000" text="[param:type]" bottomof="[param:textfield]" topmargin="10" onclickup="launch-dropdown" _dropdown="[param:dropdown]" _index="[param:index]" />
 				</panel>
 				<panel name="warningEntryBody-wrapper" width="100%" height="132" bottomof="warningEntryTitle-wrapper" margin-top="10">
 					<textfield name="[param:add-notes]" alias="[param:item-alias]-NOTES-[param:index]" width="81%" height="98%" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" text="[param:notes]" />
 					<!-- 				<image name="attach" source="graphics/icon-content-attach.png" align="right" topmargin="10" valign="top" onclickup="add-attach"></image> -->
-					<image name="share" source="graphics/icon-content-share.png" valign="top" align="right" onclickup="add-share" rightmargin="10" />
-				</panel>
-				<panel name="col1" width="40%" height="60" align="left" bottomof="warningEntryBody-wrapper" >
-					<object class="button" text="Cancel" onclickup="close-plan-item" />
-				</panel>
-				<panel name="col2" width="40%" height="60" align="right" bottomof="warningEntryBody-wrapper" >
-					<object class="button" text="Save" onclickup="save-plan-item" />
+					<image name="share" source="graphics/icon-content-share.png" valign="top" align="right" onclickup="add-share" />
 				</panel>
 			</panel>
 		</class>
@@ -629,24 +622,18 @@
 		</class>
     <class name="add-environment">
     	<panel name="add-environment" width="100%" height="55%" >
-  			<panel name="enviroEntryTitle-wrapper" width="100%" height="132" align="center" valign="center" >
-  				<textfield name="[param:textfield]" alias="[param:item-alias]-LABEL-[param:index]" width="81%" align="center" height="98%" leftinset="3" style="textfield" multiline="yes" borderwidth="1" bordercolor="#000000" placeholder="What are you going to do?" ></textfield>
-<!--           <image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry"></image> -->
-        	</panel>
-			<panel name="col1" width="40%" height="60" align="left" bottomof="enviroEntryTitle-wrapper" >
-				<object class="button" text="Cancel" onclickup="close-environment-item" />
-			</panel>
-			<panel name="col2" width="40%" height="60" align="right" bottomof="enviroEntryTitle-wrapper" >
-				<object class="button" text="Save" onclickup="save-environment-item" />
-			</panel>
-		</panel>  
+  			<panel name="enviroEntryTitle-wrapper" width="100%" height="64">
+          <textfield name="[param:textfield]" alias="[param:textfield]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What are you going to do?"></textfield>
+          <image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry"></image>
+        </panel>
+		  </panel>  
     </class>
     <class name="remove-environment">
-    	<panel name="remove-class-[param:index]" width="100%" height="15%" >
-			 <!-- <image name="arrow-expand" source="graphics/icon-content-arrow.png" padding-left="10" align="left" onclickup="expand-item"></image> -->
-			 <text name="[param:textfield]" alias="[param:textfield]" width="81%" height="65%" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" background="#ccd9e5" text="[param:removetext]" onclickup="edit-environment-item" _index="[param:index]" _id="[param:id]" ></text>
-			 <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-environment-item" _id="[param:id]" ></image>			
-		  </panel>
+      <panel name="remove-class" width="100%" height="15%" >
+       <!-- <image name="arrow-expand" source="graphics/icon-content-arrow.png" padding-left="10" align="left" onclickup="expand-item"></image> -->
+       <text name="[param:textfield]" alias="[param:textfield]" width="81%" height="65%" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" background="#ccd9e5" text="[param:removetext]"></text>
+       <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item"></image>     
+      </panel>
     </class>
 		<!-- !Contact-item Class -->
 		<class name="contact-item-ds">
@@ -792,15 +779,16 @@
         	<panel name="row[param:index]" width="100%" height="150">
         		<panel name="middle" width="1" height="100%" align="center"></panel>
 		        <panel name="col1" width="50%" height="170" clip="yes" leftof="middle" background="ffffff">
-		        	<text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
-			        <image name="img" source="[param:photo]" width="95%" height="85%" topmargin="7" align="center" valign="top" ></image>
+		        	<text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue-Bold" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
+			        
+			        <image name="img" url="[param:photo]" width="95%" height="85%" topmargin="7" align="center" valign="top" ></image>
 			        <panel name="title" width="95%" height="10%" align="center" valign="bottom" background="ffffff">
 			        	
 			        </panel>	
 		        </panel> 
 		        <panel name="col2" width="50%"  height="170" clip="yes" rightof="middle" background="ffffff">		 
-		        	<text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
-		        	<image name="img2" url="[param:photo]" width="95%" height="85%" topmargin="7" align="center" valign="top"></image>
+		        	<text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue-Bold" size="16" alignment="center" text="[param:text2]" align="center" valign="center" background="ddeccd"></text>
+		        	<image name="img2" url="[param:photo2]" width="95%" height="85%" topmargin="7" align="center" valign="top"></image>
 		        	<panel name="title" width="95%" height="10%" align="center" valign="bottom" background="ffffff">
 			        	
 			        </panel>
@@ -811,8 +799,8 @@
         	<panel name="row[param:index]" width="100%" height="150">
         		<panel name="middle" width="1" height="100%" align="center"></panel>
 		        <panel name="col1" width="50%" height="170" clip="yes" leftof="middle" background="ffffff">
-			        <text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
-			        <image name="img" url="[param:photo]"  width="95%" height="85%" topmargin="7" align="center" valign="top"></image>
+			        <text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue-Bold" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
+			        <image name="img" url="[param:photo3]"  width="95%" height="85%" topmargin="7" align="center" valign="top"></image>
 			        <panel name="title" width="95%" height="10%" align="center" valign="bottom" background="ffffff">
 			        	
 			        </panel>	
@@ -868,9 +856,9 @@
               <panel name="rule" width="100%" height="1" valign="bottom" background="#126f93"></panel>
             </panel>
             <!-- <pager name="main" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no" lazy="yes"> -->
-            <tableview name="main" alias="HOMEFEED-TABLEVIEW" datasource="HomeGet" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#ddeccd" rowheight="150" orientation="vertical" paginate="no">
+            <tableview name="main" alias="HOMEFEED-TABLEVIEW" datasource="HomeGet" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#ddeccd" rowheight="150" orientation="vertical" paginate="no" step="2">
 <!--               <panel name="trigger" width="100%" height="1" onscrollaway="toggle-filter" onscrollto="toggle-filter" /> -->
-              <object class="homefeed-2" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]" text="[param:homeViewEntry/text]" lhs="[param:dataSourceIndex]" operator="!=" rhs="[datasource:HomeGet.dataSourceResultCount]"/>
+              <object class="homefeed-2" index="[param:dataSourceIndex]" photo="[param:homeViewEntry/url]" photo2="[datasource:HomeGet.[eval:[param:dataSourceIndex] + 1].homeViewEntry/url]" text="[param:homeViewEntry/text]" text2="[datasource:HomeGet.[eval:[param:dataSourceIndex] + 1].homeViewEntry/text]" lhs="[param:dataSourceIndex]" operator="!=" rhs="[datasource:HomeGet.dataSourceResultCount]"/>
               <object class="homefeed-1" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]" text="[param:homeViewEntry/text]" lhs="[param:dataSourceIndex]" operator="=" rhs="[datasource:HomeGet.dataSourceResultCount]"/>
               
             </tableview>
@@ -900,9 +888,9 @@
                 </panel>
                 
               	<panel name="call-to-action" height="15%" width="100%">
-                <!--<panel name="col1" width="60%" height="100%">
+                <panel name="col1" width="60%" height="100%">
                   <text name="assesment" height="100%" width="100%" text="Take Assessment" font="HelveticaNeue" color="#89b0bf" size="15" alignment="left" valign="bottom" leftinset="20" onclickup="toggle-assessment"/>
-                </panel>-->
+                </panel>
                 	<panel name="col2" width="40%" height="100%" align="right">
                   		<object class="button" text="Save" onclickup="post-activity" />
                 	</panel>
@@ -1122,24 +1110,23 @@
 				<pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
 					<panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
 						<text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question" />
-						<panel name="add-warning" height="50" width="100%" bottomof="query" background="#ffffff">
-							<object class="button" text="Add Warning Sign" onclickup="add-plan-item" />
-							<panel name="break" width="100%" height="2" background="666666" topmargin="5" bottomof="button" />
-						</panel>
-						<list name="pager" alias="WARNINGPAGER" datasource="saved-warning" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="add-warning" padding-left="10" padding-right="10" topmargin="15" >
-							<object class="remove-item" textfield="warn-entry1" index="[param:dataSourceIndex]" removetext="[param:LABEL]" id="[param:ID]" />
+						<list name="pager" alias="WARNINGPAGER" datasource="saved-warning" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
+							<!--                   <object class="remove-item" textfield="1" removetext="What makes you feel bad?" /> -->
+							<object class="add-item" item-alias="WARNING" textfield="warn-entry1" add-notes="warn-note1" dropdown="warnings.xml" index="1" label="Label" type="Type" notes="Notes" lhs="[param:dataSourceIndex]" operator="lte" rhs="1" />
+							<object class="add-item" item-alias="WARNING" textfield="warn-entry1" add-notes="warn-note1" dropdown="warnings.xml" index="[param:dataSourceIndex]" label="[param:LABEL]" type="[eval: '[param:TYPE]' != '' ? '[param:TYPE]' : 'Type' ]" notes="[param:NOTES]" lhs="[param:dataSourceIndex]" operator="gt" rhs="2" />
+							<object class="kb-filler" lhs="[param:dataSourceIndex]" operator="e" rhs="[param:dataSourceResultCount]" />
 						</list>
 					</panel>
 					<panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
 						<text name="query" height="54" width="100%" align="left" text="What helps you take your mind off of your problems?" style="step-question" />
-						<panel name="add-inspiration" height="50" width="100%" bottomof="query" background="#ffffff">
-							<object class="button" text="Add Inspiration" onclickup="add-plan-item" />
-							<panel name="break" width="100%" height="2" background="666666" topmargin="5" bottomof="button" />
-						</panel>
-						<list name="pager" alias="INSPIRATIONPAGER" datasource="saved-inspiration" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="add-inspiration" padding-left="10" padding-right="10" topmargin="15" >
-							<object class="remove-item" textfield="inspiration-entry1" index="[param:dataSourceIndex]" removetext="[param:LABEL]" id="[param:ID]" />
+						<list name="pager" alias="INSPIRATIONPAGER" datasource="saved-inspiration" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
+							<!--                   <object class="remove-item" textfield="1" removetext="What makes you feel good?" /> -->
+							<object class="add-item" item-alias="INSPIRATION" textfield="inspire-entry1" add-notes="inspire-note1" dropdown="inspirations.xml" index="1" label="Label" type="Type" notes="Notes" lhs="[param:dataSourceIndex]" operator="lte" rhs="1" />
+							<object class="add-item" item-alias="INSPIRATION" textfield="inspire-entry1" add-notes="inspire-note1" dropdown="inspirations.xml" index="[param:dataSourceIndex]" label="[param:LABEL]" type="[eval: '[param:TYPE]' != '' ? '[param:TYPE]' : 'Type' ]" notes="[param:NOTES]" lhs="[param:dataSourceIndex]" operator="gt" rhs="2" />
+							<object class="kb-filler" lhs="[param:dataSourceIndex]" operator="e" rhs="[param:dataSourceResultCount]" />
 						</list>
 					</panel>
+					CONTACT/contact-list
 					<panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
 						<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question" />
 						<panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
@@ -1147,6 +1134,12 @@
 							<panel name="break" width="100%" height="2" background="666666" topmargin="5" bottomof="button" />
 						</panel>
 						<pager name="contact-list" width="100%" height="[eval: [object:CONTACT.height] - 100]" topmargin="5" orientation="vertical" paginate="no" bottomof="add-contact">
+							<!--
+                 <object class="contact-item" contact-item="1" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+                 <object class="contact-item" contact-item="2" contact-image="graphics/img-contact-female.png" name="Sample Female" description="mother" />
+                 <object class="contact-item" contact-item="3" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+                 <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
+-->
 						</pager>
 					</panel>
 					<panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
@@ -1182,6 +1175,7 @@
 						</pager>
 					</panel>
 					<panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
+<<<<<<< HEAD
 						<text name="query" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question" />
 						<panel name="add-environment" height="50" width="100%" bottomof="query" background="#ffffff">
 							<object class="button" text="Add Environment" onclickup="add-environment-item" />
@@ -1193,20 +1187,18 @@
 						<panel name="col2" width="40%" height="60" align="right" valign="bottom" bottom-margin="20" >
 							<object class="button" text="Save" onclickup="prep-inspiration-vars" />
 						</panel>
+=======
+						<pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
+							<text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question" />
+							<object class="remove-environment" textfield="1" removetext="Safe Place 1" />
+							<object class="add-environment" textfield="add-environment" />
+							<panel name="col2" width="40%" height="60" align="right">
+								<object class="button" text="Save" onclickup="post-plan" />
+							</panel>
+						</pager>
+>>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
 					</panel>
 				</pager>
-				<panel name="planItem" alias="PLAN-ITEM" width="100%" height="100%" alpha="0" >
-					<panel name="bg" width="100%" height="100%" background="#000000" alpha=".5" ></panel>
-					<panel name="container" width="90%" height="70%" align="center" valign="center" background="#ffffff" >
-						<object class="add-item" item-alias="PLAN-ITEM" textfield="inspire-entry1" add-notes="inspire-note1" dropdown="inspirations.xml" index="1" label="" type="Type" notes="" />
-					</panel>
-				</panel>
-				<panel name="environmentItem" alias="ENVIRONMENT-ITEM" width="100%" height="100%" alpha="0" >
-					<panel name="bg" width="100%" height="100%" background="#000000" alpha=".5" ></panel>
-					<panel name="container" width="90%" height="70%" align="center" valign="center" background="#ffffff" >
-						<object class="add-environment" item-alias="ENVIRONMENT-ITEM" textfield="environment-label" add-notes="inspire-note1" dropdown="inspirations.xml" index="1" label="" type="Type" notes="" />
-					</panel>
-				</panel>
 			</panel>
           <!-- 
           Treatment Locator Screen
@@ -1284,6 +1276,7 @@
 				<object class="dropdown-item" dropdown-item="[param:dataSourceIndex]" text="[param:text]" />
 			</list>
 		</panel>
+
         
 	<!-- 
 	Camera 
@@ -1370,8 +1363,14 @@
   </main>
   <actions>
     <action name="boot" oninit="yes">
-		<assign property="var:contactCount" value="1" />
-		<assign property="var:activeStep" value="1" />
+<!--
+			<assign property="datasource:warningInternal.add" value="{&quot;label&quot;: &quot;&quot;, &quot;type&quot;: &quot;&quot;,&quot;notes&quot;: &quot;&quot;}" />
+			<assign property="datasource:warningInternal.event" value="querycomplete" />
+			<assign property="datasource:inspirationInternal.add" value="{&quot;label&quot;: &quot;&quot;, &quot;type&quot;: &quot;&quot;,&quot;notes&quot;: &quot;&quot;}" />
+			<assign property="datasource:inspirationInternal.event" value="querycomplete" />
+-->
+			<assign property="var:contactCount" value="1" />
+			<assign property="var:activeStep" value="1" />
       <assign property="object:WRAPPER/toolbar/label.text" value="Hello" />
       <assign property="var:currentSection" value="Home" />
       <assign property="datasource:PushRegister.source" value="https://go.urbanairship.com/api/device_tokens/[system:pushtoken]"/>
@@ -1383,7 +1382,8 @@
    <!--
  <action name="inspiretest" datasource="HomeGet" datasourceevent="querycomplete">
       <alert title="source" message="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home"/>
-      <alert title="SHOW" message="[datasource:HomeGet.1.homeViewEntry/url]" /> 
+      <alert title="url" message="[datasource:HomeGet.1.url]" />
+      <alert title="result count" message="[datasource:HomeGet.dataSourceResultCount]" />  
     </action>  
 -->
 
@@ -1405,7 +1405,7 @@
     </action>  
     <action name="signIn">   
       <sync>
-        <assign property="datasource:body.removeIndex" value="1" />
+        <assign property="datasource:body.removeIndex" value="1" /> 
         <assign property="datasource:body.add" value="{ 
           &quot;username&quot;: &quot;[object:WELCOME/signIn/email.text]&quot;, 
           &quot;password&quot;: &quot;[object:WELCOME/signIn/password.text]&quot; 
@@ -1467,6 +1467,7 @@
       </sync>
     </action>
     <action name="userGetResponse" datasource="userGet"> <!-- retreiving a current user info -->
+<<<<<<< HEAD
 		<if lhs="[datasource:userGet.1.plan]" operator="ne" rhs="">
 			<assign property="var:userPlan" value="[datasource:userGet.1.plan]" />
 			<assign property="datasource:planGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/?query=%7B%22profile%22%3A%22[var:userID]%22%7D" />
@@ -1479,16 +1480,25 @@
       <!--<alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />-->
 <!--       <alert message="var:userPlan is [var:userPlan]" /> -->
       <play action="dismiss-setup" />
+=======
+      <assign property="var:username" value="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" />
+      <assign property="var:InspireID" value="[datasource:userGet.1.inspiration]" />
+     
+      <!--<alert title="[eval: JSON.parse('[datasource:userGet.1.name]')['first']]" message="[datasource:userGet.0.content] " />-->
+      <if lhs="[var:todaymodal]" operator="ne" rhs="no">
+      	<play action="dismiss-setup" />
+      </if>
+>>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
     </action>
 	<action name="planGet-complete" datasource="planGet" datasourceevent="querycomplete" >
 		<alert message="planGet-complete count is [datasource:planGet.dataSourceResultCount], json is [datasource:planGet.0.content]" />
 	</action> 
     <action name="userCreateResponse" datasource="userUpdate"> <!-- used to get a new users info -->
-		<assign property="var:userPlan" value="[datasource:userUpdate.1.plan]" />
       <assign property="var:username" value="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" />
       <alert title="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" message="[datasource:userUpdate.0.content] " />
-      <play action="dismiss-setup" />
-      <alert message="var:userPlan is [var:userPlan]" />
+      <if lhs="[var:todaymodal]" operator="ne" rhs="no">
+      	<play action="dismiss-setup" />
+      </if>
     </action>
     <action name="dismiss-setup">
       <sync>
@@ -1528,6 +1538,9 @@
           <alpha value="0" target="CURTAIN" />
           <if lhs="[object:name]" operator="!=" rhs="Journal">
             <translate xpos="0" target="WRAPPER/[var:currentSection]" />
+          </if>
+          <if lhs="[object:name]" operator="=" rhs="Home">
+            <assign property="datasource:HomeGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home" />
           </if>
           <if lhs="[object:name]" operator="=" rhs="Journal">
             <translate xpos="0" target="WRAPPER/Home" />
@@ -1647,7 +1660,22 @@
     <!-- Journal -->
     <action name="reveal-journal">
       <sync>
-        <assign property="var:mood" value="[object:name]" />
+      	<if lhs="[object:name]" operator="e" rhs="a">
+      		<assign property="var:mood" value="1" />
+      	</if>
+      	<if lhs="[object:name]" operator="e" rhs="b">
+      		<assign property="var:mood" value="2" />
+      	</if>
+      	<if lhs="[object:name]" operator="e" rhs="c">
+      		<assign property="var:mood" value="3" />
+      	</if>
+      	<if lhs="[object:name]" operator="e" rhs="d">
+      		<assign property="var:mood" value="4" />
+      	</if>
+      	<if lhs="[object:name]" operator="e" rhs="e">
+      		<assign property="var:mood" value="5" />
+      	</if>
+<!--         <assign property="var:mood" value="[object:name]" /> -->
         <play action="set-mood" />
         <if lhs="[var:currentSection]" operator="==" rhs="Home">
           <sync>
@@ -1664,13 +1692,13 @@
     
     <action name="set-mood">
       <sync>
-        <alpha value="[eval: '[var:mood]' != 'a' ? '.3' : '1']" target="HOME/feelingMeter/a" />
-        <alpha value="[eval: '[var:mood]' != 'b' ? '.3' : '1']" target="HOME/feelingMeter/b" />
-        <alpha value="[eval: '[var:mood]' != 'c' ? '.3' : '1']" target="HOME/feelingMeter/c" />
-        <alpha value="[eval: '[var:mood]' != 'd' ? '.3' : '1']" target="HOME/feelingMeter/d" />
-        <alpha value="[eval: '[var:mood]' != 'e' ? '.3' : '1']" target="HOME/feelingMeter/e" />
+        <alpha value="[eval: '[var:mood]' != '1' ? '.3' : '1']" target="HOME/feelingMeter/a" />
+        <alpha value="[eval: '[var:mood]' != '2' ? '.3' : '1']" target="HOME/feelingMeter/b" />
+        <alpha value="[eval: '[var:mood]' != '3' ? '.3' : '1']" target="HOME/feelingMeter/c" />
+        <alpha value="[eval: '[var:mood]' != '4' ? '.3' : '1']" target="HOME/feelingMeter/d" />
+        <alpha value="[eval: '[var:mood]' != '5' ? '.3' : '1']" target="HOME/feelingMeter/e" />
       </sync>
-      <if lhs="[var:mood]" operator="e" rhs="a">
+      <if lhs="[var:mood]" operator="e" rhs="1">
         	<sync loop="no" startdelay="0">
 	        	<delete target="MOODCHECK"/>
 	        	<create class="create-mood-check" target="CHECKBLOCK"/>
@@ -1679,7 +1707,7 @@
 	        	<create class="feeling-row"  col-1-label="Hyper"  col-2-label="Other" target="ROW3"/>
 	        </sync>
         </if>
-        <if lhs="[var:mood]" operator="e" rhs="b">
+        <if lhs="[var:mood]" operator="e" rhs="2">
         	<sync loop="no" startdelay="0">
 	        	<delete target="MOODCHECK"/>
 	        	<create class="create-mood-check" target="CHECKBLOCK"/>
@@ -1688,7 +1716,7 @@
 	        	<create class="feeling-row"  col-1-label="Sleepy"  col-2-label="Other" target="ROW3"/>
 	        </sync>
         </if>
-        <if lhs="[var:mood]" operator="e" rhs="c">
+        <if lhs="[var:mood]" operator="e" rhs="3">
         	<sync loop="no" startdelay="0">
 	        	<delete target="MOODCHECK"/>
 	        	<create class="create-mood-check" target="CHECKBLOCK"/>
@@ -1697,7 +1725,7 @@
 	        	<create class="feeling-row"  col-1-label="Numb"  col-2-label="Other" target="ROW3"/>
 	        </sync>
         </if>
-        <if lhs="[var:mood]" operator="e" rhs="d">
+        <if lhs="[var:mood]" operator="e" rhs="4">
         	<sync loop="no" startdelay="0">
 	        	<delete target="MOODCHECK"/>
 	        	<create class="create-mood-check" target="CHECKBLOCK"/>
@@ -1706,7 +1734,7 @@
 	        	<create class="feeling-row"  col-1-label="Upbeat"  col-2-label="Other" target="ROW3"/>
 	        </sync>
         </if>
-        <if lhs="[var:mood]" operator="e" rhs="e">
+        <if lhs="[var:mood]" operator="e" rhs="5">
         	<sync loop="no" startdelay="0">
 	        	<delete target="MOODCHECK"/>
 	        	<create class="create-mood-check" target="CHECKBLOCK"/>
@@ -1734,28 +1762,17 @@
 		<sync>
 	    	<assign property="object:background" value="126f93" />
 	    	<assign property="var:cope-checked" value="yes" />
-			<alert message="nodeID','text','photo','type' _nodeID','_text','_photo','_type'" />
-	    	<assign property="datasource:write-coping.query" value="INSERT INTO COPE (nid,text,photo,type) values ('_nodeID','_text','_photo','_type')" />
+	    	<assign property="datasource:write-coping.query" value="INSERT INTO COPE (nid,text,photo,type) values ('_nodeID','_text','_photo','_type')" /> 
 	        <assign property="datasource:saved-coping.query" value="SELECT * FROM COPE"/>
 	        <assign property="preferences:bookmark-_nodeID" value="yes" />
 	        <set onclickup="remove-coping-item"/>
 		</sync>	        
 	</action>
-	
-	<action name="coping-done" datasource="saved-coping" datasourceevent="querycomplete" >
-			<assign property="var:copingCount" value="[datasource:saved-coping.dataSourceResultCount]" />
-<!-- 		<alert message="coping count [datasource:saved-coping.dataSourceResultCount]" /> -->
-<!--
-		<assign property="var:copingTotal" value="[datasource:saved-coping.dataSourceResultCount]" />
-		<assign property="var:copingIndex" value="1" />
-		<play action="iterate-coping" />
--->
-	</action>
     <action name="remove-coping-item">
     	<sync>
 	    	<assign property="object:background" value="e9e9e9" />
 	    	<assign property="var:cope-checked" value="no" />
-	    	<assign property="datasource:write-coping.query" value="DELETE FROM COPE WHERE nid='_nodeID'"/>
+	    	<assign property="datasource:write-coping" value="DELETE FROM COPE WHERE nid='_nodeID'"/>
 	        <assign property="datasource:saved-coping.query" value="SELECT * FROM COPE"/>
 	    	<set onclickup="add-coping-item"/>
     	</sync>
@@ -2009,35 +2026,45 @@
     
 <!-- Inspire Post -->       
     <action name="post-inspire"> 
-	 	 <if lhs="[preferences:InspireID]" operator="ne" rhs="">
+	 	 <alert title="Do I have a var:Inspireid?" message="[var:InspireID]"/>
+	 	 <if lhs="[var:InspireID]" operator="ne" rhs="">
 	 	 <sync>
-	        <assign property="var:postContent" value="[template:crudInspire.content]" />
+	        <assign property="var:postContent" value="[template:crudInspireUpdate.content]" />
 	        <assign property="datasource:postInspireUpdate.postContent" value="[template:postBody.content]" />
-	        <assign property="datasource:postInspireUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration/" />
+	        <assign property="datasource:postInspireUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration/[var:InspireID]" />
+	        <assign property="datasource:HomeGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home" />
+	        <assign property="var:todaymodal" value="no" />
 	        <alert title="ID Yes" message="[template:postBody.content]" />
         </sync>
 	 	 </if>
-	 	 <if lhs="[preferences:InspireID]" operator="e" rhs="">
+	 	 <if lhs="[var:InspireID]" operator="e" rhs="">
 	 	 <sync>
 	        <assign property="var:postContent" value="[template:crudInspire.content]" />
 	        <assign property="datasource:postInspire.postContent" value="[template:postBody.content]" />
 	        <assign property="datasource:postInspire.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration/" />
+	        <assign property="datasource:HomeGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home" />
+	        <assign property="var:todaymodal" value="no" />
 	        <alert title="ID no" message="[template:postBody.content]" />
+	        <play action="hide-camera" />
         </sync>
-        </if>
+        </if> 
 	</action>
     <action name="inspiretest" datasource="postInspire" datasourceevent="querycomplete">
 	  <alert title="id" message="[datasource:postInspire.1.id]" />
       <alert title="post" message="[datasource:postInspire.0.content]" />
-      <assign property="preferences:InspireID" value="[datasource:postInspire.1.id]" />
+      <assign property="var:InspireID" value="[datasource:postInspire.1.id]" /> 
+      <assign property="var:todaymodal" value="no" />
+      <alert title="var id" message="[var:InspireID]" />
+      <assign property="var:postContent" value="[template:crudUser.content]" />
+      <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
+      <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+ 
     </action> 
-	<action name="inspiretest" datasource="postInspireUpdate" datasourceevent="querycomplete">
-	  <alert title="id" message="[datasource:postInspireUpdate.1.id]" />
-      <alert title="post" message="[datasource:postInspireUpdate.0.content]" />
-
+	<action name="inspiretest-update" datasource="postInspireUpdate" datasourceevent="querycomplete"> 		
+      <alert title="post-update" message="[datasource:postInspireUpdate.0.content]" />
     </action>     
   
-		<!-- !Warning/Inspiration Actions -->
+		<!-- !Safety Plan Actions -->
 		<action name="launch-dropdown">
 			<assign property="var:entryIndex" value="_index" />
 			<assign property="datasource:dropdowns.source" value="res://_dropdown" />
@@ -2047,96 +2074,54 @@
 		</action>
 		<action name="select-type">
 			<alpha value="0" time=".3" target="DROPDOWN" />
-			<assign property="object:PLAN-ITEM-TYPE-1.text" value="[object:text]" />
+			<assign property="object:[eval: '[var:activeStep]' == '1' ? 'WARNING' : 'INSPIRATION']-TYPE-[var:entryIndex].text" value="[object:text]" />
 		</action>
-		<action name="add-plan-item" >
-			<alpha value="1" time=".3" target="PLAN-ITEM" />
-		</action>
-		<action name="save-plan-item">
-			<assign property="var:dbAction" value="write" />
+		<action name="add-entry">
 			<if lhs="[var:activeStep]" operator="e" rhs="1">
 				<sync>
-					<if lhs="[var:itemAction]" operator="e" rhs="edit">
-						<assign property="datasource:write-warning.query" value="UPDATE WARNING SET LABEL='[object:PLAN-ITEM-LABEL-1.text]',TYPE='[object:PLAN-ITEM-TYPE-1.text]',NOTES='[object:PLAN-ITEM-NOTES-1.text]' WHERE ID='[var:itemID]';" />
-						<else>
-							<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('[object:PLAN-ITEM-LABEL-1.text]','[object:PLAN-ITEM-TYPE-1.text]','[object:PLAN-ITEM-NOTES-1.text]') " />
-						</else>
-					</if>
+					<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('[object:WARNING-LABEL-1.text]','[object:WARNING-TYPE-1.text]','[object:WARNING-NOTES-1.text]') " />
+<!-- 					<alert message="{&quot;entry&quot;:{&quot;label&quot;: &quot;[object:WARNING-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:WARNING-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:WARNING-NOTES-1.text]&quot;}}" /> -->
+<!--
+					<assign property="datasource:warningInternal.add" value="{&quot;label&quot;: &quot;[object:WARNING-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:WARNING-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:WARNING-NOTES-1.text]&quot;}" />
+					<assign property="datasource:warningInternal.event" value="querycomplete" />
+-->
 				</sync>
 			</if>
 			<if lhs="[var:activeStep]" operator="e" rhs="2">
 				<sync>
-					<if lhs="[var:itemAction]" operator="e" rhs="edit">
-						<assign property="datasource:write-inspiration.query" value="UPDATE INSPIRATION SET LABEL='[object:PLAN-ITEM-LABEL-1.text]',TYPE='[object:PLAN-ITEM-TYPE-1.text]',NOTES='[object:PLAN-ITEM-NOTES-1.text]' WHERE ID='[var:itemID]';" />
-						<else>
-							<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('[object:PLAN-ITEM-LABEL-1.text]','[object:PLAN-ITEM-TYPE-1.text]','[object:PLAN-ITEM-NOTES-1.text]') " />
-						</else>
-					</if>
+					<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('[object:INSPIRATION-LABEL-1.text]','[object:INSPIRATION-TYPE-1.text]','[object:INSPIRATION-NOTES-1.text]') " />
+<!-- 					<alert message="{&quot;entry&quot;:{&quot;label&quot;: &quot;[object:INSPIRATION-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:INSPIRATION-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:INSPIRATION-NOTES-1.text]&quot;}}" /> -->
+<!--
+					<assign property="datasource:inspirationInternal.add" value="{&quot;label&quot;: &quot;[object:INSPIRATION-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:INSPIRATION-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:INSPIRATION-NOTES-1.text]&quot;}" />
+					<assign property="datasource:inspirationInternal.event" value="querycomplete" />
+-->
 				</sync>
 			</if>
 		</action>
+		
 		<action name="saved-inspiration-complete" datasource="saved-inspiration" datasourceevent="querycomplete">
-			<assign property="var:inspirationCount" value="[datasource:saved-inspiration.dataSourceResultCount]" />
-			<if lhs="[var:dbAction]" operator="e" rhs="write">
-				<play action="close-plan-item"  />
-				<assign property="var:dbAction" value="" />
+			<if lhs="[datasource:saved-inspiration.dataSourceResultCount]" operator="e" rhs="0">
+					<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('A','B','C') " />
 			</if>
+			<alert message="saved-inspiration complete count [datasource:write-inspiration.dataSourceResultCount]" />
 		</action>
+		
 		<action name="saved-warning-complete" datasource="saved-warning" datasourceevent="querycomplete">
-			<assign property="var:warningCount" value="[datasource:saved-warning.dataSourceResultCount]" />
-			<if lhs="[var:dbAction]" operator="e" rhs="write">
-				<play action="close-plan-item"  />
-				<assign property="var:dbAction" value="" />
+			<if lhs="[datasource:saved-warning.dataSourceResultCount]" operator="e" rhs="0">
+					<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('D','E','F') " />
 			</if>
-		</action>
-		<action name="close-plan-item" >
-			<alpha value="0" time=".3" target="PLAN-ITEM" />
-			<assign property="object:PLAN-ITEM-LABEL-1.text" value="" />
-			<assign property="object:PLAN-ITEM-TYPE-1.text" value="Type" />
-			<assign property="object:PLAN-ITEM-NOTES-1.text" value="" />
-			<keyboard visible="no" target="PLAN-ITEM-LABEL-1" />
-			<keyboard visible="no" target="PLAN-ITEM-TYPE-1" />
-			<keyboard visible="no" target="PLAN-ITEM-NOTES-1" />
-		</action>
-		
-		<action name="edit-item" > 
-			<assign property="var:itemAction" value="edit" />
-			<assign property="var:itemID" value="_id" />
-			<alpha value="1" time=".3" target="PLAN-ITEM" />
-			<assign property="object:PLAN-ITEM-LABEL-1.text" value="[datasource:saved-[eval: '[var:activeStep]' == '1' ? 'warning':'inspiration']._index.LABEL]" />
-			<assign property="object:PLAN-ITEM-TYPE-1.text" value="[datasource:saved-[eval: '[var:activeStep]' == '1' ? 'warning':'inspiration']._index.TYPE]" />
-			<assign property="object:PLAN-ITEM-NOTES-1.text" value="[datasource:saved-[eval: '[var:activeStep]' == '1' ? 'warning':'inspiration']._index.NOTES]" />
-		</action>
-		
-		<action name="remove-item" >
-			<assign property="var:itemID" value="_id" />
-			<alert subject="Are you sure?" message="Remove this item from your plan?" buttononetitle="No" buttontwotitle="Yes" buttontwoaction="remove-plan-item" />
-		</action>
-		
-		<action name="remove-plan-item" >
-			<if lhs="[var:activeStep]" operator="e" rhs="1">
-				<sync>
-					<assign property="datasource:write-warning.query" value="DELETE FROM WARNING WHERE ID = '[var:itemID]'" />
-				</sync>
-			</if>
-			<if lhs="[var:activeStep]" operator="e" rhs="2">
-				<sync>
-					<assign property="datasource:write-inspiration.query" value="DELETE FROM INSPIRATION WHERE ID = '[var:itemID]'" />
-				</sync>
-			</if>
+			<alert message="saved-warning complete count [datasource:saved-warning.dataSourceResultCount]" />
 		</action>
 		
 		<action name="write-inspiration-complete" datasource="write-inspiration" datasourceevent="querycomplete">
-			<assign property="var:itemAction" value="" />
 			<assign property="datasource:saved-inspiration.query" value="SELECT * FROM INSPIRATION ORDER BY ID DESC;" />
 		</action>
 		
 		<action name="write-warning-complete" datasource="write-warning" datasourceevent="querycomplete">
-			<assign property="var:itemAction" value="" />
 			<assign property="datasource:saved-warning.query" value="SELECT * FROM WARNING ORDER BY ID DESC;" />
 		</action>
 		
-		<!-- !Contacts Actions -->
+		<!-- !Contacts -->
 		<action name="contacts-complete" datasource="contacts" datasourceevent="querycomplete">
 			<!-- 		<alert message="[datasource:contacts.dataSourceResultCount] // [datasource:contacts.0.content]" /> -->
 			<!-- 		<alert message="[datasource:contacts.14.firstname] // [datasource:contacts.14.lastname]" /> -->
@@ -2148,6 +2133,8 @@
 		<action name="select-contact">
 			<alpha value="1" time=".3" target="CONTACT-INFO" />
 			<assign property="var:contactIndex" value="[object:name]" />
+			
+
 <!--
 			<assign property="var:photo" value="[datasource:contacts.[object:name].image]" />
 			<assign property="var:name" value="[datasource:contacts.[object:name].firstname] [datasource:contacts.[object:name].lastname]" />
@@ -2182,6 +2169,7 @@
 			<assign property="var:messageContact" value="yes" />
 		</action>
 		
+<<<<<<< HEAD
 		<!-- !Environments Actions -->
 		<action name="add-environment-item" >
 			<alpha value="1" time=".3" target="ENVIRONMENT-ITEM" />
@@ -2327,15 +2315,43 @@
 			<assign property="var:postContent" value="[template:crudPlan.content]" />
 			<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
 			<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
+=======
+		<action name="post-plan">
+			<assign property="var:warning1-label" value="Z" />
+			<assign property="var:warning1-type" value="Y" />
+			<assign property="var:warning1-notes" value="X" />
+			<assign property="var:inspiration1-label" value="W" />
+			<assign property="var:inspiration1-type" value="V" />
+			<assign property="var:inspiration1-notes" value="U" />
+			<assign property="var:inspiration1-imageUrl" value="T" />
+			<assign property="var:physical1" value="S" />
+			<assign property="var:mental1" value="R" />
+			<assign property="var:spiritual1" value="Q" />
+			<assign property="var:environment1" value="P" />
+			<assign property="var:postContent" value="[template:crudPlan.content]" />
+			<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
+			<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
+			<alert title="pre-submission" message="[template:postBody.content]" />
+			<!--
+		<assign property="var:warning2-label" value="" />
+		<assign property="var:warning3-label" value="" />
+		<assign property="var:warning4-label" value="" />
+		<assign property="var:warning5-label" value="" />
+-->
+>>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
 		</action>
 
 		<action name="postPlan-complete" datasource="postPlan" datasourceevent="querycomplete">
+<<<<<<< HEAD
 			<email subject="pre-submission and result" body="[template:postBody.content]\n\n\n\n\n\n\n[datasource:postPlan.0.content]" toaddress="mlong@rarewire.com" />
 			<alert message="postPlan-complete // datasource:postPlan.1.id is [datasource:postPlan.1.id] content is [datasource:postPlan.0.content]" />
 			<assign property="var:userPlan" value="[datasource:postPlan.1.id]" />
 	        <assign property="var:postContent" value="[template:crudUser.content]" />
 	        <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
 	        <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+=======
+			<alert message="[datasource:postPlan.1.id]" />
+>>>>>>> aa4c8d54c3acd4b62f519cf10bdcb0bcc0b5c759
 		</action>
   </actions>
 </wire>
