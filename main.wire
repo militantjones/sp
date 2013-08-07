@@ -25,10 +25,8 @@
     <datasource name="postWarnings" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="WarningGet" httpheader="header" source="" query="/" providertype="json" />
     
-    <datasource name="postActivity" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
-    <datasource name="ActivityGet" httpheader="header" source="" query="/" providertype="json" />
-
     <datasource name="postInspire" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
+    <datasource name="InspireUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put"/>
     <datasource name="InspireGet" httpheader="header" source="" query="/" providertype="json" />
 
     <datasource name="HomeGet" httpheader="header" source="" query="/" providertype="json" />
@@ -42,17 +40,17 @@
   
 
   <texttemplate name="crudUser"><![CDATA[ { "id": "[var:userID]",
-                                            "name": { "first": "[var:userFirstName]", "middle": "", "last": "[var:userLastName]", "display": "" },
+                                            "name": { "first": "[var:userFirstName]", "middle": "x", "last": "[var:userLastName]", "display": "x" },
                                             "email": "[var:userEmail]",
-                                            "phone": "",
+                                            "phone": "555-5555",
                                             "prefer": "text|email",
-                                            "home": { "street": [""],"city": "","state": "", "zip": "", 
-                                            "loc": { "lat": , "lng":  } },
+                                            "home": { "street": ["111 main"],"city": "test","state": "mo", "zip": "11111", 
+                                            "loc": { "lat": 0, "lng": 0  } },
                                             "plan": "[var:userPlan]",
                                             "team": "[var:userTeam]",
                                             "inspiration": "[var:InspireID]",
                                             "genPrefs": { "appBackgroundImage": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e", "arbitraryPrefAttributeName": "arbitraryPrefAttributeValue", "anotherArbitraryPref": "anotherPrefValue" },
-                                            "devices":[{ "name": "", "model": "", "carrier": "", "pushId": "[system:pushtoken]", 
+                                            "devices":[{ "name": "xxx", "model": "x", "carrier": "xxx", "pushId": "[system:pushtoken]", 
                                             "prefs": { "arbitraryDeviceSpecificPrefName": "prefValue", "anotherDevicePrefName": "anotherPrefValue" }}]
                                             } ]]></texttemplate>
   <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
@@ -62,7 +60,7 @@
                                                      },
                                                 "content": "[var:currentActivityBody]"
                                               } ]]></texttemplate>   
-  <texttemplate name="crudInspire"><![CDATA[   {
+  <texttemplate name="crudInspire"><![CDATA[   { 
 					    "profile": "[var:userID]",
 					    "photos":
 					        [
@@ -117,6 +115,62 @@
 					} 
   												
  												]]></texttemplate>  
+ 		<texttemplate name="crudInspireUpdate"><![CDATA[   { "id": "[preferences:InspireID]",
+					    "profile": "",
+					    "photos":
+					        [
+					            {
+					                "label": "test",
+					                "notes": "test notes",
+					                "media": "https://samhsa.carewave.net/edm-mobile/rs/crud/blob/[var:photoID]"                
+					            }
+					                    ],
+					    "locations":
+					        [
+					            {
+					                "label": "",
+					                "notes": "",
+					                "media": "",                
+					                "loc":
+					                    {
+					                        "lat": 0,
+					                        "lng": 0
+					                    }
+					            }
+					        ],
+					    "quotes":
+					        [
+					            {
+					                "text": "[var:inspire-quote]",
+					                "link": "",
+					                "media": ""
+					            }
+					        ],
+					    "articles":
+					        [
+					            {
+					                "title": "",
+					                "summary": "",
+					                "link": "",
+					                "notes": ""
+					            },
+					            {
+					                "title": "",
+					                "summary": "",
+					                "link": "",
+					                "notes": ""
+					            }
+					        ],
+					    "driver":
+					        {
+					            "label": "",
+					            "notes": "",
+					            "media": ""                
+					        }
+					} 
+  												
+ 												]]></texttemplate>  
+										
  		<texttemplate name="crudPlan"><![CDATA[ 
  											    {
 						       "id": "51d321e28ae0d6cb305aa984",
@@ -239,16 +293,19 @@
     </class>
     <class name="history-row">
       <panel name="row-[param:index]" width="100%" height="20%">
-        <panel name="date" width="15%" height="100%">
+        <!--
+<panel name="date" width="15%" height="100%">
           <panel name="stamp" width="100%" height="50" align="center" valign="center">
             <text name="day" width="100%" height="20" text="[param:bigday]" color="8fbf6b" font="HelveticaNeue" size="15" alignment="center" />
             <text name="date" width="100%" height="30" text="[param:bigdate]" color="8fbf6b" font="HelveticaNeue-Bold" size="25" alignment="center" bottomof="day"/>
           </panel>
           <panel name="v-rule" width="1" height="100%" background="#c5d8e0" align="right"></panel>
         </panel>
-        <panel name="entry" width="85%" height="100%" padding="10" align="right">
-          <text name="title" width="100%" height="fit" text="[param:title]" font="HelveticaNeue" size="17" alignment="left" />
-          <text name="date" width="100%" height="fit" bottomof="title" margin-top="3" text="[param:date]" font="HelveticaNeue" size="13" alignment="left" />
+-->
+        <panel name="entry" width="100%" height="100%" padding="10" align="left">
+          <text name="title" width="85%" height="fit" text="[param:title]" font="HelveticaNeue" size="17" alignment="left" />
+          <text name="date" width="100%" height="fit" bottomof="title" margin-top="7" text="[param:date]" font="HelveticaNeue" size="13" alignment="left" />
+          <image name="mood" height="40%" source="graphics/icon-mood-[param:moodnum].png" align="right" valign="top" margin="10"></image>
         </panel>
         <panel name="h-rule" width="100%" height="1" background="#c5d8e0" valign="bottom"></panel>
       </panel>
@@ -432,20 +489,31 @@
 		<class name="homefeed-2">
         	<panel name="row[param:index]" width="100%" height="150">
         		<panel name="middle" width="1" height="100%" align="center"></panel>
-		        <panel name="col1" width="50%" height="150" leftof="middle">
-		        	<text name="" width="" height="" color="#" font="" size="" alignment="left" text=""></text>
-			        <image name="img" source="images/church.jpg"  width="90%" align="center" valign="center" ></image>	
+		        <panel name="col1" width="50%" height="170" clip="yes" leftof="middle" background="ffffff">
+		        	<text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
+			        <image name="img" source="[param:photo]" width="95%" height="85%" topmargin="7" align="center" valign="top" ></image>
+			        <panel name="title" width="95%" height="10%" align="center" valign="bottom" background="ffffff">
+			        	
+			        </panel>	
 		        </panel> 
-		        <panel name="col2" width="50%"  height="150" rightof="middle" >		 
-		        	<image name="img2" url="[param:photo]" width="90%" align="center" valign="center"></image>
+		        <panel name="col2" width="50%"  height="170" clip="yes" rightof="middle" background="ffffff">		 
+		        	<text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
+		        	<image name="img2" url="[param:photo]" width="95%" height="85%" topmargin="7" align="center" valign="top"></image>
+		        	<panel name="title" width="95%" height="10%" align="center" valign="bottom" background="ffffff">
+			        	
+			        </panel>
 		        </panel>
 	        </panel>
         </class>
         <class name="homefeed-1">
-        	<panel name="row[param:index]" width="100%" height="150" background="ff0000">
+        	<panel name="row[param:index]" width="100%" height="150">
         		<panel name="middle" width="1" height="100%" align="center"></panel>
-		        <panel name="col1" width="50%" height="150" leftof="middle"   >
-			        <image name="img" source="[param:photo]"  width="90%" align="center" valign="center"></image>	
+		        <panel name="col1" width="50%" height="170" clip="yes" leftof="middle" background="ffffff">
+			        <text name="text" width="90%" height="85%" color="#666666" font="HelveticaNeue" size="16" alignment="center" text="[param:text]" align="center" valign="center" background="ddeccd"></text>
+			        <image name="img" url="[param:photo]"  width="95%" height="85%" topmargin="7" align="center" valign="top"></image>
+			        <panel name="title" width="95%" height="10%" align="center" valign="bottom" background="ffffff">
+			        	
+			        </panel>	
 		        </panel> 
 		        <panel name="col2" width="50%"  height="150" rightof="middle" >		 
 		        	
@@ -481,27 +549,27 @@
           <panel name="Home" alias="HOME" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar">
             <panel name="feelingMeter" height="88" width="100%" background="#c5dcaa">
               <panel name="a" width="20%" height="100%" onclick="reveal-journal">
-                <image name="face" source="graphics/icon-mood-1.png" align="center" valign="center" />
+                <image name="face" source="graphics/icon-mood-a.png" align="center" valign="center" />
               </panel>
               <panel name="b" width="20%" xpos="20%" height="100%" onclick="reveal-journal">
-                <image name="face" source="graphics/icon-mood-2.png" align="center" valign="center" />
+                <image name="face" source="graphics/icon-mood-b.png" align="center" valign="center" />
               </panel>
               <panel name="c" width="20%" xpos="40%" height="100%" onclick="reveal-journal">
-                <image name="face" source="graphics/icon-mood-3.png" align="center" valign="center" />
+                <image name="face" source="graphics/icon-mood-c.png" align="center" valign="center" />
               </panel>
               <panel name="d" width="20%" xpos="60%" height="100%" onclick="reveal-journal">
-                <image name="face" source="graphics/icon-mood-4.png" align="center" valign="center" />
+                <image name="face" source="graphics/icon-mood-d.png" align="center" valign="center" />
               </panel>
               <panel name="e" width="20%" xpos="80%" height="100%" onclick="reveal-journal">
-                <image name="face" source="graphics/icon-mood-5.png" align="center" valign="center" />
+                <image name="face" source="graphics/icon-mood-e.png" align="center" valign="center" />
               </panel>
               <panel name="rule" width="100%" height="1" valign="bottom" background="#126f93"></panel>
             </panel>
             <!-- <pager name="main" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no" lazy="yes"> -->
-            <tableview name="main" alias="HOMEFEED-TABLEVIEW" datasource="HomeGet" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" rowheight="150" orientation="vertical" paginate="no" step="2">
+            <tableview name="main" alias="HOMEFEED-TABLEVIEW" datasource="HomeGet" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#ddeccd" rowheight="150" orientation="vertical" paginate="no">
 <!--               <panel name="trigger" width="100%" height="1" onscrollaway="toggle-filter" onscrollto="toggle-filter" /> -->
-              <object class="homefeed-2" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]"/>
-              <object class="homefeed-1" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]"/>
+              <object class="homefeed-2" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]" text="[param:homeViewEntry/text]" lhs="[param:dataSourceIndex]" operator="!=" rhs="[datasource:HomeGet.dataSourceResultCount]"/>
+              <object class="homefeed-1" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]" text="[param:homeViewEntry/text]" lhs="[param:dataSourceIndex]" operator="=" rhs="[datasource:HomeGet.dataSourceResultCount]"/>
               
             </tableview>
             <!-- </pager> -->
@@ -615,7 +683,7 @@
                 <text name="label" height="100%" width="100%" font="HelveticaNeue" text=" " color="#efefef" size="15" alignment="center"/>
               </panel>
               <list name="main" height="[eval:[object:HOME.height] - [object:HOME/history/datebar.height] ]" datasource="ActivityGet" valign="bottom" width="100%" orientation="vertical" paginate="no">
-                <object class="history-row" index="[param:datasourceIndex]" title="[param:content]" bigday="THU" bigdate="18" date="[eval: new Date('[eval: '[param:created]'.replace('+0000','')]').toLocaleDateString()]" lhs="[param:datasourceIndex]" operator="lte" rhs="30"/>
+                <object class="history-row" index="[param:datasourceIndex]" title="[param:content]" moodnum="[param:mood/level]" date="[eval: new Date('[eval: '[param:created]'.replace('+0000','')]').toLocaleDateString()]" lhs="[param:datasourceIndex]" operator="lte" rhs="30"/>
               </list>
             </panel>
           </panel>
@@ -961,10 +1029,12 @@
       
     </action>
     <!--HOME FEED ACTIONS -->
-    <action name="inspiretest" datasource="HomeGet" datasourceevent="querycomplete">
+   <!--
+ <action name="inspiretest" datasource="HomeGet" datasourceevent="querycomplete">
       <alert title="source" message="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home"/>
       <alert title="SHOW" message="[datasource:HomeGet.1.homeViewEntry/url]" /> 
     </action>  
+-->
 
     <action name="notification" datasource="pushlistener">
        <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/>
@@ -1318,10 +1388,16 @@
     </action>
     <action name="toggle-history">
       <sync>
-        <assign property="datasource:ActivityGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/activity/[var:ActivityID]"/>
+        <assign property="datasource:ActivityGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/query/profile/[var:userID]/journal"/>
         <assign property="var:currentSection" value="[eval: '[var:currentSection]' != 'Journal' ? 'Journal' : 'History']" />
         <play action="toolbar-prep" />
         <translate ypos="[eval: '[var:currentSection]' != 'Journal' ? '0' : '100%']" time=".2" target="WRAPPER/Home/history" />
+        <alpha value="1" target="HOME/feelingMeter/a" />
+      	<alpha value="1" target="HOME/feelingMeter/b" />
+     	<alpha value="1" target="HOME/feelingMeter/c" />
+        <alpha value="1" target="HOME/feelingMeter/d" />
+        <alpha value="1" target="HOME/feelingMeter/e" />
+        <assign property="object:CURRENTACTIVITYBODY.text" value="" />
       </sync>
     </action>
     <!--assessment actions -->
@@ -1511,7 +1587,7 @@
 		</sync>
 	</action>
 	<action name="photo-saved" >
-          <alert message="image saved. [file:photo2.png]"/>
+          <alert message="image saved? [file:photo2.png]"/>
           <assign property="datasource:uploadPhoto.postFile" value="photo2.png"/>
           <assign property="datasource:uploadPhoto.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/blob/"/>
           <if lhs="[var:cam]" operator="ne" rhs="camera">
@@ -1551,18 +1627,33 @@
     
 <!-- Inspire Post -->       
     <action name="post-inspire"> 
+	 	 <if lhs="[preferences:InspireID]" operator="ne" rhs="">
+	 	 <sync>
+	        <assign property="var:postContent" value="[template:crudInspire.content]" />
+	        <assign property="datasource:postInspireUpdate.postContent" value="[template:postBody.content]" />
+	        <assign property="datasource:postInspireUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration/" />
+	        <alert title="ID Yes" message="[template:postBody.content]" />
+        </sync>
+	 	 </if>
+	 	 <if lhs="[preferences:InspireID]" operator="e" rhs="">
 	 	 <sync>
 	        <assign property="var:postContent" value="[template:crudInspire.content]" />
 	        <assign property="datasource:postInspire.postContent" value="[template:postBody.content]" />
 	        <assign property="datasource:postInspire.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration/" />
-	        <alert title="pre-submission" message="[template:postBody.content]" />
-      </sync>
+	        <alert title="ID no" message="[template:postBody.content]" />
+        </sync>
+        </if>
 	</action>
     <action name="inspiretest" datasource="postInspire" datasourceevent="querycomplete">
+	  <alert title="id" message="[datasource:postInspire.1.id]" />
       <alert title="post" message="[datasource:postInspire.0.content]" />
-      <assign property="var:InspireID" value="[datasource:postInspire.1.id]" />
+      <assign property="preferences:InspireID" value="[datasource:postInspire.1.id]" />
     </action> 
-    
+	<action name="inspiretest" datasource="postInspireUpdate" datasourceevent="querycomplete">
+	  <alert title="id" message="[datasource:postInspireUpdate.1.id]" />
+      <alert title="post" message="[datasource:postInspireUpdate.0.content]" />
+
+    </action>     
   
   </actions>
 </wire>
