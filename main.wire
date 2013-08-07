@@ -1,5 +1,20 @@
 <wire>
   <datasources>
+		<datasource name="dropdowns" source="" query="//entry" providertype="xml" /> 
+
+		<datasource name="write-warning" source="sql://warning" query="CREATE TABLE IF NOT EXISTS WARNING (ID INTEGER PRIMARY KEY AUTOINCREMENT, LABEL TEXT, TYPE TEXT, NOTES TEXT);" providertype="sql" />
+		<datasource name="saved-warning" source="sql://warning" query="SELECT * FROM WARNING ORDER BY ID DESC;" providertype="sql" />
+
+		<datasource name="write-inspiration" source="sql://inspiration" query="CREATE TABLE IF NOT EXISTS INSPIRATION (ID INTEGER PRIMARY KEY AUTOINCREMENT, LABEL TEXT, TYPE TEXT, NOTES TEXT);" providertype="sql" />
+		<datasource name="saved-inspiration" source="sql://inspiration" query="SELECT * FROM INSPIRATION ORDER BY ID DESC;" providertype="sql" />
+
+		<datasource name="postPlan" httpheader="header" source="" query="/" providertype="json" httpmethod="post" />
+		<datasource name="planUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put" />
+
+		<datasource name="warningInternal" source="" query="/entry" providertype="json" />
+		<datasource name="inspirationInternal" source="" query="/entry" providertype="json" />
+		<datasource name="contacts" providertype="contacts" source="*" query="/contacts" />
+
     <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
     <datasource name="saved-coping" source="sql://cope" query="SELECT * FROM COPE ORDER BY ID DESC;" providertype="sql"/>
 
@@ -171,74 +186,271 @@
   												
  												]]></texttemplate>  
 										
- 		<texttemplate name="crudPlan"><![CDATA[ 
- 											    {
-						       "id": "51d321e28ae0d6cb305aa984",
-						       "profile": "51d31a168ae0d6cb305aa983",
-						       "created": "2013-07-03T13:48:10-0500",
-						       "updated": "2013-07-04T13:48:10-0500",
-       
-						       "warnings":
-								[
-									{
-									"label": "drug cravings",
-									"type": "Other",
-									"notes": "Free-form user-entered notes about cravings.",
-									"loc":
-									    {
-									        "lat": 38.92761,
-									        "lng": -94.642759
-									    },						   
-									"media": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e"
-									               },
-									               {
-				                   "label": "feeling anxious",
-				                   "type": "Mood",
-				                   "notes": "Free-form user-entered notes about anxiety."
-								} ],
-							 
-							  "inspiration":
-						           [
-						               {
-						                   "label": "my grandfather",
-						                   "type": "Person",
-						                   "notes": "Free-form user-entered notes about grandfather.",
-						                   "loc":
-						                       {
-						                           "lat": 38.92761,
-						                           "lng": -94.642759
-						                       },
-						                   "media": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e"
-						               },
-												                {
-						                   "label": "being outdoors",
-						                   "type": "Activity",
-						                   "notes": "Free-form user-entered notes about the outdoors.",
-						                   "loc":
-												{
-												    "lat": 38.92761,
-												    "lng": -94.642759
-												}
-																						
-										} ],
-										
-										"techniques":
-										    {
-										    "physical":
-										        [
-										            "Remove yourself from the situation",
-										            "Call positivie influencer"
-										        ],
-										"mental":
-										        [
-										            "Think happy thoughts"
-										        ],
-										    "spiritual":
-										        [
-										            "Pray for peace"
-										] }
-										}						
- 											    ]]></texttemplate>                                                                                
+	<texttemplate name="crudPlan"><![CDATA[{
+			   "profile": "[var:userID]",
+			   "warnings":[
+			      {
+			         "label":"[var:warning1-label]",
+			         "type":"[var:warning1-type]",
+			         "notes":"[var:warning1-notes]"
+			      },
+			      {
+			         "label":"[var:warning2-label]",
+			         "type":"[var:warning2-type]",
+			         "notes":"[var:warning2-notes]"
+			      },
+			      {
+			         "label":"[var:warning3-label]",
+			         "type":"[var:warning3-type]",
+			         "notes":"[var:warning3-notes]"
+			      },
+			      {
+			         "label":"[var:warning4-label]",
+			         "type":"[var:warning4-type]",
+			         "notes":"[var:warning5-notes]"
+			      },
+			      {
+			         "label":"[var:warning5-label]",
+			         "type":"[var:warning5-type]",
+			         "notes":"[var:warning5-notes]"
+			      }
+			   ],
+			   "inspiration":[
+			      {
+			         "label":"[var:inspiration1-label]",
+			         "type":"[var:inspiration1-type]",
+			         "notes":"[var:inspiration1-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration1-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration2-label]",
+			         "type":"[var:inspiration2-type]",
+			         "notes":"[var:inspiration2-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration2-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration3-label]",
+			         "type":"[var:inspiration3-type]",
+			         "notes":"[var:inspiration3-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration3-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration4-label]",
+			         "type":"[var:inspiration4-type]",
+			         "notes":"[var:inspiration4-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration4-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration5-label]",
+			         "type":"[var:inspiration5-type]",
+			         "notes":"[var:inspiration5-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration5-imageUrl]"
+			      }
+			   ],
+			   "techniques":{
+			      "physical":[
+			         "[var:physical1]",
+			         "[var:physical2]",
+			         "[var:physical3]",
+			         "[var:physical4]",
+			         "[var:physical5]",
+			         "[var:physical6]"
+			      ],
+			      "mental":[
+			         "[var:mental1]",
+			         "[var:mental2]",
+			         "[var:mental3]",
+			         "[var:mental4]",
+			         "[var:mental5]",
+			         "[var:mental6]"
+			      ],
+			      "spiritual":[
+			         "[var:spiritual1]",
+			         "[var:spiritual2]",
+			         "[var:spiritual3]",
+			         "[var:spiritual4]",
+			         "[var:spiritual5]",
+			         "[var:spiritual6]"
+			      ]
+			   },
+			   "environment":[
+			         "[var:environment1]",
+			         "[var:environment2]",
+			         "[var:environment3]",
+			         "[var:environment4]",
+			         "[var:environment5]"
+			      ]
+			}]]></texttemplate>
+	<texttemplate name="crudPlan"><![CDATA[{
+			   "profile": "[var:userID]",
+			   "id": "[var:planID]",
+			   "warnings":[
+			      {
+			         "label":"[var:warning1-label]",
+			         "type":"[var:warning1-type]",
+			         "notes":"[var:warning1-notes]"
+			      },
+			      {
+			         "label":"[var:warning2-label]",
+			         "type":"[var:warning2-type]",
+			         "notes":"[var:warning2-notes]"
+			      },
+			      {
+			         "label":"[var:warning3-label]",
+			         "type":"[var:warning3-type]",
+			         "notes":"[var:warning3-notes]"
+			      },
+			      {
+			         "label":"[var:warning4-label]",
+			         "type":"[var:warning4-type]",
+			         "notes":"[var:warning5-notes]"
+			      },
+			      {
+			         "label":"[var:warning5-label]",
+			         "type":"[var:warning5-type]",
+			         "notes":"[var:warning5-notes]"
+			      }
+			   ],
+			   "inspiration":[
+			      {
+			         "label":"[var:inspiration1-label]",
+			         "type":"[var:inspiration1-type]",
+			         "notes":"[var:inspiration1-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration1-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration2-label]",
+			         "type":"[var:inspiration2-type]",
+			         "notes":"[var:inspiration2-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration2-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration3-label]",
+			         "type":"[var:inspiration3-type]",
+			         "notes":"[var:inspiration3-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration3-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration4-label]",
+			         "type":"[var:inspiration4-type]",
+			         "notes":"[var:inspiration4-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration4-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration5-label]",
+			         "type":"[var:inspiration5-type]",
+			         "notes":"[var:inspiration5-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration5-imageUrl]"
+			      }
+			   ],
+			   "techniques":{
+			      "physical":[
+			         "[var:physical1]",
+			         "[var:physical2]",
+			         "[var:physical3]",
+			         "[var:physical4]",
+			         "[var:physical5]",
+			         "[var:physical6]"
+			      ],
+			      "mental":[
+			         "[var:mental1]",
+			         "[var:mental2]",
+			         "[var:mental3]",
+			         "[var:mental4]",
+			         "[var:mental5]",
+			         "[var:mental6]"
+			      ],
+			      "spiritual":[
+			         "[var:spiritual1]",
+			         "[var:spiritual2]",
+			         "[var:spiritual3]",
+			         "[var:spiritual4]",
+			         "[var:spiritual5]",
+			         "[var:spiritual6]"
+			      ]
+			   },
+			   "environment":[
+			         "[var:environment1]",
+			         "[var:environment2]",
+			         "[var:environment3]",
+			         "[var:environment4]",
+			         "[var:environment5]"
+			      ]
+			}]]></texttemplate>
+	<texttemplate name="crudTeam"><![CDATA[{
+				 "id": "51d321e28ae0d6cb305aa984",
+				 "profile": "[var:userID]",
+				 "created": "2013-07-03T13:48:10-0500",
+				 "updated": "2013-07-04T13:48:10-0500",
+				 "members":[
+				 {
+				 "name": 
+				 {
+				 "first": "John",
+				 "middle": "P.",
+				 "last": "Public",
+				 "display": "Dad"
+				 },
+				 "email": "johnnyp555@gmail.com",
+				 "phone": "816-555-1234",
+				 "relationship": "Father",
+				 "pic": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e" 
+				 },
+				 {
+				 "name": 
+				 {
+				 "first": "Jane",
+				 "middle": "Q.",
+				 "last": "Public",
+				 "display": "Mom"
+				 },
+				 "email": "janeq555@gmail.com",
+				 "phone": "816-555-1234",
+				 "relationship": "Mother",
+				 "pic": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e" 
+				 }
+				 ]
+				}]]></texttemplate>
   
   
   
@@ -329,20 +541,33 @@
 			 <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item"></image>			
 		  </panel>
     </class>
-    <class name="add-item">
-    	<panel name="add-item" width="100%" height="55%" >
-      <panel name="warningEntryTitle-wrapper" width="100%" height="100">
-        <textfield name="[param:textfield]" alias="[param:textfield]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What makes you feel bad?"></textfield>
-			  <image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry"></image>
-        <text name="type" alias="TYPE" width="81%" height="44" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" align="left" borderwidth="1" bordercolor="000000" text="Type" bottomof="[param:textfield]" topmargin="10" onclickup="launch-dropdown"></text>
+		<!-- !Add-item Class -->
+		<class name="add-item">
+			<panel name="add-item[param:index]" width="100%" height="60%">
+				<panel name="warningEntryTitle-wrapper" width="100%" height="100">
+					<textfield name="[param:textfield]" alias="[param:item-alias]-LABEL-[param:index]" width="81%" height="44" leftinset="3" style="textfield" align="left" placeholder="What makes you feel bad?" text="[param:label]" />
+					<image name="add" source="graphics/icon-content-add.png" align="right" clip="yes" ypos="2" onclickup="add-entry" clickuptarget="WRAPPER" />
+					<text name="type" alias="[param:item-alias]-TYPE-[param:index]" width="81%" height="44" font="helvetica" size="16" color="666666" leftinset="3" alignment="left" valignment="center" align="left" borderwidth="1" bordercolor="000000" text="[param:type]" bottomof="[param:textfield]" topmargin="10" onclickup="launch-dropdown" _dropdown="[param:dropdown]" _index="[param:index]" />
+				</panel>
+				<panel name="warningEntryBody-wrapper" width="100%" height="132" bottomof="warningEntryTitle-wrapper" margin-top="10">
+					<textfield name="[param:add-notes]" alias="[param:item-alias]-NOTES-[param:index]" width="81%" height="98%" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" text="[param:notes]" />
+					<!-- 				<image name="attach" source="graphics/icon-content-attach.png" align="right" topmargin="10" valign="top" onclickup="add-attach"></image> -->
+					<image name="share" source="graphics/icon-content-share.png" valign="top" align="right" onclickup="add-share" />
+				</panel>
 			</panel>
-			<panel name="warningEntryBody-wrapper" width="100%" height="132" bottomof="warningEntryTitle-wrapper" margin-top="10">
-		      <textfield name="[param:add-notes]" width="81%" height="98%" style="textfield" valign="center" placeholder="Notes" multiline="yes" borderwidth="1" bordercolor="#000000" />
-		      <image name="attach" source="graphics/icon-content-attach.png" align="right" topmargin="10" valign="top" onclickup="add-attach"></image>
-		      <image name="share" source="graphics/icon-content-share.png" bottomof="attach" align="right" onclickup="add-share"></image>
-      </panel>
-		</panel>  
-    </class>
+		</class>
+		<class name="dropdown-item">
+			<panel name="[param:dropdown-item]" width="100%" height="15%" >
+				<panel name="text-block" width="100%" height="100%" >
+					<text name="text" width="100%" height="100%" color="#000000" font="Helvetica" size="16" alignment="left" leftinset="5" text="[param:text]" onclickup="select-type" />
+					<!-- 				<text name="contact-description" width="100%" height="20%" color="#000000" font="Helvetica" size="12" alignment="left" leftinset="5" text="[param:description]" bottomof="contact-name"></text> -->
+				</panel>
+				<panel name="break" width="100%" height="1" background="666666" topmargin="3" bottomof="contact-image" />
+			</panel>
+		</class>
+		<class name="kb-filler">
+			<panel name="kb-filler" width="100%" height="216" lheight="150" />
+		</class>
     <class name="add-environment">
     	<panel name="add-environment" width="100%" height="55%" >
   			<panel name="enviroEntryTitle-wrapper" width="100%" height="64">
@@ -358,16 +583,28 @@
        <image name="subtract" source="graphics/icon-content-remove.png" clip="yes" align="right" onclickup="remove-item"></image>     
       </panel>
     </class>
-    <class name="contact-item">
-    	<panel name="[param:contact-item]" width="100%" height="15%">
-			<image name="contact-image" source="[param:contact-image]" xpos="5" valign="center"></image>
-			<panel name="text-block" width="80%" height="100%" rightof="contact-image" >
-				<text name="contact-name" width="100%" height="50%" color="#000000" font="Helvetica" size="16" alignment="left" leftinset="3" text="[param:name]" ></text>
-				<text name="contact-description" width="100%" height="20%" color="#000000" font="Helvetica" size="12" alignment="left" leftinset="5" text="[param:description]" bottomof="contact-name"></text>
+		<!-- !Contact-item Class -->
+		<class name="contact-item-ds">
+			<panel name="[param:contact-item]" width="100%" height="15%" onclickup="select-contact">
+				<image name="contact-image" fullpath="[param:contact-image]" xpos="5" valign="center" height="80%" />
+				<panel name="text-block" width="80%" height="100%" rightof="contact-image">
+					<text name="contact-name" width="100%" height="50%" color="#000000" font="Helvetica" size="16" alignment="left" leftinset="3" text="[param:name]" />
+					<!-- 				<text name="contact-description" width="100%" height="20%" color="#000000" font="Helvetica" size="12" alignment="left" leftinset="5" text="[param:description]" bottomof="contact-name"></text> -->
+				</panel>
+				<panel name="break" width="100%" height="1" background="666666" topmargin="3" bottomof="contact-image" />
 			</panel>
-			<panel name="break" width="100%" height="1" background="666666" topmargin="3" bottomof="contact-image"></panel>
-		</panel>
-    </class>
+		</class>
+		<class name="contact-item">
+			<panel name="[param:contact-item]" width="100%" height="15%">
+				<image name="contact-image" fullpath="[param:contact-image]" height="80%" xpos="5" valign="center" />
+				<panel name="text-block" width="80%" height="100%" rightof="contact-image">
+					<text name="contact-name" width="100%" height="50%" color="#000000" font="Helvetica" size="16" alignment="left" leftinset="3" text="[param:name]" />
+					<text name="contact-description" width="100%" height="20%" color="#000000" font="Helvetica" size="12" alignment="left" leftinset="5" text="[param:description]" bottomof="contact-name" />
+					<text name="can-contact-description" width="100%" height="20%" color="#000000" font="Helvetica" size="12" alignment="right" leftinset="5" text="Can message? [param:canContact]" bottomof="contact-name" />
+				</panel>
+				<panel name="break" width="100%" height="1" background="666666" topmargin="3" bottomof="contact-image" />
+			</panel>
+		</class>
     <class name="coping-row">
     	<panel name="col-1" width="90%" height="15%" align="center">
         <text name="option-[param:label]" height="100%" width="100%" font="HelveticaNeue" color="#000000" size="15" alignment="left" valign="bottom" leftinset="40" text="[param:label]" >
@@ -802,92 +1039,100 @@
             </panel>
           </panel>
           
-          <!-- 
-          Safety Plan Screen
+			<!-- 
+          !Safety Plan Screen
           -->
-          <panel name="Safety Plan" alias="SAFETYPLAN" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
-            <panel name="top" height="44" width="100%" background="#819bad" padding-left="10" padding-right="10">
-              <text name="label" height="100%" width="80%" text="1 of 5: Warning Signs" align="center" size="12" alignment="center" color="#ffffff"/>
-            </panel>
-            <panel name="steps" height="44" valign="bottom" width="100%" background="#126f93">
-            	<image name="btn-prev" source="graphics/btn-previous.png" alpha="0" valign="center" onclickup="step" _pager="SAFETYPLAN/main">
-                <text name="label" height="100%" width="85%" align="right" text="previous" style="step-label" />
-              </image>
-              <image name="btn-next" source="graphics/btn-next.png" alpha="1" align="right" valign="center" onclickup="step" _pager="SAFETYPLAN/main">
-                <text name="label" height="100%" width="85%" text="next" style="step-label" />
-              </image>
-            </panel>
-            <pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
-              <panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
-              	<pager name="warning-pager" alias="WARNINGPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
-                  <text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question"></text>
-                  <object class="remove-item" textfield="1" removetext="What makes you feel bad?" />
-                  <object class="add-item" textfield="warn-entry1" add-notes="warn-note1" />
-                  <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
-                </pager>
-              </panel>
-              <panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
-                <pager name="inspiration-pager" alias="INSPIRATIONPAGER" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
-                  <text name="query" height="54" width="100%" align="left" text="What helps you take your mind of your problems?" style="step-question"></text>
-                  <object class="remove-item" textfield="1" removetext="What makes you feel good?" />
-                  <object class="add-item" textfield="inspire-entry1" add-notes="inspire-note1" />
-                  <panel name="kb-filler" width="100%" height="216" lheight="162"></panel>
-                </pager> 
-              </panel>
-              <panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
-              	<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question"></text>
-                <panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
-                  <object class="button" text="Add Contact" onclickup="add-contact" />
-                  <panel name="break" width="100%" height="2" background="666666" topmargin="5" bottomof="button"></panel>
-                </panel>
-                <pager name="contact-list" width="100%" height="[eval: [object:CONTACT.height] - 100]" topmargin="5" orientation="vertical" paginate="no" bottomof="add-contact">
+			<panel name="Safety Plan" alias="SAFETYPLAN" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
+				<panel name="top" height="44" width="100%" background="#819bad" padding-left="10" padding-right="10">
+					<text name="label" height="100%" width="80%" text="1 of 5: Warning Signs" align="center" size="12" alignment="center" color="#ffffff" />
+				</panel>
+				<panel name="steps" height="44" valign="bottom" width="100%" background="#126f93">
+					<image name="btn-prev" source="graphics/btn-previous.png" alpha="0" valign="center" onclickup="step" _pager="SAFETYPLAN/main">
+						<text name="label" height="100%" width="85%" align="right" text="previous" style="step-label" />
+					</image>
+					<image name="btn-next" source="graphics/btn-next.png" alpha="1" align="right" valign="center" onclickup="step" _pager="SAFETYPLAN/main">
+						<text name="label" height="100%" width="85%" text="next" style="step-label" />
+					</image>
+				</panel>
+				<pager name="main" ypos="[object:SAFETYPLAN/steps.height]" height="[eval: [object:SAFETYPLAN.height] - [object:SAFETYPLAN/steps.height] - [object:SAFETYPLAN/top.height]]" width="100%" background="#bab8b8" orientation="horizontal" paginate="yes">
+					<panel name="1" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Warning Signs">
+						<text name="query" height="54" width="100%" align="left" text="What are the warning signs that a crisis may be developing for you?" style="step-question" />
+						<list name="pager" alias="WARNINGPAGER" datasource="saved-warning" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
+							<!--                   <object class="remove-item" textfield="1" removetext="What makes you feel bad?" /> -->
+							<object class="add-item" item-alias="WARNING" textfield="warn-entry1" add-notes="warn-note1" dropdown="warnings.xml" index="1" label="Label" type="Type" notes="Notes" lhs="[param:dataSourceIndex]" operator="lte" rhs="1" />
+							<object class="add-item" item-alias="WARNING" textfield="warn-entry1" add-notes="warn-note1" dropdown="warnings.xml" index="[param:dataSourceIndex]" label="[param:LABEL]" type="[eval: '[param:TYPE]' != '' ? '[param:TYPE]' : 'Type' ]" notes="[param:NOTES]" lhs="[param:dataSourceIndex]" operator="gt" rhs="2" />
+							<object class="kb-filler" lhs="[param:dataSourceIndex]" operator="e" rhs="[param:dataSourceResultCount]" />
+						</list>
+					</panel>
+					<panel name="2" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Inspiration">
+						<text name="query" height="54" width="100%" align="left" text="What helps you take your mind off of your problems?" style="step-question" />
+						<list name="pager" alias="INSPIRATIONPAGER" datasource="saved-inspiration" align="center" width="100%" height="100%" orientation="vertical" paginate="no" bottomof="query" padding-left="10" padding-right="10">
+							<!--                   <object class="remove-item" textfield="1" removetext="What makes you feel good?" /> -->
+							<object class="add-item" item-alias="INSPIRATION" textfield="inspire-entry1" add-notes="inspire-note1" dropdown="inspirations.xml" index="1" label="Label" type="Type" notes="Notes" lhs="[param:dataSourceIndex]" operator="lte" rhs="1" />
+							<object class="add-item" item-alias="INSPIRATION" textfield="inspire-entry1" add-notes="inspire-note1" dropdown="inspirations.xml" index="[param:dataSourceIndex]" label="[param:LABEL]" type="[eval: '[param:TYPE]' != '' ? '[param:TYPE]' : 'Type' ]" notes="[param:NOTES]" lhs="[param:dataSourceIndex]" operator="gt" rhs="2" />
+							<object class="kb-filler" lhs="[param:dataSourceIndex]" operator="e" rhs="[param:dataSourceResultCount]" />
+						</list>
+					</panel>
+					CONTACT/contact-list
+					<panel name="3" alias="CONTACT" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Care Team">
+						<text name="contact-text" height="34" width="85%" align="center" text="Who keeps you safe?" style="step-question" />
+						<panel name="add-contact" height="50" width="100%" bottomof="contact-text" background="#ffffff">
+							<object class="button" text="Add Contact" onclickup="add-contact" />
+							<panel name="break" width="100%" height="2" background="666666" topmargin="5" bottomof="button" />
+						</panel>
+						<pager name="contact-list" width="100%" height="[eval: [object:CONTACT.height] - 100]" topmargin="5" orientation="vertical" paginate="no" bottomof="add-contact">
+							<!--
                  <object class="contact-item" contact-item="1" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
                  <object class="contact-item" contact-item="2" contact-image="graphics/img-contact-female.png" name="Sample Female" description="mother" />
                  <object class="contact-item" contact-item="3" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
                  <object class="contact-item" contact-item="4" contact-image="graphics/img-contact-male.png" name="John Hancock" description="father" />
-               </pager> 
-             </panel>
-             <panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
-               <panel name="coping-controls" height="44" width="100%" background="#819bad">
-                <text name="support" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view"/>
-                <text name="clinical" height="100%" width="33.33%" text="Mental" _type="Mental" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
-                <text name="urgent" height="100%" width="33.33%" text="Spiritual" _type="Spiritual" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view"/>
-              </panel>
-              <text name="cope-text" height="44" width="87%" align="center" text="Techniques and activities that help you cope with difficult situations or emotions." bottomof="coping-controls" style="step-question"></text>
-              <pager name="coping-options-physical" alias="PHYSICAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no">
-                <object class="coping-row" label="Go for a walk/run/swim" photo="images/walk.jpg" nodeID="1" type="physical" />
-                <object class="coping-row" label="Play a game" photo="images/game2.jpg" nodeID="2" type="physical"/>
-                <object class="coping-row" label="Call a support person" photo="images/call.jpg" nodeID="3" type="physical"/>
-                <object class="coping-row" label="Lift weights" photo="images/weights.jpg" nodeID="4" type="physical"/>
-                <object class="coping-row" label="Clean Your Room" photo="images/clean.jpg" nodeID="5" type="physical"/>
-                <object class="add-coping-row" textfield="cope-entry1" type="physical"/>
-              </pager>
-              <pager name="coping-options-mental" alias="MENTAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
-                <object class="coping-row" label="Read a book" photo="images/book.jpg" nodeID="6" type="mental"/>
-                <object class="coping-row" label="Perform deep breathing exercises" photo="images/breathing.jpg" nodeID="7" type="mental"/>
-                <object class="coping-row" label="Spend time with family or friends" photo="images/friends.jpg" nodeID="8" type="mental"/>
-                <object class="coping-row" label="Listen to music" photo="images/music.jpg" nodeID="9" type="mental"/>
-                <object class="coping-row" label="Make time for doing artwork,puzzles or games" photo="images/game.jpg" nodeID="10" type="mental"/>
-                <object class="add-coping-row" textfield="cope-entry1" type="mental"/>
-              </pager>
-              <pager name="coping-options-spiritual" alias="SPIRITUAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
-                <object class="coping-row" label="Engage with others in spiritual expression" photo="images/church.jpg" nodeID="11" type="spiritual"/>
-                <object class="coping-row" label="Release anger for things you can't control" photo="images/control.jpg" nodeID="12" type="spiritual"/>
-                <object class="coping-row" label="Participate in activity to help others" photo="images/charity.jpg" nodeID="13" type="spiritual"/>
-                <object class="coping-row" label="Attend a meeting with like-minded people" photo="images/friends.jpg" nodeID="14" type="spiritual"/>
-                <object class="coping-row" label="Do yoga or meditate" photo="images/yoga.jpg" nodeID="15" type="spiritual"/>
-                <object class="add-coping-row" textfield="cope-entry1" type="spiritual"/>
-              </pager>
-            </panel>
-            <panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
-             <pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
-               <text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question"></text>
-               <object class="remove-environment" textfield="1" removetext="Safe Place 1" />
-               <object class="add-environment" textfield="inspire-entry1"/>
-             </pager> 
-            </panel>
-          </pager>
-         </panel>
+-->
+						</pager>
+					</panel>
+					<panel name="4" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Coping Techniques">
+						<panel name="coping-controls" height="44" width="100%" background="#819bad">
+							<text name="support" height="100%" width="33.33%" text="Physical" _type="Physical" font="helvetica" size="12" alignment="center" state="active" background="#6d8693" onclickup="toggle-view" />
+							<text name="clinical" height="100%" width="33.33%" text="Mental" _type="Mental" font="helvetica" size="12" alignment="center" align="center" onclickup="toggle-view" />
+							<text name="urgent" height="100%" width="33.33%" text="Spiritual" _type="Spiritual" font="helvetica" size="12" alignment="center" align="right" onclickup="toggle-view" />
+						</panel>
+						<text name="cope-text" height="44" width="87%" align="center" text="Techniques and activities that help you cope with difficult situations or emotions." bottomof="coping-controls" style="step-question" />
+						<pager name="coping-options-physical" alias="PHYSICAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no">
+							<object class="coping-row" label="Go for a walk/run/swim" photo="images/walk.jpg" nodeID="1" type="physical" />
+							<object class="coping-row" label="Play a game" photo="images/game2.jpg" nodeID="2" type="physical" />
+							<object class="coping-row" label="Call a support person" photo="images/call.jpg" nodeID="3" type="physical" />
+							<object class="coping-row" label="Lift weights" photo="images/weights.jpg" nodeID="4" type="physical" />
+							<object class="coping-row" label="Clean Your Room" photo="images/clean.jpg" nodeID="5" type="physical" />
+							<object class="add-coping-row" textfield="cope-entry1" type="physical" />
+						</pager>
+						<pager name="coping-options-mental" alias="MENTAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
+							<object class="coping-row" label="Read a book" photo="images/book.jpg" nodeID="6" type="mental" />
+							<object class="coping-row" label="Perform deep breathing exercises" photo="images/breathing.jpg" nodeID="7" type="mental" />
+							<object class="coping-row" label="Spend time with family or friends" photo="images/friends.jpg" nodeID="8" type="mental" />
+							<object class="coping-row" label="Listen to music" photo="images/music.jpg" nodeID="9" type="mental" />
+							<object class="coping-row" label="Make time for doing artwork,puzzles or games" photo="images/game.jpg" nodeID="10" type="mental" />
+							<object class="add-coping-row" textfield="cope-entry1" type="mental" />
+						</pager>
+						<pager name="coping-options-spiritual" alias="SPIRITUAL" width="100%" height="[eval: [object:CONTACT.height] - 88]" bottomof="cope-text" orientation="vertical" paginate="no" alpha="0">
+							<object class="coping-row" label="Engage with others in spiritual expression" photo="images/church.jpg" nodeID="11" type="spiritual" />
+							<object class="coping-row" label="Release anger for things you can't control" photo="images/control.jpg" nodeID="12" type="spiritual" />
+							<object class="coping-row" label="Participate in activity to help others" photo="images/charity.jpg" nodeID="13" type="spiritual" />
+							<object class="coping-row" label="Attend a meeting with like-minded people" photo="images/friends.jpg" nodeID="14" type="spiritual" />
+							<object class="coping-row" label="Do yoga or meditate" photo="images/yoga.jpg" nodeID="15" type="spiritual" />
+							<object class="add-coping-row" textfield="cope-entry1" type="spiritual" />
+						</pager>
+					</panel>
+					<panel name="5" height="100%" width="100%" align="center" valign="center" background="#ffffff" onscrollto="step-buttons" _aliasTarget="SAFETYPLAN" _colon=": Safe Environment">
+						<pager name="environment" width="100%" height="100%" orientation="vertical" paginate="no" padding-left="10" padding-right="10">
+							<text name="enviroment-text" height="64" width="86%" align="center" text="What have you done or will do to make your environment safe for you?" style="step-question" />
+							<object class="remove-environment" textfield="1" removetext="Safe Place 1" />
+							<object class="add-environment" textfield="add-environment" />
+							<panel name="col2" width="40%" height="60" align="right">
+								<object class="button" text="Save" onclickup="post-plan" />
+							</panel>
+						</pager>
+					</panel>
+				</pager>
+			</panel>
           <!-- 
           Treatment Locator Screen
           -->
@@ -934,7 +1179,37 @@
 
           <panel name="curtain" alias="CURTAIN" width="100%" height="100%" background="#222222" alpha="0" onclickup="toggle-toc"></panel>
         </panel>
-        
+        		<!-- !Contacts -->
+		<panel name="contacts" alias="CONTACTS" width="100%" height="100%" alpha="0">
+			<list name="list" width="100%" height="100%" datasource="contacts" orientation="vertical" paginate="no" background="#ffffff">
+				<object class="contact-item-ds" contact-item="[param:dataSourceIndex]" contact-image="[param:image]" name="[param:firstname] [param:lastname]" description="father" />
+			</list>
+			<panel name="contacts-info" alias="CONTACT-INFO" width="100%" height="100%" alpha="0" >
+				<panel name="bg" width="100%" height="100%" background="#000000" alpha=".5" ></panel>
+				<panel name="options" width="85%" height="85%" align="center" valign="center" background="ffffff" >
+					<text name="title" height="34" width="100%" align="center" text="Who keeps you safe?" style="step-label" />
+					<text name="contact-type" height="35" width="100%" align="center" bottomof="title" text="What kind of contact is this?" style="step-question" />
+					<panel name="col1" width="40%" height="60" align="center" bottomof="contact-type" >
+						<object class="button" text="Personal" onclickup="select-contact-type" />
+					</panel>
+					<panel name="col2" width="40%" height="60" align="center" bottomof="col1" >
+						<object class="button" text="Clinical" onclickup="select-contact-type" />
+					</panel>
+					<panel name="col3" width="40%" height="60" align="center" bottomof="col2" >
+						<object class="button" text="Facility" onclickup="select-contact-type" />
+					</panel>
+					<panel name="checkbox" width="30" height="30" xpos="10" bottomof="col3" bordercolor="#222222" borderwidth="1" onclickup="allow-message-contact" />
+					<text name="contact-type" height="fit" width="80%" bottomof="col3" rightof="checkbox" text="This contact can receive messages" style="step-question" />
+				</panel>
+			</panel>
+		</panel>
+		<!-- !DropDowns -->
+		<panel name="dropdown" alias="DROPDOWN" width="100%" height="100%" alpha="0">
+			<list name="list" width="100%" height="100%" datasource="dropdowns" orientation="vertical" paginate="no" background="#ffffff">
+				<object class="dropdown-item" dropdown-item="[param:dataSourceIndex]" text="[param:text]" />
+			</list>
+		</panel>
+
         
 	<!-- 
 	Camera 
@@ -1021,6 +1296,14 @@
   </main>
   <actions>
     <action name="boot" oninit="yes">
+<!--
+			<assign property="datasource:warningInternal.add" value="{&quot;label&quot;: &quot;&quot;, &quot;type&quot;: &quot;&quot;,&quot;notes&quot;: &quot;&quot;}" />
+			<assign property="datasource:warningInternal.event" value="querycomplete" />
+			<assign property="datasource:inspirationInternal.add" value="{&quot;label&quot;: &quot;&quot;, &quot;type&quot;: &quot;&quot;,&quot;notes&quot;: &quot;&quot;}" />
+			<assign property="datasource:inspirationInternal.event" value="querycomplete" />
+-->
+			<assign property="var:contactCount" value="1" />
+			<assign property="var:activeStep" value="1" />
       <assign property="object:WRAPPER/toolbar/label.text" value="Hello" />
       <assign property="var:currentSection" value="Home" />
       <assign property="datasource:PushRegister.source" value="https://go.urbanairship.com/api/device_tokens/[system:pushtoken]"/>
@@ -1087,7 +1370,12 @@
           <assign property="var:userID" value="[datasource:userAuth.0.content]" />
           <if lhs="[var:newUserSetup]" operator="!=" rhs="1">
             <assign property="datasource:userGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+            
             <assign property="datasource:HomeGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home" />
+            <!--Alternative?
+            https://samhsa.carewave.net/edm-mobile/rs/crud/inspiration?query=%7B%22profile%22%3A %22[var:userID]%22%7D
+            
+            -->
           </if>
           <if lhs="[var:newUserSetup]" operator="==" rhs="1">
             <play action="userSetup" />
@@ -1433,6 +1721,7 @@
       <play action="step-buttons" />
     </action>
     <action name="step-buttons">
+		<assign property="var:activeStep" value="[object:name]" />
       <assign property="object:_aliasTarget/top/label.text" value="[object:_aliasTarget/main.page] of 5_colon" />
       <assign property="object:ASSESSSTEPS.text" value="[object:_aliasTarget/main.page] of 3" />
       <if lhs="[object:_aliasTarget/main.page]" operator="=" rhs="1">
@@ -1611,7 +1900,7 @@
                 <assign property="var:face" value="[eval: '[var:face]' == 'front' ? 'back' : 'front' ]" />
           </sync>
 	</action>
-	
+	 
     <action name="take-photo" >
           <event type="pausePreview" target="CAMERA-OBJECT" />
           <set onclickup="unfreeze" target="CAMERA/toolbar/shutter" />
@@ -1655,5 +1944,136 @@
 
     </action>     
   
+		<!-- !Safety Plan Actions -->
+		<action name="launch-dropdown">
+			<assign property="var:entryIndex" value="_index" />
+			<assign property="datasource:dropdowns.source" value="res://_dropdown" />
+		</action>
+		<action name="show-dropdown" datasource="dropdowns" datasourceevent="querycomplete" >
+			<alpha value="1" time=".3" target="DROPDOWN" />
+		</action>
+		<action name="select-type">
+			<alpha value="0" time=".3" target="DROPDOWN" />
+			<assign property="object:[eval: '[var:activeStep]' == '1' ? 'WARNING' : 'INSPIRATION']-TYPE-[var:entryIndex].text" value="[object:text]" />
+		</action>
+		<action name="add-entry">
+			<if lhs="[var:activeStep]" operator="e" rhs="1">
+				<sync>
+					<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('[object:WARNING-LABEL-1.text]','[object:WARNING-TYPE-1.text]','[object:WARNING-NOTES-1.text]') " />
+<!-- 					<alert message="{&quot;entry&quot;:{&quot;label&quot;: &quot;[object:WARNING-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:WARNING-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:WARNING-NOTES-1.text]&quot;}}" /> -->
+<!--
+					<assign property="datasource:warningInternal.add" value="{&quot;label&quot;: &quot;[object:WARNING-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:WARNING-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:WARNING-NOTES-1.text]&quot;}" />
+					<assign property="datasource:warningInternal.event" value="querycomplete" />
+-->
+				</sync>
+			</if>
+			<if lhs="[var:activeStep]" operator="e" rhs="2">
+				<sync>
+					<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('[object:INSPIRATION-LABEL-1.text]','[object:INSPIRATION-TYPE-1.text]','[object:INSPIRATION-NOTES-1.text]') " />
+<!-- 					<alert message="{&quot;entry&quot;:{&quot;label&quot;: &quot;[object:INSPIRATION-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:INSPIRATION-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:INSPIRATION-NOTES-1.text]&quot;}}" /> -->
+<!--
+					<assign property="datasource:inspirationInternal.add" value="{&quot;label&quot;: &quot;[object:INSPIRATION-LABEL-1.text]&quot;, &quot;type&quot;: &quot;[object:INSPIRATION-TYPE-1.text]&quot;,&quot;notes&quot;: &quot;[object:INSPIRATION-NOTES-1.text]&quot;}" />
+					<assign property="datasource:inspirationInternal.event" value="querycomplete" />
+-->
+				</sync>
+			</if>
+		</action>
+		
+		<action name="saved-inspiration-complete" datasource="saved-inspiration" datasourceevent="querycomplete">
+			<if lhs="[datasource:saved-inspiration.dataSourceResultCount]" operator="e" rhs="0">
+					<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('A','B','C') " />
+			</if>
+			<alert message="saved-inspiration complete count [datasource:write-inspiration.dataSourceResultCount]" />
+		</action>
+		
+		<action name="saved-warning-complete" datasource="saved-warning" datasourceevent="querycomplete">
+			<if lhs="[datasource:saved-warning.dataSourceResultCount]" operator="e" rhs="0">
+					<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('D','E','F') " />
+			</if>
+			<alert message="saved-warning complete count [datasource:saved-warning.dataSourceResultCount]" />
+		</action>
+		
+		<action name="write-inspiration-complete" datasource="write-inspiration" datasourceevent="querycomplete">
+			<assign property="datasource:saved-inspiration.query" value="SELECT * FROM INSPIRATION ORDER BY ID DESC;" />
+		</action>
+		
+		<action name="write-warning-complete" datasource="write-warning" datasourceevent="querycomplete">
+			<assign property="datasource:saved-warning.query" value="SELECT * FROM WARNING ORDER BY ID DESC;" />
+		</action>
+		
+		<!-- !Contacts -->
+		<action name="contacts-complete" datasource="contacts" datasourceevent="querycomplete">
+			<!-- 		<alert message="[datasource:contacts.dataSourceResultCount] // [datasource:contacts.0.content]" /> -->
+			<!-- 		<alert message="[datasource:contacts.14.firstname] // [datasource:contacts.14.lastname]" /> -->
+		</action>
+		<action name="add-contact">
+			<alpha value=".5" time=".3" target="CURTAIN" />
+			<alpha value="1" time=".3" target="CONTACTS" />
+		</action>
+		<action name="select-contact">
+			<alpha value="1" time=".3" target="CONTACT-INFO" />
+			<assign property="var:contactIndex" value="[object:name]" />
+			
+
+<!--
+			<assign property="var:photo" value="[datasource:contacts.[object:name].image]" />
+			<assign property="var:name" value="[datasource:contacts.[object:name].firstname] [datasource:contacts.[object:name].lastname]" />
+			<alpha value="0" time=".3" target="CURTAIN" />
+			<alpha value="0" time=".3" target="CONTACTS" />
+			<create class="contact-item" contact-item="[var:contactCount]" contact-image="[var:photo]" name="[var:name]" description="test" target="CONTACT/contact-list" />
+			<assign property="var:contactCount" value="[eval: [var:contactCount] + 1]" />
+-->
+		</action>
+		
+		<action name="select-contact-type" >
+			<if lhs="[var:messageContact]" operator="e" rhs="yes">
+				<assign property="var:canContact" value="yes" />
+				<else>
+					<assign property="var:canContact" value="no" />
+				</else>
+			</if>
+			<assign property="var:contactType" value="[object:label.text]" />
+			<assign property="var:photo" value="[datasource:contacts.[var:contactIndex].image]" />
+			<assign property="var:name" value="[datasource:contacts.[var:contactIndex].firstname] [datasource:contacts.[var:contactIndex].lastname]" />
+			<alpha value="0" time=".3" target="CURTAIN" />
+			<alpha value="0" time=".3" target="CONTACTS" />
+			<alpha value="0" time=".3" target="CONTACT-INFO" />
+			<assign property="object:CONTACT-INFO/options/checkbox.background" value="ffffff" />
+			<assign property="var:messageContact" value="" />
+			<create class="contact-item" contact-item="[var:contactCount]" contact-image="[var:photo]" name="[var:name]" description="[var:contactType]" target="CONTACT/contact-list" canContact="[var:canContact]"/>
+			<assign property="var:contactCount" value="[eval: [var:contactCount] + 1]" />
+		</action>
+		
+		<action name="allow-message-contact" >
+			<assign property="object:background" value="126f93" />
+			<assign property="var:messageContact" value="yes" />
+		</action>
+		
+		<action name="post-plan">
+			<assign property="var:warning1-label" value="Z" />
+			<assign property="var:warning1-type" value="Y" />
+			<assign property="var:warning1-notes" value="X" />
+			<assign property="var:inspiration1-label" value="W" />
+			<assign property="var:inspiration1-type" value="V" />
+			<assign property="var:inspiration1-notes" value="U" />
+			<assign property="var:inspiration1-imageUrl" value="T" />
+			<assign property="var:physical1" value="S" />
+			<assign property="var:mental1" value="R" />
+			<assign property="var:spiritual1" value="Q" />
+			<assign property="var:environment1" value="P" />
+			<assign property="var:postContent" value="[template:crudPlan.content]" />
+			<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
+			<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
+			<alert title="pre-submission" message="[template:postBody.content]" />
+			<!--
+		<assign property="var:warning2-label" value="" />
+		<assign property="var:warning3-label" value="" />
+		<assign property="var:warning4-label" value="" />
+		<assign property="var:warning5-label" value="" />
+-->
+		</action>
+		<action name="postPlan-complete" datasource="postPlan" datasourceevent="querycomplete">
+			<alert message="[datasource:postPlan.1.id]" />
+		</action>
   </actions>
 </wire>
