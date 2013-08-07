@@ -1,6 +1,4 @@
 <wire>
-<!-- Marty's version 2 -->
-<!--IAN's Version-->
   <datasources>
     <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
     <datasource name="saved-coping" source="sql://cope" query="SELECT * FROM COPE ORDER BY ID DESC;" providertype="sql"/>
@@ -32,6 +30,9 @@
 
     <datasource name="postInspire" httpheader="header" source="" query="/" providertype="json" httpmethod="post"/>
     <datasource name="InspireGet" httpheader="header" source="" query="/" providertype="json" />
+
+    <datasource name="HomeGet" httpheader="header" source="" query="/" providertype="json" />
+
     
     <datasource name="locator" source="" query="/" providertype="json" />
     <datasource name="body" source="" query="//" providertype="json" /> 
@@ -41,17 +42,17 @@
   
 
   <texttemplate name="crudUser"><![CDATA[ { "id": "[var:userID]",
-                                            "name": { "first": "[var:userFirstName]", "middle": "Q.", "last": "[var:userLastName]", "display": "Johnny Q." },
+                                            "name": { "first": "[var:userFirstName]", "middle": "", "last": "[var:userLastName]", "display": "" },
                                             "email": "[var:userEmail]",
-                                            "phone": "816-555-1234",
+                                            "phone": "",
                                             "prefer": "text|email",
-                                            "home": { "street": ["4950 College Blvd"],"city": "Overland Park","state": "KS", "zip": "66211", 
-                                            "loc": { "lat": 38.92761, "lng": -94.642759 } },
+                                            "home": { "street": [""],"city": "","state": "", "zip": "", 
+                                            "loc": { "lat": , "lng":  } },
                                             "plan": "[var:userPlan]",
                                             "team": "[var:userTeam]",
-                                            "inspiration": "[var:userInspiration]",
+                                            "inspiration": "[var:InspireID]",
                                             "genPrefs": { "appBackgroundImage": "http://localhost:8080/api/rs/crud/blob/51d49fb730048aefbf66ce4e", "arbitraryPrefAttributeName": "arbitraryPrefAttributeValue", "anotherArbitraryPref": "anotherPrefValue" },
-                                            "devices":[{ "name": "johnnyS3", "model": "Galaxy S3", "carrier": "ATT", "pushId": "[system:pushtoken]", 
+                                            "devices":[{ "name": "", "model": "", "carrier": "", "pushId": "[system:pushtoken]", 
                                             "prefs": { "arbitraryDeviceSpecificPrefName": "prefValue", "anotherDevicePrefName": "anotherPrefValue" }}]
                                             } ]]></texttemplate>
   <texttemplate name="crudActivity"><![CDATA[ { "profile": "[var:userID]",
@@ -208,7 +209,7 @@
       <panel name="toolbar" alias="TOOLBAR" height="44" width="100%" background="#126f93" padding-left="10" padding-right="10">
         <text name="label" height="100%" width="100%" font="HelveticaNeue" text="[param:label]" color="#efefef" size="15" alignment="center"/>
         <image name="btn-left" source="graphics/icon-top-menu.png" valign="center" onclickup="toggle-toc" />
-        <image name="btn-right" source="graphics/icon-top-attach.png" valign="center"  align="right" alpha="1" onclickup="lost" />
+        <image name="btn-right" source="graphics/icon-top-attach.png" valign="center"  align="right" alpha="1" onclickup="choose-inspiration-attachment" />
       </panel>
     </class>
     <class name="button">
@@ -431,14 +432,27 @@
 		<class name="homefeed-2">
         	<panel name="row[param:index]" width="100%" height="150">
         		<panel name="middle" width="1" height="100%" align="center"></panel>
-		        <panel name="col1" width="50%" height="150" leftof="middle"  _photo="[param:photo1]" _id="[param:index]" >
-			        <image name="img" source="images/church.jpg" contain="yes" width="100%" align="center" valign="top" suppress="no" ></image>	
+		        <panel name="col1" width="50%" height="150" leftof="middle">
+		        	<text name="" width="" height="" color="#" font="" size="" alignment="left" text=""></text>
+			        <image name="img" source="images/church.jpg"  width="90%" align="center" valign="center" ></image>	
 		        </panel> 
-		        <panel name="col2" width="50%"  height="150" rightof="middle" _photo="[param:photo1]" _id="[param:index]">		 
-		        	<image name="img" source="images/church.jpg" contain="yes" width="100%" align="center" valign="top" suppress="no" ></image>
+		        <panel name="col2" width="50%"  height="150" rightof="middle" >		 
+		        	<image name="img2" url="[param:photo]" width="90%" align="center" valign="center"></image>
 		        </panel>
 	        </panel>
         </class>
+        <class name="homefeed-1">
+        	<panel name="row[param:index]" width="100%" height="150" background="ff0000">
+        		<panel name="middle" width="1" height="100%" align="center"></panel>
+		        <panel name="col1" width="50%" height="150" leftof="middle"   >
+			        <image name="img" source="[param:photo]"  width="90%" align="center" valign="center"></image>	
+		        </panel> 
+		        <panel name="col2" width="50%"  height="150" rightof="middle" >		 
+		        	
+		        </panel>
+	        </panel>
+        </class>
+
   </classes>
 
   <main>
@@ -483,30 +497,21 @@
               </panel>
               <panel name="rule" width="100%" height="1" valign="bottom" background="#126f93"></panel>
             </panel>
-            <pager name="main" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no" lazy="yes">
-              <panel name="trigger" width="100%" height="1" onscrollaway="toggle-filter" onscrollto="toggle-filter" />
-              <panel name="wrapper" width="100%" height="1050" padding-right="5" padding-left="5" padding-top="10">
-                <panel name="col-1" width="50%" height="100%" padding-right="5" padding-left="5">
-                  <panel name="item-1" width="100%" height="250" align="center" background="#000000" alpha=".2"></panel>
-                  <panel name="item-2" width="100%" height="150" align="center" background="#000000" alpha=".3" bottomof="item-1" margin-top="10"></panel>
-                  <panel name="item-3" width="100%" height="250" align="center" background="#000000" alpha=".4" bottomof="item-2" margin-top="10"></panel>
-                  <panel name="item-4" width="100%" height="150" align="center" background="#000000" alpha=".2" bottomof="item-3" margin-top="10"></panel>
-                  <panel name="item-5" width="100%" height="250" align="center" background="#000000" alpha=".3" bottomof="item-4" margin-top="10"></panel>
-                </panel>
-                <panel name="col-2" width="50%" height="100%" align="right" padding-right="5" padding-left="5">
-                  <panel name="item-1" width="100%" height="150" align="center" background="#000000" alpha=".4"></panel>
-                  <panel name="item-2" width="100%" height="150" align="center" background="#000000" alpha=".2" bottomof="item-1" margin-top="10"></panel>
-                  <panel name="item-3" width="100%" height="250" align="center" background="#000000" alpha=".3" bottomof="item-2" margin-top="10"></panel>
-                  <panel name="item-4" width="100%" height="250" align="center" background="#000000" alpha=".2" bottomof="item-3" margin-top="10"></panel>
-                  <panel name="item-5" width="100%" height="250" align="center" background="#000000" alpha=".3" bottomof="item-4" margin-top="10"></panel>
-                </panel>
-              </panel>
-            </pager>
-            <panel name="filter" width="100%" height="44" ypos="100%">
+            <!-- <pager name="main" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" orientation="vertical" paginate="no" lazy="yes"> -->
+            <tableview name="main" alias="HOMEFEED-TABLEVIEW" datasource="HomeGet" ypos="[object:HOME/feelingMeter.height]" height="[eval: [object:HOME.height] - [object:HOME/feelingMeter.height]]" width="100%" background="#e1e1e1" rowheight="150" orientation="vertical" paginate="no" step="2">
+<!--               <panel name="trigger" width="100%" height="1" onscrollaway="toggle-filter" onscrollto="toggle-filter" /> -->
+              <object class="homefeed-2" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]"/>
+              <object class="homefeed-1" index="[param:datasourceIndex]" photo="[param:homeViewEntry/url]"/>
+              
+            </tableview>
+            <!-- </pager> -->
+            <!--
+<panel name="filter" width="100%" height="44" ypos="100%">
               <panel name="main" height="100%" width="100%" background="#bbbbbb">
                  <text name="label" height="100%" width="100%" text="Filter Info" font="HelveticaNeue" color="#000000" size="13" alignment="center" />
               </panel>
             </panel>
+-->
     <!-- 
     journal entry screen 
     -->
@@ -911,7 +916,7 @@
         <panel name="welcome" alias="WELCOME" width="100%" height="100%" background="#e1e1e1">
           <text name="intro" height="44" width="100%" text="Welcome" font="HelveticaNeue-Bold" size="15" alignment="center" margin-top="10" />
           <panel name="signIn" width="100%" height="100%" bottomof="intro" background="#e1e1e1">
-            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="icahill@rarewire.com" />
+            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="Ian@iancahill.com" />
             <textfield name="password" alias="PASSWORD" height="44" width="80%" placeholder="password" bottomof="email" align="center" password="yes" style="textfield" text="1234" />
             <text name="button" height="44" width="80%" text="Sign In" font="HelveticaNeue"  size="15" alignment="center" bottomof="password" margin-top="10" background="#ff0000" onclickup="signIn" align="center"/>
             <text name="label" height="44" width="100%" text="Need an Account?" font="HelveticaNeue" color="#000000" size="13" alignment="center" bottomof="button" margin-top="10" onclickup="toggle-signUp" />
@@ -955,6 +960,12 @@
 <!--       <alert message="https://go.urbanairship.com/api/device_tokens/[system:pushtoken]"/> -->
       
     </action>
+    <!--HOME FEED ACTIONS -->
+    <action name="inspiretest" datasource="HomeGet" datasourceevent="querycomplete">
+      <alert title="source" message="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home"/>
+      <alert title="SHOW" message="[datasource:HomeGet.1.homeViewEntry/url]" /> 
+    </action>  
+
     <action name="notification" datasource="pushlistener">
        <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/>
    	</action>
@@ -1006,6 +1017,7 @@
           <assign property="var:userID" value="[datasource:userAuth.0.content]" />
           <if lhs="[var:newUserSetup]" operator="!=" rhs="1">
             <assign property="datasource:userGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+            <assign property="datasource:HomeGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/api/profile/[var:userID]/feed/home" />
           </if>
           <if lhs="[var:newUserSetup]" operator="==" rhs="1">
             <play action="userSetup" />
@@ -1092,9 +1104,9 @@
     <action name="toolbar-prep">
       <assign property="object:WRAPPER/toolbar/label.text" value="[var:currentSection]" />
       <if lhs="[var:currentSection]" operator="=" rhs="Home">
-        <alpha value="0" target="WRAPPER/toolbar/btn-right" />
+        <alpha value="1" target="WRAPPER/toolbar/btn-right" />
         <load source="graphics/icon-top-attach.png" target="WRAPPER/toolbar/btn-right" />
-        <set onclickup="lost" target="WRAPPER/toolbar/btn-right" />
+        <set onclickup="choose-inspiration-attachment" target="WRAPPER/toolbar/btn-right" />
       </if>
       <if lhs="[var:currentSection]" operator="=" rhs="Safety Plan">
         <alpha value="0" target="WRAPPER/toolbar/btn-right" />
@@ -1170,7 +1182,7 @@
         <play action="dismiss-today-modal" />
     	
     </action>
-    <!-- toggle control --> 
+        <!-- toggle control --> 
     <action name="toggle-view">
       <sync>
         <assign property="object:background" value="#6d8693" />
@@ -1381,6 +1393,7 @@
         </else>
       </if>
     </action>
+    
     <!-- Home Filter when scrolling down -->
     <action name="toggle-filter">
       <sync>
@@ -1508,7 +1521,7 @@
     </action>
     <action name="photouploaded" datasource="uploadPhoto" datasourceevent="querycomplete">
     	<assign property="var:photoID" value="[datasource:uploadPhoto.1.id]" />
-    	<alert title="stored variable" message="[var:photoID]"/>
+<!--     	<alert title="stored variable" message="[var:photoID]"/> -->
     	<play action="post-inspire" />
     </action>
     <action name="photouploaded" datasource="uploadPhoto" datasourceevent="datasourceerror">
@@ -1548,6 +1561,8 @@
     <action name="inspiretest" datasource="postInspire" datasourceevent="querycomplete">
       <alert title="post" message="[datasource:postInspire.0.content]" />
       <assign property="var:InspireID" value="[datasource:postInspire.1.id]" />
-    </action>    
+    </action> 
+    
+  
   </actions>
 </wire>
