@@ -702,7 +702,10 @@
 		</panel>
     </class>
     <class name="annotations">
-      <annotation name="[param:location]" alias="[param:location]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="red" animateddrop="no" ></annotation>
+      <annotation name="[param:location]" alias="[param:location]" location="[param:location]" title="[param:title]" subtitle="[param:subtitle]" color="red" accessoryviewheight="100" animateddrop="no">
+      		<image name="image" source="graphics/annotation-arrow.png" ypos="-10%" leftmargin="20"  onclickup="call-map" _phonenumber="[param:phone]"></image>
+
+      </annotation>
     </class>
     		<!-- !Camera -->
             <class name="camera">
@@ -810,7 +813,21 @@
 		        </panel>
 	        </panel>
         </class>
-
+<!--map list view-->
+			   <class name="establishmentList">
+		   <panel name="[param:index]" width="90%" height="20.2%" align="center" _coords="[param:coords]" _location="[param:name]" _address="[param:address]" _address2="[param:address2]" _phone="[param:phone]"  _locationUrl="[param:locationUrl]" _index="[param:index]">
+        		<panel name="info" width="93%" height="80%" valign="center">
+	        		<text name="name" width="100%" height="fit" color="#666666" font="HelveticaNeue" size="18" alignment="left" text="[param:name]" ></text>
+	        		<panel name="address"  width="85%" height="30" bottomof="name"  _location="[param:name]" _address="[param:address]" _address2="[param:address2]"  _locationUrl="[param:locationUrl]" _index="[param:index]" _coords="[param:coords]">
+		        		<text name="address1" width="100%" height="14" color="#666666" font="HelveticaNeue" size="14" alignment="left"  text="[param:address1]" ></text>
+		        		<text name="address2" width="100%" height="14" color="#666666" font="HelveticaNeue" size="14" alignment="left" bottomof="address1" text="[param:address2]"></text>
+	        		</panel>
+	        		<text name="phone" width="100%" height="fit" color="#666666" font="HelveticaNeue" size="14" alignment="left" topmargin="5" bottomof="address" text="[param:phone]"></text>
+        		</panel>
+        		
+        		<panel name="bottomRule" width="100%" height="1" valign="bottom" background="#7c7470"></panel>
+    		</panel>
+	   </class>
   </classes>
 
   <main>
@@ -914,41 +931,29 @@
               </panel>
               <pager name="main" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height]]" width="100%" orientation="horizontal" paginate="yes">
                 <panel name="1" height="100%" width="90%" align="center" valign="center" onscrollto="step-buttons-assessment" _aliasTarget="HOME/assessment">
-                  <text name="question" height="88" width="100%" style="headline" text="In the past week have you had little interest or pleasure in doing things?" alignment="center" align="center" valignment="top" padding-top="10"/>
+                  <text name="question" height="88" width="100%" style="headline" text="Are you having little interest or pleasure in doing things?" alignment="center" align="center" valignment="top" padding-top="10"/>
                   <pager name="answers" width="100%" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height] - [object:HOME/assessment/main/1/question.height]]" orientation="vertical" paginate="no" valign="bottom">
                     <panel name="row-1" width="100%" height="20%">
-                      <object class="button" text="Not at all" onclickup="null" />
+                      <object class="button" text="Yes" onclickup="null" />
                     </panel>
                     <panel name="row-2" width="100%" height="20%">
-                      <object class="button" text="Several days" onclickup="null" />
-                    </panel>
-                    <panel name="row-3" width="100%" height="20%">
-                      <object class="button" text="More than half the days" onclickup="null" />
-                    </panel>
-                    <panel name="row-4" width="100%" height="20%">
-                      <object class="button" text="Nearly every day" onclickup="null" />
+                      <object class="button" text="No" onclickup="null" />
                     </panel>
                   </pager>
                 </panel>
                 <panel name="2" height="100%" width="90%" align="center" valign="center" onscrollto="step-buttons-assessment" _aliasTarget="HOME/assessment">
-                	<text name="question" height="88" width="100%" style="headline" text="In the past week have you felt down, depressed or hopeless?" alignment="center" align="center" valignment="top" padding-top="10"/>
+                	<text name="question" height="88" width="100%" style="headline" text="Are you feeling down, depressed, or hopeless?" alignment="center" align="center" valignment="top" padding-top="10"/>
                   <pager name="answers" width="100%" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height] - [object:HOME/assessment/main/1/question.height]]" orientation="vertical" paginate="no" valign="bottom">
                     <panel name="row-1" width="100%" height="20%">
-                      <object class="button" text="Not at all" onclickup="null" />
+                      <object class="button" text="Yes" onclickup="null" />
                     </panel>
                     <panel name="row-2" width="100%" height="20%">
-                      <object class="button" text="Several days" onclickup="null" />
-                    </panel>
-                    <panel name="row-3" width="100%" height="20%">
-                      <object class="button" text="More than half the days" onclickup="null" />
-                    </panel>
-                    <panel name="row-4" width="100%" height="20%">
-                      <object class="button" text="Nearly every day" onclickup="null" />
+                      <object class="button" text="No" onclickup="null" />
                     </panel>
                   </pager>
                 </panel>
                 <panel name="3" height="100%" width="100%" align="center" valign="center" onscrollto="step-buttons-assessment" _aliasTarget="HOME/assessment">
-                   <text name="apply" height="44" width="100%" style="headline" text="Tap statements below that apply" alignment="center" align="center" valignment="top" padding-top="10"/>
+                   <text name="apply" height="44" width="100%" style="headline" text="This questionnaire assesses your sleep quality. \n\n Tap statements below that apply" alignment="center" align="center" valignment="top" padding-top="10"/>
                    <panel name="break" width="100%" height="2" background="666666" bottomof="apply"></panel>
 				           <pager name="sleep-pager" alias="SLEEP-PAGER"  width="90%" height="[eval: [object:HOME/assessment.height] - [object:HOME/assessment/steps.height] - [object:HOME/assessment/main/3/apply.height] - [object:HOME/assessment/main/3/break.height] ]" orientation="vertical" align="center" paginate="no" topof="HOME/assessment/steps">                 
                       <object class="sleep-item" item="1" sleeptext="I feel sleepy during the day, even when I get a good night’s sleep" />
@@ -1205,14 +1210,23 @@
           -->
           <panel name="Treatment Locator" alias="TREATMENTLOCATOR" width="100%" height="[eval: [object:WRAPPER.height] - [object:TOOLBAR.height]]" bottomof="toolbar" xpos="100%">
             <panel name="search" height="44" width="100%" background="#819bad">
-              <textfield name="searchField" width="90%" height="34" font="HelveticaNeue" size="15" color="#111111" alignment="left" leftinset="50" onreturnkeypressed="dismiss-keyboard" padding-left="10" padding-right="10" valign="center" align="center" valignment="center" border="none" background="#ffffff" cornerradius="17" placeholder="search">
-              <image name="search" source="graphics/icon.find.png" valign="center"></image>
+              <textfield name="searchField" width="80%" height="34" font="HelveticaNeue" size="15" color="#111111" alignment="left" leftinset="50" onreturnkeypressed="dismiss-keyboard" padding-left="10" padding-right="10" valign="center" xpos="10" valignment="center" border="none" background="#ffffff" cornerradius="17" placeholder="search">
+              <image name="search" source="graphics/icon.find.png" valign="center" align="left"></image>
               <image name="clear" source="graphics/icon.delete.png" valign="center" align="right"></image>
               </textfield>
-            </panel>
+              <text name="maplist" alias="MAPLIST" width="20%" height="100%" color="#ffffff" font="HelveticaNeue" size="16" alignment="right" text="List" align="right" margin="10" onclickup="show-maplist"></text>
+            </panel> 
             <map name="main" alias="MAP" datasource="locator" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" width="100%" type="map" currentlocation="yes" showuser="yes" valign="bottom">
-              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:SITE_NAME]" subtitle="[param:LOC_STREET_1]" />
+              <object name="pin" class="annotations" dataSourceIndex="[param:dataSourceIndex]" location="[param:LOC_LAT] [param:LOC_LONG]" title="[param:ORG_NAME]" subtitle="[param:LOC_STREET_1] [param:LOC_CITY] [param:LOC_STATE] [param:LOC_ZIP]" phone="[param:PHONE_NUMBER]" />
             </map>
+            <panel name="establishmentList" alias="ESTABLISHMENTLIST-CONTAINER" width="100%" height="[eval:[object:TREATMENTLOCATOR.height]-[object:TREATMENTLOCATOR/search.height]]" valign="bottom" background="e1e1e1" clip="yes" alpha="0">
+	        			<panel name="header" width="90%" height="7.7%" align="center">
+			        		<text name="title" width="100%" height="100%" color="#666666" font="HelveticaNeue" size="24" rightof="back" alignment="left" text="Locations"></text>
+		        		</panel>
+            			<list name="establishments"  alias="ESTABLISHMENT-LIST" width="100%" height="92.2%"  datasource="locator" orientation="vertical" paginate="no" align="center" valign="bottom">
+                 			 <object class="establishmentList" index="[param:dataSourceIndex]" name="[param:ORG_NAME]" coords="[param:LOC_LAT] [param:LOC_LONG]" address1="[param:LOC_STREET_1]" address2="[param:LOC_CITY], [param:LOC_STATE]" phone="[param:PHONE_NUMBER]"/>
+		    			</list>
+		    </panel>			
           </panel>
           <!-- 
           Settings/Profile Screen
@@ -1614,7 +1628,10 @@
       <alpha value="1" target="HOME/feelingMeter/e" />
     </action>
     <action name="call-hotline">
-    	<load url="tel://816-555-5555" target="WEB"/>
+    	<load url="tel://1-800-273-8255" target="WEB"/>
+    </action>
+    <action name="call-map">
+    	<load url="tel://[eval: '_phonenumber'.replace('(','').replace(')','-').replace(' ','')]" target="WEB"/>
     </action>
         <action name="reveal-location">
     	<assign property="var:navStatus" value="0" />
@@ -2064,6 +2081,18 @@
       <alert title="post-update" message="[datasource:postInspireUpdate.0.content]" />
     </action>     
   
+  <!--MAP LIST ACTIONS -->
+  			<action name="show-maplist">
+  				<translate xpos="0" time="0" curve="linear" target="ESTABLISHMENTLIST-CONTAINER" />
+  				<alpha value="1" time="0" target="ESTABLISHMENTLIST-CONTAINER" />
+  				<set onclickup="close-maplist" target="MAPLIST" />
+  			</action>
+  			<action name="close-maplist">
+  				<translate xpos="100%" time="0" curve="linear" target="ESTABLISHMENTLIST-CONTAINER" />
+  				<alpha value="0" time="0" target="ESTABLISHMENTLIST-CONTAINER" />
+  				<set onclickup="show-maplist" target="MAPLIST" />
+  			</action>
+  
 		<!-- !Safety Plan Actions -->
 		<action name="launch-dropdown">
 			<assign property="var:entryIndex" value="_index" />
@@ -2103,14 +2132,14 @@
 			<if lhs="[datasource:saved-inspiration.dataSourceResultCount]" operator="e" rhs="0">
 					<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('A','B','C') " />
 			</if>
-			<alert message="saved-inspiration complete count [datasource:write-inspiration.dataSourceResultCount]" />
+<!-- 			<alert message="saved-inspiration complete count [datasource:write-inspiration.dataSourceResultCount]" /> -->
 		</action>
 		
 		<action name="saved-warning-complete" datasource="saved-warning" datasourceevent="querycomplete">
 			<if lhs="[datasource:saved-warning.dataSourceResultCount]" operator="e" rhs="0">
 					<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('D','E','F') " />
 			</if>
-			<alert message="saved-warning complete count [datasource:saved-warning.dataSourceResultCount]" />
+<!-- 			<alert message="saved-warning complete count [datasource:saved-warning.dataSourceResultCount]" /> -->
 		</action>
 		
 		<action name="write-inspiration-complete" datasource="write-inspiration" datasourceevent="querycomplete">
