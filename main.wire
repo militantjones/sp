@@ -2,6 +2,11 @@
   <datasources>
 		<datasource name="dropdowns" source="" query="//entry" providertype="xml" /> 
 
+        <datasource name="warnings" source="" query="/warnings" providertype="json" />
+        <datasource name="inspiration" source="" query="/inspiration" providertype="json" />
+        <datasource name="environment" source="" query="/environment" providertype="json" />
+        <datasource name="coping" source="" query="/techniques" providertype="json" />
+        
 		<datasource name="write-warning" source="sql://warning" query="CREATE TABLE IF NOT EXISTS WARNING (ID INTEGER PRIMARY KEY AUTOINCREMENT, LABEL TEXT, TYPE TEXT, NOTES TEXT);" providertype="sql" />
 		<datasource name="saved-warning" source="sql://warning" query="SELECT * FROM WARNING ORDER BY ID DESC;" providertype="sql" />
 
@@ -13,10 +18,8 @@
 
 		<datasource name="postPlan" httpheader="header" source="" query="/" providertype="json" httpmethod="post" />
 		<datasource name="planUpdate" httpheader="header" source="" query="/" providertype="json" httpmethod="put" />
-		<datasource name="planGet" httpheader="header" source="" query="//warnings" providertype="json" />
+		<datasource name="planGet" httpheader="header" source="" query="/" providertype="json" />
 
-		<datasource name="warningInternal" source="" query="/entry" providertype="json" />
-		<datasource name="inspirationInternal" source="" query="/entry" providertype="json" />
 		<datasource name="contacts" providertype="contacts" source="*" query="/contacts" />
 
     <datasource name="write-coping" source="sql://cope" query="CREATE TABLE IF NOT EXISTS COPE (ID INTEGER PRIMARY KEY AUTOINCREMENT, nid TEXT, text TEXT, photo TEXT, type TEXT);" providertype="sql"/>
@@ -215,6 +218,31 @@
 			         "label":"[var:warning5-label]",
 			         "type":"[var:warning5-type]",
 			         "notes":"[var:warning5-notes]"
+			      },
+			      {
+			         "label":"[var:warning6-label]",
+			         "type":"[var:warning6-type]",
+			         "notes":"[var:warning6-notes]"
+			      },
+			      {
+			         "label":"[var:warning7-label]",
+			         "type":"[var:warning7-type]",
+			         "notes":"[var:warning7-notes]"
+			      },
+			      {
+			         "label":"[var:warning8-label]",
+			         "type":"[var:warning8-type]",
+			         "notes":"[var:warning8-notes]"
+			      },
+			      {
+			         "label":"[var:warning9-label]",
+			         "type":"[var:warning9-type]",
+			         "notes":"[var:warning9-notes]"
+			      },
+			      {
+			         "label":"[var:warning10-label]",
+			         "type":"[var:warning10-type]",
+			         "notes":"[var:warning10-notes]"
 			      }
 			   ],
 			   "inspiration":[
@@ -267,98 +295,204 @@
 			            "lng":""
 			         },
 			         "media":"[var:inspiration5-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration6-label]",
+			         "type":"[var:inspiration6-type]",
+			         "notes":"[var:inspiration6-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration6-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration7-label]",
+			         "type":"[var:inspiration7-type]",
+			         "notes":"[var:inspiration7-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration7-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration8-label]",
+			         "type":"[var:inspiration8-type]",
+			         "notes":"[var:inspiration8-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration8-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration9-label]",
+			         "type":"[var:inspiration9-type]",
+			         "notes":"[var:inspiration9-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration9-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration10-label]",
+			         "type":"[var:inspiration10-type]",
+			         "notes":"[var:inspiration10-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration10-imageUrl]"
 			      }
 			   ],
 			   "techniques":[
 			      {
 			         "type":"[var:coping1-type]",
-			         "label":"[var:coping1-label]"
+			         "label":"[var:coping1-label]",
+			         "nodeID": "[var:coping1-nodeID]",
+			         "photo": "[var:coping1-photo]"
 			      },
 			      {
 			         "type":"[var:coping2-type]",
-			         "label":"[var:coping2-label]"
+			         "label":"[var:coping2-label]",
+			         "nodeID": "[var:coping2-nodeID]",
+			         "photo": "[var:coping2-photo]"
 			      },
 			      {
 			         "type":"[var:coping3-type]",
-			         "label":"[var:coping3-label]"
+			         "label":"[var:coping3-label]",
+			         "nodeID": "[var:coping3-nodeID]",
+			         "photo": "[var:coping3-photo]"
 			      },
 			      {
 			         "type":"[var:coping4-type]",
-			         "label":"[var:coping4-label]"
+			         "label":"[var:coping4-label]",
+			         "nodeID": "[var:coping4-nodeID]",
+			         "photo": "[var:coping4-photo]"
 			      },
 			      {
 			         "type":"[var:coping5-type]",
-			         "label":"[var:coping5-label]"
+			         "label":"[var:coping5-label]",
+			         "nodeID": "[var:coping5-nodeID]",
+			         "photo": "[var:coping5-photo]"
 			      },
 			      {
 			         "type":"[var:coping6-type]",
-			         "label":"[var:coping6-label]"
+			         "label":"[var:coping6-label]",
+			         "nodeID": "[var:coping6-nodeID]",
+			         "photo": "[var:coping6-photo]"
 			      },
 			      {
 			         "type":"[var:coping7-type]",
-			         "label":"[var:coping7-label]"
+			         "label":"[var:coping7-label]",
+			         "nodeID": "[var:coping7-nodeID]",
+			         "photo": "[var:coping7-photo]"
 			      },
 			      {
 			         "type":"[var:coping8-type]",
-			         "label":"[var:coping8-label]"
+			         "label":"[var:coping8-label]",
+			         "nodeID": "[var:coping8-nodeID]",
+			         "photo": "[var:coping8-photo]"
 			      },
 			      {
 			         "type":"[var:coping9-type]",
-			         "label":"[var:coping9-label]"
+			         "label":"[var:coping9-label]",
+			         "nodeID": "[var:coping9-nodeID]",
+			         "photo": "[var:coping9-photo]"
 			      },
 			      {
 			         "type":"[var:coping10-type]",
-			         "label":"[var:coping10-label]"
+			         "label":"[var:coping10-label]",
+			         "nodeID": "[var:coping10-nodeID]",
+			         "photo": "[var:coping10-photo]"
 			      },
 			      {
 			         "type":"[var:coping11-type]",
-			         "label":"[var:coping11-label]"
+			         "label":"[var:coping11-label]",
+			         "nodeID": "[var:coping11-nodeID]",
+			         "photo": "[var:coping11-photo]"
 			      },
 			      {
 			         "type":"[var:coping12-type]",
-			         "label":"[var:coping12-label]"
+			         "label":"[var:coping12-label]",
+			         "nodeID": "[var:coping12-nodeID]",
+			         "photo": "[var:coping12-photo]"
 			      },
 			      {
 			         "type":"[var:coping13-type]",
-			         "label":"[var:coping13-label]"
+			         "label":"[var:coping13-label]",
+			         "nodeID": "[var:coping13-nodeID]",
+			         "photo": "[var:coping13-photo]"
 			      },
 			      {
 			         "type":"[var:coping14-type]",
-			         "label":"[var:coping14-label]"
+			         "label":"[var:coping14-label]",
+			         "nodeID": "[var:coping14-nodeID]",
+			         "photo": "[var:coping14-photo]"
 			      },
 			      {
 			         "type":"[var:coping15-type]",
-			         "label":"[var:coping15-label]"
+			         "label":"[var:coping15-label]",
+			         "nodeID": "[var:coping15-nodeID]",
+			         "photo": "[var:coping15-photo]"
 			      },
 			      {
 			         "type":"[var:coping16-type]",
-			         "label":"[var:coping16-label]"
+			         "label":"[var:coping16-label]",
+			         "nodeID": "[var:coping16-nodeID]",
+			         "photo": "[var:coping16-photo]"
 			      },
 			      {
 			         "type":"[var:coping17-type]",
-			         "label":"[var:coping17-label]"
+			         "label":"[var:coping17-label]",
+			         "nodeID": "[var:coping17-nodeID]",
+			         "photo": "[var:coping17-photo]"
 			      },
 			      {
 			         "type":"[var:coping18-type]",
-			         "label":"[var:coping18-label]"
+			         "label":"[var:coping18-label]",
+			         "nodeID": "[var:coping18-nodeID]",
+			         "photo": "[var:coping18-photo]"
 			      }
 			   ],
 			   "environment":[
-			         "[var:environment1]",
-			         "[var:environment2]",
-			         "[var:environment3]",
-			         "[var:environment4]",
-			         "[var:environment5]"
-			         "[var:environment6]",
-			         "[var:environment7]",
-			         "[var:environment8]",
-			         "[var:environment9]",
-			         "[var:environment10]"
+			      {
+			         "label":"[var:environment1]"
+			      },
+			      {
+			         "label":"[var:environment2]"
+			      },
+			      {
+			         "label":"[var:environment3]"
+			      },
+			      {
+			         "label":"[var:environment4]"
+			      },
+			      {
+			         "label":"[var:environment5]"
+			      },
+			      {
+			         "label":"[var:environment6]"
+			      },
+			      {
+			         "label":"[var:environment7]"
+			      },
+			      {
+			         "label":"[var:environment8]"
+			      },
+			      {
+			         "label":"[var:environment9]"
+			      },
+			      {
+			         "label":"[var:environment10]"
+			      }
 			      ]
 			}]]></texttemplate>
-	<texttemplate name="crudPlan"><![CDATA[{
+	<texttemplate name="crudPlanUpdate"><![CDATA[{
 			   "profile": "[var:userID]",
-			   "id": "[var:planID]",
+			   "id": "[var:userPlan]",
 			   "warnings":[
 			      {
 			         "label":"[var:warning1-label]",
@@ -384,6 +518,31 @@
 			         "label":"[var:warning5-label]",
 			         "type":"[var:warning5-type]",
 			         "notes":"[var:warning5-notes]"
+			      },
+			      {
+			         "label":"[var:warning6-label]",
+			         "type":"[var:warning6-type]",
+			         "notes":"[var:warning6-notes]"
+			      },
+			      {
+			         "label":"[var:warning7-label]",
+			         "type":"[var:warning7-type]",
+			         "notes":"[var:warning7-notes]"
+			      },
+			      {
+			         "label":"[var:warning8-label]",
+			         "type":"[var:warning8-type]",
+			         "notes":"[var:warning8-notes]"
+			      },
+			      {
+			         "label":"[var:warning9-label]",
+			         "type":"[var:warning9-type]",
+			         "notes":"[var:warning9-notes]"
+			      },
+			      {
+			         "label":"[var:warning10-label]",
+			         "type":"[var:warning10-type]",
+			         "notes":"[var:warning10-notes]"
 			      }
 			   ],
 			   "inspiration":[
@@ -436,40 +595,199 @@
 			            "lng":""
 			         },
 			         "media":"[var:inspiration5-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration6-label]",
+			         "type":"[var:inspiration6-type]",
+			         "notes":"[var:inspiration6-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration6-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration7-label]",
+			         "type":"[var:inspiration7-type]",
+			         "notes":"[var:inspiration7-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration7-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration8-label]",
+			         "type":"[var:inspiration8-type]",
+			         "notes":"[var:inspiration8-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration8-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration9-label]",
+			         "type":"[var:inspiration9-type]",
+			         "notes":"[var:inspiration9-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration9-imageUrl]"
+			      },
+			      {
+			         "label":"[var:inspiration10-label]",
+			         "type":"[var:inspiration10-type]",
+			         "notes":"[var:inspiration10-notes]",
+			         "loc":{
+			            "lat":"",
+			            "lng":""
+			         },
+			         "media":"[var:inspiration10-imageUrl]"
 			      }
 			   ],
-			   "techniques":{
-			      "physical":[
-			         "[var:physical1]",
-			         "[var:physical2]",
-			         "[var:physical3]",
-			         "[var:physical4]",
-			         "[var:physical5]",
-			         "[var:physical6]"
-			      ],
-			      "mental":[
-			         "[var:mental1]",
-			         "[var:mental2]",
-			         "[var:mental3]",
-			         "[var:mental4]",
-			         "[var:mental5]",
-			         "[var:mental6]"
-			      ],
-			      "spiritual":[
-			         "[var:spiritual1]",
-			         "[var:spiritual2]",
-			         "[var:spiritual3]",
-			         "[var:spiritual4]",
-			         "[var:spiritual5]",
-			         "[var:spiritual6]"
-			      ]
-			   },
+			   "techniques":[
+			      {
+			         "type":"[var:coping1-type]",
+			         "label":"[var:coping1-label]",
+			         "nodeID": "[var:coping1-nodeID]",
+			         "photo": "[var:coping1-photo]"
+			      },
+			      {
+			         "type":"[var:coping2-type]",
+			         "label":"[var:coping2-label]",
+			         "nodeID": "[var:coping2-nodeID]",
+			         "photo": "[var:coping2-photo]"
+			      },
+			      {
+			         "type":"[var:coping3-type]",
+			         "label":"[var:coping3-label]",
+			         "nodeID": "[var:coping3-nodeID]",
+			         "photo": "[var:coping3-photo]"
+			      },
+			      {
+			         "type":"[var:coping4-type]",
+			         "label":"[var:coping4-label]",
+			         "nodeID": "[var:coping4-nodeID]",
+			         "photo": "[var:coping4-photo]"
+			      },
+			      {
+			         "type":"[var:coping5-type]",
+			         "label":"[var:coping5-label]",
+			         "nodeID": "[var:coping5-nodeID]",
+			         "photo": "[var:coping5-photo]"
+			      },
+			      {
+			         "type":"[var:coping6-type]",
+			         "label":"[var:coping6-label]",
+			         "nodeID": "[var:coping6-nodeID]",
+			         "photo": "[var:coping6-photo]"
+			      },
+			      {
+			         "type":"[var:coping7-type]",
+			         "label":"[var:coping7-label]",
+			         "nodeID": "[var:coping7-nodeID]",
+			         "photo": "[var:coping7-photo]"
+			      },
+			      {
+			         "type":"[var:coping8-type]",
+			         "label":"[var:coping8-label]",
+			         "nodeID": "[var:coping8-nodeID]",
+			         "photo": "[var:coping8-photo]"
+			      },
+			      {
+			         "type":"[var:coping9-type]",
+			         "label":"[var:coping9-label]",
+			         "nodeID": "[var:coping9-nodeID]",
+			         "photo": "[var:coping9-photo]"
+			      },
+			      {
+			         "type":"[var:coping10-type]",
+			         "label":"[var:coping10-label]",
+			         "nodeID": "[var:coping10-nodeID]",
+			         "photo": "[var:coping10-photo]"
+			      },
+			      {
+			         "type":"[var:coping11-type]",
+			         "label":"[var:coping11-label]",
+			         "nodeID": "[var:coping11-nodeID]",
+			         "photo": "[var:coping11-photo]"
+			      },
+			      {
+			         "type":"[var:coping12-type]",
+			         "label":"[var:coping12-label]",
+			         "nodeID": "[var:coping12-nodeID]",
+			         "photo": "[var:coping12-photo]"
+			      },
+			      {
+			         "type":"[var:coping13-type]",
+			         "label":"[var:coping13-label]",
+			         "nodeID": "[var:coping13-nodeID]",
+			         "photo": "[var:coping13-photo]"
+			      },
+			      {
+			         "type":"[var:coping14-type]",
+			         "label":"[var:coping14-label]",
+			         "nodeID": "[var:coping14-nodeID]",
+			         "photo": "[var:coping14-photo]"
+			      },
+			      {
+			         "type":"[var:coping15-type]",
+			         "label":"[var:coping15-label]",
+			         "nodeID": "[var:coping15-nodeID]",
+			         "photo": "[var:coping15-photo]"
+			      },
+			      {
+			         "type":"[var:coping16-type]",
+			         "label":"[var:coping16-label]",
+			         "nodeID": "[var:coping16-nodeID]",
+			         "photo": "[var:coping16-photo]"
+			      },
+			      {
+			         "type":"[var:coping17-type]",
+			         "label":"[var:coping17-label]",
+			         "nodeID": "[var:coping17-nodeID]",
+			         "photo": "[var:coping17-photo]"
+			      },
+			      {
+			         "type":"[var:coping18-type]",
+			         "label":"[var:coping18-label]",
+			         "nodeID": "[var:coping18-nodeID]",
+			         "photo": "[var:coping18-photo]"
+			      }
+			   ],
 			   "environment":[
-			         "[var:environment1]",
-			         "[var:environment2]",
-			         "[var:environment3]",
-			         "[var:environment4]",
-			         "[var:environment5]"
+			      {
+			         "label":"[var:environment1]"
+			      },
+			      {
+			         "label":"[var:environment2]"
+			      },
+			      {
+			         "label":"[var:environment3]"
+			      },
+			      {
+			         "label":"[var:environment4]"
+			      },
+			      {
+			         "label":"[var:environment5]"
+			      },
+			      {
+			         "label":"[var:environment6]"
+			      },
+			      {
+			         "label":"[var:environment7]"
+			      },
+			      {
+			         "label":"[var:environment8]"
+			      },
+			      {
+			         "label":"[var:environment9]"
+			      },
+			      {
+			         "label":"[var:environment10]"
+			      }
 			      ]
 			}]]></texttemplate>
 	<texttemplate name="crudTeam"><![CDATA[{
@@ -1351,7 +1669,7 @@
         <panel name="welcome" alias="WELCOME" width="100%" height="100%" background="#e1e1e1">
           <text name="intro" height="44" width="100%" text="Welcome" font="HelveticaNeue-Bold" size="15" alignment="center" margin-top="10" />
           <panel name="signIn" width="100%" height="100%" bottomof="intro" background="#e1e1e1">
-            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="F" />
+            <textfield name="email" alias="EMAIL" height="44" width="80%" placeholder="email" bottomof="welcome" align="center" style="textfield" text="J" />
             <textfield name="password" alias="PASSWORD" height="44" width="80%" placeholder="password" bottomof="email" align="center" password="yes" style="textfield" text="q" />
             <text name="button" height="44" width="80%" text="Sign In" font="HelveticaNeue"  size="15" alignment="center" bottomof="password" margin-top="10" background="#ff0000" onclickup="signIn" align="center"/>
             <text name="label" height="44" width="100%" text="Need an Account?" font="HelveticaNeue" color="#000000" size="13" alignment="center" bottomof="button" margin-top="10" onclickup="toggle-signUp" />
@@ -1388,12 +1706,6 @@
   </main>
   <actions>
     <action name="boot" oninit="yes">
-<!--
-			<assign property="datasource:warningInternal.add" value="{&quot;label&quot;: &quot;&quot;, &quot;type&quot;: &quot;&quot;,&quot;notes&quot;: &quot;&quot;}" />
-			<assign property="datasource:warningInternal.event" value="querycomplete" />
-			<assign property="datasource:inspirationInternal.add" value="{&quot;label&quot;: &quot;&quot;, &quot;type&quot;: &quot;&quot;,&quot;notes&quot;: &quot;&quot;}" />
-			<assign property="datasource:inspirationInternal.event" value="querycomplete" />
--->
 			<assign property="var:contactCount" value="1" />
 			<assign property="var:activeStep" value="1" />
       <assign property="object:WRAPPER/toolbar/label.text" value="Hello" />
@@ -1493,6 +1805,10 @@
     </action>
     <action name="userGetResponse" datasource="userGet"> <!-- retreiving a current user info -->
 		<if lhs="[datasource:userGet.1.plan]" operator="ne" rhs="">
+			<assign property="datasource:write-warning.query" value="DELETE FROM WARNING" />
+			<assign property="datasource:write-inspiration.query" value="DELETE FROM INSPIRATION" />
+			<assign property="datasource:write-environment.query" value="DELETE FROM ENVIRONMENT" />
+			<assign property="datasource:write-coping.query" value="DELETE FROM COPE" />
 			<assign property="var:userPlan" value="[datasource:userGet.1.plan]" />
 			<assign property="datasource:planGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/?query=%7B%22profile%22%3A%22[var:userID]%22%7D" />
 			<else>
@@ -1512,8 +1828,122 @@
       </if>
     </action>
 	<action name="planGet-complete" datasource="planGet" datasourceevent="querycomplete" >
-		<alert message="planGet-complete count is [datasource:planGet.dataSourceResultCount], json is [datasource:planGet.0.content]" />
-	</action> 
+<!-- 		<email subject="hi" body="[datasource:planGet.0.content]" toaddress="mlong@rarewire.com" /> -->
+		<assign property="var:sqlizer" value="on" />
+		<assign property="datasource:warnings.data" value="[datasource:planGet.1.content]" />
+	</action>
+	
+	
+	<!-- !Sqlizer actions -->
+	<action name="warnings-done" datasource="warnings" datasourceevent="querycomplete" >
+		<assign property="var:warningsDSCount" value="[datasource:warnings.dataSourceResultCount]" />
+		<assign property="var:iterateIndex" value="1" />
+		<play action="populateWarningsTable" />
+<!-- 		<alert message="[var:warningsDSCount] warnings" /> -->
+	</action>
+	
+	<action name="populateWarningsTable" >
+		<if lhs="[var:iterateIndex]" operator="lte" rhs="[var:warningsDSCount]">
+			<if lhs="[datasource:warnings.[var:iterateIndex].label]" operator="ne" rhs="">
+				<assign property="datasource:write-warning.query" value="INSERT INTO WARNING (LABEL,TYPE,NOTES) values ('[datasource:warnings.[var:iterateIndex].label]','[datasource:warnings.[var:iterateIndex].type]','[datasource:warnings.[var:iterateIndex].notes]') " />
+				<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+				<play action="populateWarningsTable" />
+				<else>
+<!-- 					<alert message="datasource:warnings.[var:iterateIndex].label is empty, moving on"/>  -->
+					<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+					<play action="populateWarningsTable" />
+				</else>
+			</if>
+			<else>
+<!-- 				<alert message="warnings table done" /> -->
+				<assign property="datasource:saved-warning.query" value="SELECT * FROM WARNING ORDER BY ID ASC;" />
+				<assign property="datasource:inspiration.data" value="[datasource:planGet.1.content]" />
+			</else>
+		</if>
+	</action>
+
+	<action name="inspiration-done" datasource="inspiration" datasourceevent="querycomplete" >
+		<assign property="var:inspirationDSCount" value="[datasource:inspiration.dataSourceResultCount]" />
+		<assign property="var:iterateIndex" value="1" />
+		<play action="populateInspirationTable" />
+<!-- 		<alert message="[var:inspirationDSCount] inspiration" /> -->
+	</action>
+	<action name="populateInspirationTable" >
+		<if lhs="[var:iterateIndex]" operator="lte" rhs="[var:inspirationDSCount]">
+			<if lhs="[datasource:inspiration.[var:iterateIndex].label]" operator="ne" rhs="">
+				<assign property="datasource:write-inspiration.query" value="INSERT INTO INSPIRATION (LABEL,TYPE,NOTES) values ('[datasource:inspiration.[var:iterateIndex].label]','[datasource:inspiration.[var:iterateIndex].type]','[datasource:inspiration.[var:iterateIndex].notes]') " />
+				<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+				<play action="populateInspirationTable" />
+				<else>
+<!-- 					<alert message="datasource:inspiration.[var:iterateIndex].label is empty, moving on"/>  -->
+					<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+					<play action="populateInspirationTable" />
+				</else>
+			</if>
+			<else>
+<!-- 				<alert message="inspiration table done" /> -->
+				<assign property="datasource:saved-inspiration.query" value="SELECT * FROM INSPIRATION ORDER BY ID ASC;" />
+				<assign property="datasource:environment.data" value="[datasource:planGet.1.content]" />
+			</else>
+		</if>
+	</action>
+	<action name="environment-done" datasource="environment" datasourceevent="querycomplete" >
+		<assign property="var:environmentDSCount" value="[datasource:environment.dataSourceResultCount]" />
+		<assign property="var:iterateIndex" value="1" />
+		<play action="populateEnvironmentTable" />
+<!-- 		<alert message="[var:environmentDSCount] environment" /> -->
+	</action>
+	<action name="populateEnvironmentTable" >
+		<if lhs="[var:iterateIndex]" operator="lte" rhs="[var:environmentDSCount]">
+			<if lhs="[datasource:environment.[var:iterateIndex].label]" operator="ne" rhs="">
+				<assign property="datasource:write-environment.query" value="INSERT INTO ENVIRONMENT (LABEL) values ('[datasource:environment.[var:iterateIndex].label]') " />
+				<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+				<play action="populateEnvironmentTable" />
+				<else>
+<!-- 					<alert message="datasource:environment.[var:iterateIndex].label is empty, moving on"/>  -->
+					<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+					<play action="populateEnvironmentTable" />
+				</else>
+			</if>
+			<else>
+<!-- 				<alert message="environment table done" /> -->
+				<assign property="datasource:saved-environment.query" value="SELECT * FROM ENVIRONMENT ORDER BY ID ASC;" />
+				<assign property="datasource:coping.data" value="[datasource:planGet.1.content]" />
+			</else>
+		</if>
+	</action>
+	<action name="coping-done" datasource="coping" datasourceevent="querycomplete" >
+		<assign property="var:copingDSCount" value="[datasource:coping.dataSourceResultCount]" />
+		<assign property="var:iterateIndex" value="1" />
+		<play action="populateCopingTable" />
+<!-- 		<alert message="var:copingDSCount is [var:copingDSCount]" /> -->
+	</action>
+	<action name="populateCopingTable" >
+		<if lhs="[var:iterateIndex]" operator="lte" rhs="[var:copingDSCount]">
+			<if lhs="[datasource:coping.[var:iterateIndex].type]" operator="ne" rhs="">
+		    	<assign property="datasource:write-coping.query" value="INSERT INTO COPE (nid,text,photo,type) values ('[datasource:coping.[var:iterateIndex].nodeID]','[datasource:coping.[var:iterateIndex].text]','[datasource:coping.[var:iterateIndex].photo]','[datasource:coping.[var:iterateIndex].type]')" /> 
+				<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+				<play action="populateCopingTable" />
+				<else>
+<!-- 					<alert message="datasource:coping.[var:iterateIndex].type is empty, moving on"/>  -->
+					<assign property="var:iterateIndex" value="[eval: [var:iterateIndex] + 1]" />
+					<play action="populateCopingTable" />
+				</else>
+			</if>
+			<else>
+				<assign property="datasource:saved-coping.query" value="SELECT * FROM COPE ORDER BY ID ASC;" />
+				<alert message="all tables populated" />
+				<assign property="var:sqlizer" value="" />
+			</else>
+		</if>
+	</action>
+	
+	<action name="coping-done" datasource="saved-coping" datasourceevent="querycomplete" >
+		<assign property="var:copingCount" value="[datasource:saved-coping.dataSourceResultCount]" />
+		<alert message="coping count is [datasource:saved-coping.dataSourceResultCount]" />
+	</action>
+
+
     <action name="userCreateResponse" datasource="userUpdate"> <!-- used to get a new users info -->
       <assign property="var:username" value="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" />
       <alert title="[eval: JSON.parse('[datasource:userUpdate.1.name]')['first']]" message="[datasource:userUpdate.0.content] " />
@@ -1796,7 +2226,7 @@
     	<sync>
 	    	<assign property="object:background" value="e9e9e9" />
 	    	<assign property="var:cope-checked" value="no" />
-	    	<assign property="datasource:write-coping" value="DELETE FROM COPE WHERE nid='_nodeID'"/>
+	    	<assign property="datasource:write-coping.query" value="DELETE FROM COPE WHERE nid='_nodeID'"/>
 	        <assign property="datasource:saved-coping.query" value="SELECT * FROM COPE"/>
 	    	<set onclickup="add-coping-item"/>
     	</sync>
@@ -2191,12 +2621,16 @@
 		
 		<action name="write-inspiration-complete" datasource="write-inspiration" datasourceevent="querycomplete">
 			<assign property="var:itemAction" value="" />
-			<assign property="datasource:saved-inspiration.query" value="SELECT * FROM INSPIRATION ORDER BY ID DESC;" />
+			<if lhs="[var:sqlizer]" operator="ne" rhs="on">
+				<assign property="datasource:saved-inspiration.query" value="SELECT * FROM INSPIRATION ORDER BY ID DESC;" />
+			</if>
 		</action>
 		
 		<action name="write-warning-complete" datasource="write-warning" datasourceevent="querycomplete">
 			<assign property="var:itemAction" value="" />
-			<assign property="datasource:saved-warning.query" value="SELECT * FROM WARNING ORDER BY ID DESC;" />
+			<if lhs="[var:sqlizer]" operator="ne" rhs="on">
+				<assign property="datasource:saved-warning.query" value="SELECT * FROM WARNING ORDER BY ID DESC;" />
+			</if>
 		</action>
 		
 		<!-- !Contacts Actions -->
@@ -2289,7 +2723,9 @@
 		
 		<action name="write-environment-complete" datasource="write-environment" datasourceevent="querycomplete">
 			<assign property="var:itemAction" value="" />
-			<assign property="datasource:saved-environment.query" value="SELECT * FROM ENVIRONMENT ORDER BY ID DESC;" />
+			<if lhs="[var:sqlizer]" operator="ne" rhs="on">
+				<assign property="datasource:saved-environment.query" value="SELECT * FROM ENVIRONMENT ORDER BY ID DESC;" />
+			</if>
 		</action>		
 		
 		<action name="saved-environment-complete" datasource="saved-environment" datasourceevent="querycomplete">
@@ -2378,6 +2814,8 @@
 			<if lhs="[var:copingIndex]" operator="lte" rhs="[var:copingCount]">
 				<assign property="var:coping[var:copingIndex]-type" value="[datasource:saved-coping.[var:copingIndex].type]" />
 				<assign property="var:coping[var:copingIndex]-label" value="[datasource:saved-coping.[var:copingIndex].text]" />
+				<assign property="var:coping[var:copingIndex]-nodeID" value="[datasource:saved-coping.[var:copingIndex].nid]" />
+				<assign property="var:coping[var:copingIndex]-photo" value="[datasource:saved-coping.[var:copingIndex].photo]" />
 				<assign property="var:copingIndex" value="[eval: [var:copingIndex] + 1]" />
 				<play action="iterate-coping-vars" />
 				<else>
@@ -2387,18 +2825,39 @@
 		</action>
 
 		<action name="post-plan" >
-			<assign property="var:postContent" value="[template:crudPlan.content]" />
-			<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
-			<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
+			<if lhs="[var:userPlan]" operator="e" rhs="">
+				<assign property="var:postContent" value="[template:crudPlan.content]" />
+				<assign property="datasource:postPlan.postContent" value="[template:postBody.content]" />
+				<assign property="datasource:postPlan.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/" />
+				<else>
+					<assign property="var:postContent" value="[template:crudPlanUpdate.content]" />
+					<assign property="datasource:planUpdate.postContent" value="[template:postBody.content]" />
+					<assign property="datasource:planUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/plan/[var:userPlan]" />
+				</else>
+			</if>
 		</action>
 
 		<action name="postPlan-complete" datasource="postPlan" datasourceevent="querycomplete">
 			<email subject="pre-submission and result" body="[template:postBody.content]\n\n\n\n\n\n\n[datasource:postPlan.0.content]" toaddress="mlong@rarewire.com" />
 			<alert message="postPlan-complete // datasource:postPlan.1.id is [datasource:postPlan.1.id] content is [datasource:postPlan.0.content]" />
-			<assign property="var:userPlan" value="[datasource:postPlan.1.id]" />
+			<if lhs="[datasource:postPlan.1.id]" operator="ne" rhs="e">
+				<assign property="var:userPlan" value="[datasource:postPlan.1.id]" />
+			</if>
 	        <assign property="var:postContent" value="[template:crudUser.content]" />
 	        <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
 	        <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
 		</action>
+		
+		<action name="planUpdate-complete" datasource="planUpdate" datasourceevent="querycomplete">
+			<email subject="pre-submission and result" body="[template:postBody.content]\n\n\n\n\n\n\n[datasource:postPlan.0.content]" toaddress="mlong@rarewire.com" />
+			<alert message="planUpdate-complete // datasource:planUpdate.1.id is [datasource:planUpdate.1.id] content is [datasource:planUpdate.0.content]" />
+			<if lhs="[datasource:planUpdate.1.id]" operator="ne" rhs="e">
+				<assign property="var:userPlan" value="[datasource:planUpdate.1.id]" />
+			</if>
+	        <assign property="var:postContent" value="[template:crudUser.content]" />
+	        <assign property="datasource:userUpdate.postContent" value="[template:postBody.content]" />
+	        <assign property="datasource:userUpdate.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
+		</action>
+
   </actions>
 </wire>
