@@ -1725,7 +1725,25 @@
 -->
 
     <action name="notification" datasource="pushlistener">
-       <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/>
+		<if lhs="[datasource:pushlistener.1.msg]" operator="ne" rhs="">
+			<alert message="there is a message to be retrieved" />
+		</if>
+		<if lhs="[datasource:pushlistener.1.act]" operator="e" rhs="mood">
+			<alert message="have user provide a mood assessment" />
+		</if>
+		<if lhs="[datasource:pushlistener.1.act]" operator="e" rhs="coping">
+			<alert message="take user to the coping page" />
+		</if>
+		<if lhs="[datasource:pushlistener.1.act]" operator="e" rhs="connect">
+			<alert message="show do you need help dialog" />
+		</if>
+		<if lhs="[datasource:pushlistener.1.act]" operator="e" rhs="assess">
+			<alert message="show the user the assessments" />
+		</if>
+		<if lhs="[datasource:pushlistener.1.url]" operator="ne" rhs="">
+			<alert message="take the user to this page [datasource:pushlistener.1.url]" />
+		</if>
+<!--        <alert message="aps-body: [datasource:pushlistener.1.aps/alert/body] aps-alert: [datasource:pushlistener.1.aps/alert] msg: [datasource:pushlistener.1.msg] url: [datasource:pushlistener.1.url] act: [datasource:pushlistener.1.act] ref: [datasource:pushlistener.1.ref]"/> -->
    	</action>
    <!--
  <action name="pushreg" datasource="PushRegister" datasourceevent="querycomplete">
@@ -1773,6 +1791,7 @@
         <sync>
          <!-- <alert message="[datasource:userAuth.0.content]" title="userID" />-->
           <assign property="var:userID" value="[datasource:userAuth.0.content]" />
+<!-- 		  <email subject="userid" body="[var:userID]" toaddress="mlong@rarewire.com" /> -->
           <if lhs="[var:newUserSetup]" operator="!=" rhs="1">
             <assign property="datasource:userGet.source" value="https://samhsa.carewave.net/edm-mobile/rs/crud/profile/[var:userID]" />
             
